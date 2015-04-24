@@ -25,10 +25,12 @@ set("canvas_SOURCE_FILES"
 
 if(WIN32)
   list(APPEND "canvas_INCLUDE_FILES"
+    "include/canvas/windows/win/message_pump_win.h"
     "include/canvas/windows/win/window_detail_win.h"
   )
 
   list(APPEND "canvas_SOURCE_FILES"
+    "src/windows/win/message_pump_win.cpp"
     "src/windows/win/window_detail_win.cpp"
     "src/windows/win/video_mode_win.cpp"
   )
