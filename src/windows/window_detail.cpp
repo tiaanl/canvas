@@ -12,21 +12,40 @@
 // OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 // PERFORMANCE OF THIS SOFTWARE.
 
-#ifndef CANVAS_UTILS_POS_H_
-#define CANVAS_UTILS_POS_H_
+#include "canvas/windows/window_detail.h"
+
+#include <nucleus/config.h>
+
+#if OS(WIN)
+#include "canvas/windows/win/window_detail_win.h"
+using WindowDetailType = ca::detail::WindowDetailWin;
+#else
+#error "Your platform is not supported."
+#endif
 
 namespace ca {
 
-template <typename T>
-struct Pos {
-  T x = 0;
-  T y = 0;
+namespace detail {
 
-  Pos() {}
+// static
+std::unique_ptr<WindowDetail> WindowDetail::create(
+    VideoMode mode, const std::string& title, uint32_t style,
+    const ContextSettings& settings) {
+  return std::move(
+      std::make_unique<WindowDetailType>(mode, title, style, settings));
+}
 
-  Pos(T x, T y) : x(x), y(y) {}
-};
+// static
+std::unique_ptr<WindowDetail> WindowDetail::create(WindowHandle handle) {
+  return std::move(std::make_unique<WindowDetailType>(handle));
+}
+
+WindowDetail::~WindowDetail() {
+}
+
+WindowDetail::WindowDetail() {
+}
+
+}  // namespace detail
 
 }  // namespace ca
-
-#endif  // CANVAS_UTILS_POS_H_

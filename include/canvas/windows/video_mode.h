@@ -36,12 +36,16 @@ struct VideoMode {
 
   // Check whether this mode is valid.
   bool isValid() const;
+
+  friend bool operator==(const VideoMode& left, const VideoMode& right) {
+    return left.width == right.width && left.height == right.height &&
+           left.bitsPerPixel == right.bitsPerPixel;
+  }
+
+  friend bool operator!=(const VideoMode& left, const VideoMode& right) {
+    return !(left == right);
+  }
 };
-
-// Operators
-
-bool operator==(const VideoMode& left, const VideoMode& right);
-bool operator<(const VideoMode& left, const VideoMode& right);
 
 }  // namespace ca
 

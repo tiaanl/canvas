@@ -25,6 +25,14 @@ struct Size {
   Size() {}
 
   Size(T width, T height) : width(width), height(height) {}
+
+  bool operator==(const Size& right) const {
+    return width == right.width && height == right.height;
+  }
+
+  bool operator!=(const Size& right) const {
+    return !(*this == right);
+  }
 };
 
 }  // namespace ca

@@ -23,6 +23,7 @@
 #include "canvas/utils/size.h"
 #include "canvas/windows/context_settings.h"
 #include "canvas/windows/video_mode.h"
+#include "canvas/windows/window_detail.h"
 #include "canvas/windows/window_handle.h"
 #include "canvas/windows/window_style.h"
 
@@ -126,6 +127,9 @@ private:
 
   // Perform some common internal initializations.
   void initialize();
+
+  // Platform-specific implementation of the window.
+  std::unique_ptr<detail::WindowDetail> m_detail;
 
   // Platform-specific implemantation of the OpenGL context.
   // std::unique_ptr<GlContext> m_context;

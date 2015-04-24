@@ -40,7 +40,8 @@ Window::~Window() {
   close();
 }
 
-void Window::create(VideoMode mode, const std::string& title, uint32_t style, const ContextSettings& settings) {
+void Window::create(VideoMode mode, const std::string& title, uint32_t style,
+                    const ContextSettings& settings) {
   // Destroy the previous window.
   close();
 
@@ -48,12 +49,14 @@ void Window::create(VideoMode mode, const std::string& title, uint32_t style, co
   if (IS_BIT_SET(style, WindowStyleFullscreen)) {
     // Make sure there isn't already a fullscreen window.  (only one is allowed)
     if (g_fullscreenWindow) {
-      LOG(Error) << "Creating two fullscreen windows is not allowed, switching to windowed mode.";
+      LOG(Error) << "Creating two fullscreen windows is not allowed, switching "
+                    "to windowed mode.";
       style &= ~WindowStyleFullscreen;
     } else {
       // Make sure that the chosed video mode is compatible.
       if (!mode.isValid()) {
-        LOG(Error) << "The requested video mode is not available, switching to a valid mode.";
+        LOG(Error) << "The requested video mode is not available, switching to "
+                      "a valid mode.";
         mode = VideoMode::getFullscreenModes()[0];
       }
 
@@ -62,7 +65,7 @@ void Window::create(VideoMode mode, const std::string& title, uint32_t style, co
     }
   }
 
-  // Check the validity of the style according to the underlying platform.
+// Check the validity of the style according to the underlying platform.
 #if OS(IOS) || OS(ANDROID)
   if (IS_BIT_SET(style, WindowStyleFullscreen)) {
     style &= ~WindowStyleTitleBar;
@@ -70,17 +73,182 @@ void Window::create(VideoMode mode, const std::string& title, uint32_t style, co
     style |= Style::TitleBar;
   }
 #else
-  if (IS_BIT_SET(style, WindowStyleClose) || IS_BIT_SET(style, WindowStyleResize)) {
+  if (IS_BIT_SET(style, WindowStyleClose) ||
+      IS_BIT_SET(style, WindowStyleResize)) {
     style |= WindowStyleTitleBar;
   }
 #endif
 
-  // Create the window.
+  // Recreate the window.
+  m_detail =
+      std::move(detail::WindowDetail::create(mode, title, style, settings));
 
   // Recreate the context.
 
   // Perform common initializations.
   initialize();
+}
+
+void Window::create(WindowHandle handle, const ContextSettings& settings) {
+  // Destroy the previous window implementation.
+  close();
+
+  // Recreate the window implementation.
+  m_detail = std::move(detail::WindowDetail::create(handle));
+
+  // Recreate the context.
+
+  // Perform common initializations.
+  initialize();
+}
+
+void Window::close() {
+  // Delete the context.
+  // m_context.reset();
+
+  // Delete the window detail.
+  m_detail.reset();
+
+  // Update the fullscreen window.
+  if (this == g_fullscreenWindow) {
+    g_fullscreenWindow = nullptr;
+  }
+}
+
+bool Window::isOpen() const {
+  return !!m_detail;
+}
+
+const ContextSettings& Window::getContextSettings() const {
+  static const ContextSettings empty;
+#if 0
+  return m_context ? m_context->getSettings() : empty;
+#else
+  return empty;
+#endif
+}
+
+Pos<int32_t> Window::getPosition() const {
+  return m_detail ? m_detail->getPosition() : Pos<int32_t>();
+}
+
+void Window::setPosition(const Pos<int32_t>& pos) {
+  if (m_detail) {
+    m_detail->setPosition(pos);
+  }
+}
+
+Size<uint32_t> Window::getSize() const {
+  return m_size;
+}
+
+void Window::setSize(const Size<uint32_t>& size) {
+  if (m_detail) {
+    m_detail->setSize(size);
+
+    // Cache the new size.
+    m_size = size;
+
+    // Notify the derived class.
+    onResize();
+  }
+}
+
+void Window::setTitle(const std::string& title) {
+  if (m_detail) {
+    m_detail->setTitle(title);
+  }
+}
+
+void Window::setVisible(bool visible) {
+  if (m_detail) {
+    m_detail->setVisible(visible);
+  }
+}
+
+void Window::setVerticalSyncEnabled(bool enabled) {
+#if 0
+  if (m_detail) {
+    m_context->setVerticalSyncEnabled(enabled);
+  }
+#endif  // 0
+}
+
+void Window::setMouseCursorVisible(bool visible) {
+  if (m_detail) {
+    m_detail->setMouseCursorVisible(visible);
+  }
+}
+
+void Window::setKeyRepeatEnabled(bool enabled) {
+  if (m_detail) {
+    m_detail->setKeyRepeatEnabled(enabled);
+  }
+}
+
+bool Window::setActive(bool active) {
+#if 0
+  if (m_context) {
+    if (m_context->setActive(active)) {
+      return true;
+    } else {
+      LOG(Error) << "Failed to activate the window's context.";
+      return false;
+    }
+  } else {
+    return false;
+  }
+#endif  // 0
+  return false;
+}
+
+void Window::requestFocus() {
+  if (m_detail) {
+    m_detail->requestFocus();
+  }
+}
+
+bool Window::hasFocus() const {
+  return m_detail && m_detail->hasFocus();
+}
+
+void Window::swapBuffers() {
+  // Display the back buffer on screen.
+  if (setActive(true)) {
+#if 0
+    m_context->swapBuffers();
+#endif  // 0
+  }
+}
+
+WindowHandle Window::getNativeHandle() const {
+  return m_detail ? m_detail->getNativeHandle() : 0;
+}
+
+void Window::onCreate() {
+  // No default behaviour.
+}
+
+void Window::onResize() {
+  // No default behaviour.
+}
+
+void Window::initialize() {
+  // Set up default behaviours to get a consistent behaviour across different
+  // OS's.
+  setVisible(true);
+  setMouseCursorVisible(true);
+  setVerticalSyncEnabled(false);
+  setKeyRepeatEnabled(true);
+
+  // Get and cache the initial size of the window.
+  m_size = m_detail->getSize();
+
+  // Activate the window.
+  setActive(true);
+
+  // Notify the derived classes.
+  onCreate();
 }
 
 }  // namespace ca

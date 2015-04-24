@@ -12,10 +12,15 @@
 // OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 // PERFORMANCE OF THIS SOFTWARE.
 
-#include "canvas/windows/window.h"
+#include "canvas/windows/video_mode.h"
+
+#include <algorithm>
 
 namespace ca {
 
-
+bool VideoMode::isValid() const {
+  std::vector<VideoMode> modes{getFullscreenModes()};
+  return std::find(std::begin(modes), std::end(modes), *this) != std::end(modes);
+}
 
 }  // namespace ca

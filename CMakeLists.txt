@@ -12,17 +12,25 @@ set("canvas_INCLUDE_FILES"
   "include/canvas/windows/event.h"
   "include/canvas/windows/video_mode.h"
   "include/canvas/windows/window.h"
+  "include/canvas/windows/window_detail.h"
   "include/canvas/windows/window_handle.h"
   "include/canvas/windows/window_style.h"
 )
 
 set("canvas_SOURCE_FILES"
+  "src/windows/video_mode.cpp"
   "src/windows/window.cpp"
+  "src/windows/window_detail.cpp"
 )
 
 if(WIN32)
+  list(APPEND "canvas_INCLUDE_FILES"
+    "include/canvas/windows/win/window_detail_win.h"
+  )
+
   list(APPEND "canvas_SOURCE_FILES"
-    "src/windows/window_win.cpp"
+    "src/windows/win/window_detail_win.cpp"
+    "src/windows/win/video_mode_win.cpp"
   )
 endif()
 
