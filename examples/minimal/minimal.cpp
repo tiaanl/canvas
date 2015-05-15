@@ -23,9 +23,6 @@ public:
 
   // Override: ca::WindowDelegate
   void onPaint(ca::Canvas* canvas) override;
-  void onMouseMoved(const ca::MouseEvent& event) override;
-  void onMousePressed(const ca::MouseEvent& event) override;
-  void onMouseReleased(const ca::MouseEvent& event) override;
 
 private:
   DISALLOW_COPY_AND_ASSIGN(MinimalWindow);
@@ -35,7 +32,7 @@ int main(int argc, char* argv[]) {
   MinimalWindow minimal;
 
   ca::App app;
-  app.addWindow(ca::Window::create(&minimal));
+  app.addWindow(ca::Window::create(&minimal, "canvas - Minimal Example"));
   app.run();
 
   return EXIT_SUCCESS;
@@ -49,16 +46,4 @@ MinimalWindow::~MinimalWindow() {
 
 void MinimalWindow::onPaint(ca::Canvas* canvas) {
   canvas->clear(ca::Color{255, 0, 0, 255});
-}
-
-void MinimalWindow::onMouseMoved(const ca::MouseEvent& event) {
-  LOG(Info) << "onMouseMoved: " << event.pos;
-}
-
-void MinimalWindow::onMousePressed(const ca::MouseEvent& event) {
-  LOG(Info) << "onMousePressed: " << event.pos;
-}
-
-void MinimalWindow::onMouseReleased(const ca::MouseEvent& event) {
-  LOG(Info) << "onMouseReleased: " << event.pos;
 }

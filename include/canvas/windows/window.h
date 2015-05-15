@@ -26,7 +26,8 @@ namespace ca {
 class Window {
 public:
   // Factory function to create a window with the specified delegate.
-  static std::unique_ptr<Window> create(WindowDelegate* delegate);
+  static std::unique_ptr<Window> create(WindowDelegate* delegate,
+                                        const std::string& title);
 
   // Cleanup.
   ~Window();

@@ -25,14 +25,15 @@ namespace ca {
 #define IMPL static_cast<sf::Window*>(m_impl)
 
 // static
-std::unique_ptr<Window> Window::create(WindowDelegate* delegate) {
+std::unique_ptr<Window> Window::create(WindowDelegate* delegate,
+                                       const std::string& title) {
   DCHECK(delegate) << "Can't create a window with no delegate.";
 
   auto newWindow = std::unique_ptr<Window>(new Window(delegate));
 
   // Create the implementation of the window.
   newWindow->m_impl =
-      new sf::Window{sf::VideoMode{800, 480, 32}, "Canvas Window"};
+      new sf::Window{sf::VideoMode{800, 480, 32}, title};
 
   // Let the delegate know we were just created.
   delegate->onWindowCreated();
