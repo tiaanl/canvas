@@ -28,6 +28,7 @@ set("canvas_INCLUDE_FILES"
   "include/canvas/app.h"
   "include/canvas/opengl.h"
   "include/canvas/rendering/canvas.h"
+  "include/canvas/rendering/shader.h"
   "include/canvas/utils/color.h"
   "include/canvas/utils/pos.h"
   "include/canvas/utils/rect.h"
@@ -36,13 +37,16 @@ set("canvas_INCLUDE_FILES"
   "include/canvas/windows/window.h"
   "include/canvas/windows/window_delegate.h"
   "include/canvas/windows/window_style.h"
+  "include/canvas/utils/gl_check.h"
 )
 
 set("canvas_SOURCE_FILES"
   "src/app.cpp"
   "src/rendering/canvas.cpp"
+  "src/rendering/shader.cpp"
   "src/windows/window.cpp"
   "src/windows/window_delegate.cpp"
+  "src/utils/gl_check.cpp"
 )
 
 add_library("canvas" STATIC ${canvas_INCLUDE_FILES} ${canvas_SOURCE_FILES})
