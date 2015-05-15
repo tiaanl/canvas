@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
   MinimalWindow minimal;
 
   ca::App app;
-  app.addWindow(ca::Window::create(&minimal, "canvas - Minimal Example"));
+  app.addWindow(ca::Window::create(&minimal, "canvas - Rendering Example"));
   app.run();
 
   return EXIT_SUCCESS;

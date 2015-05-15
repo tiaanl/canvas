@@ -25,6 +25,9 @@ struct Color {
   uint8_t b;
   uint8_t a;
 
+  // Construct a color with default values.
+  Color() : r(0), g(0), b(0), a(255) {}
+
   // Construct a color without alpha component.
   Color(uint8_t r, uint8_t g, uint8_t b) : r(r), g(g), b(b), a(255) {}
 

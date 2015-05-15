@@ -47,6 +47,6 @@ set("canvas_SOURCE_FILES"
 add_library("canvas" STATIC ${canvas_INCLUDE_FILES} ${canvas_SOURCE_FILES})
 target_link_libraries("canvas" "nucleus" "sfml-main" "sfml-window" "sfml-system")
 target_include_directories("canvas" PUBLIC "${canvas_SOURCE_DIR}/include")
+set_property(TARGET "canvas" PROPERTY FOLDER "canvas")
 
-add_executable("minimal" WIN32 MACOSX_BUNDLE "examples/minimal/minimal.cpp")
-target_link_libraries("minimal" "canvas")
+add_subdirectory("examples")
