@@ -33,8 +33,7 @@ std::unique_ptr<Window> Window::create(WindowDelegate* delegate,
 
   auto newWindow = std::unique_ptr<Window>(new Window(delegate));
 
-  sf::ContextSettings settings{32u, 0u, 0u,
-                               4u,  5u, sf::ContextSettings::Default};
+  sf::ContextSettings settings{0u, 0u, 0u, 3u, 1u, sf::ContextSettings::Core};
 
   // Create the implementation of the window.
   newWindow->m_impl = new sf::Window{sf::VideoMode{800, 480, 32}, title,

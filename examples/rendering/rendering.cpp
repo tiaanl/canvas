@@ -15,6 +15,7 @@
 #include "canvas/app.h"
 #include "canvas/rendering/canvas.h"
 #include "canvas/rendering/shader.h"
+#include "canvas/rendering/program.h"
 #include "nucleus/logging.h"
 #include "nucleus/streams/file_input_stream.h"
 
@@ -28,16 +29,31 @@ public:
   void onWindowCreated() override {
     LOG(Info) << "onWindowCreated";
 
-    nu::FileInputStream stream(nu::FilePath{
+    nu::FileInputStream vertStream(nu::FilePath{
         L"C:\\Workspace\\canvas\\examples\\rendering\\res\\shaders\\default."
         L"vert.glsl"});
-    m_vertShader.loadFromStream(&stream);
+    m_vertShader.loadFromStream(&vertStream);
+    m_program.setVertexShader(&m_vertShader);
+
+    nu::FileInputStream fragStream(nu::FilePath{
+        L"C:\\Workspace\\canvas\\examples\\rendering\\res\\shaders\\default."
+        L"frag.glsl"});
+    m_fragShader.loadFromStream(&fragStream);
+    m_program.setFragmentShader(&m_fragShader);
+
+    // Make sure the program is linked.
+    m_program.link();
+
+    // And use the program.
+    ca::Program::bind(&m_program);
   }
 
   void onPaint(ca::Canvas* canvas) override { canvas->clear(ca::Color{}); }
 
 private:
   ca::Shader m_vertShader{ca::Shader::Vertex};
+  ca::Shader m_fragShader{ca::Shader::Fragment};
+  ca::Program m_program;
 
   DISALLOW_COPY_AND_ASSIGN(Rendering);
 };

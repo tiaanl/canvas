@@ -1,4 +1,3 @@
-/*
 #version 420
 
 layout(location = 0) in vec2 vert_position;
@@ -15,9 +14,4 @@ void main() {
   // Forward the color and the texture coordinates.
   frag_color = vec4(vert_color, 1.0);
   frag_texCoords = vert_texCoords;
-}
-*/
-
-void main() {
-	gl_Position = vec4(1.0, 1.0, 1.0, 1.0);
 }
