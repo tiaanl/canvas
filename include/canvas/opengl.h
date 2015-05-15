@@ -19,6 +19,7 @@
 
 #if OS(WIN)
 #include "nucleus/win/windows_mixin.h"
+#include <GL/glew.h>
 #include <GL/gl.h>
 #endif
 

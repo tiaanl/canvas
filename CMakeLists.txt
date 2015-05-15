@@ -15,6 +15,7 @@ option(JUNCTIONS_BUILD_DEPENDENCIES "Build all dependencies with this library")
 if(JUNCTIONS_BUILD_DEPENDENCIES)
   include("cmake/nucleus.cmake")
   include("cmake/sfml.cmake")
+  include("cmake/glew.cmake")
 endif()
 
 if(NUCLEUS_BUILD_UNITTESTS)
@@ -45,8 +46,8 @@ set("canvas_SOURCE_FILES"
 )
 
 add_library("canvas" STATIC ${canvas_INCLUDE_FILES} ${canvas_SOURCE_FILES})
-target_link_libraries("canvas" "nucleus" "sfml-main" "sfml-window" "sfml-system")
-target_include_directories("canvas" PUBLIC "${canvas_SOURCE_DIR}/include")
+target_link_libraries("canvas" "nucleus" "sfml-main" "sfml-window" "sfml-system" ${GLEW_LIBRARIES})
+target_include_directories("canvas" PUBLIC "${canvas_SOURCE_DIR}/include" ${GLEW_INCLUDE_DIRECTORIES})
 set_property(TARGET "canvas" PROPERTY FOLDER "canvas")
 
 add_subdirectory("examples")

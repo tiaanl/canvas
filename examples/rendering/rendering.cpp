@@ -15,12 +15,19 @@
 #include "canvas/app.h"
 #include "canvas/rendering/canvas.h"
 
+#include "nucleus/logging.h"
+
 class Rendering : public ca::WindowDelegate {
 public:
   Rendering() {}
   ~Rendering() override {}
 
   // Override: ca::WindowDelegate
+
+  void onWindowCreated() override {
+    LOG(Info) << "onWindowCreated";
+  }
+
   void onPaint(ca::Canvas* canvas) override { canvas->clear(ca::Color{}); }
 
 private:
