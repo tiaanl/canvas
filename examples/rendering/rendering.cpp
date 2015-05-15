@@ -16,6 +16,7 @@
 #include "canvas/rendering/canvas.h"
 #include "canvas/rendering/shader.h"
 #include "canvas/rendering/program.h"
+#include "canvas/rendering/vertex_buffer_object.h"
 #include "nucleus/logging.h"
 #include "nucleus/streams/file_input_stream.h"
 
@@ -46,14 +47,34 @@ public:
 
     // And use the program.
     ca::Program::bind(&m_program);
+
+    // clang-format off
+    static float vertices[] = {
+      -0.5f, -0.5f,
+       0.5f, -0.5f,
+       0.5f,  0.5f,
+      -0.5f,  0.5f,
+    };
+    // clang-format on
+
+    m_vbo.setData(vertices, sizeof(vertices));
   }
 
-  void onPaint(ca::Canvas* canvas) override { canvas->clear(ca::Color{}); }
+  void onPaint(ca::Canvas* canvas) override {
+    canvas->clear(ca::Color{});
+    
+    ca::VertexBufferObject::ScopedBind binder(m_vbo);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
+
+    GL_CHECK(glDrawArrays(GL_TRIANGLE_FAN, 0, 4));
+  }
 
 private:
   ca::Shader m_vertShader{ca::Shader::Vertex};
   ca::Shader m_fragShader{ca::Shader::Fragment};
   ca::Program m_program;
+  ca::VertexBufferObject m_vbo;
 
   DISALLOW_COPY_AND_ASSIGN(Rendering);
 };

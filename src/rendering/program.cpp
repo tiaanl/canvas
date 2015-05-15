@@ -44,6 +44,9 @@ Program::Program(Shader* vertexShader, Shader* fragmentShader)
 }
 
 Program::~Program() {
+  if (m_name) {
+    GL_CHECK(glDeleteProgram(m_name));
+  }
 }
 
 void Program::setVertexShader(Shader* vertexShader) {
