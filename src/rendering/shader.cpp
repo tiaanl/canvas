@@ -15,6 +15,7 @@
 #include "canvas/rendering/shader.h"
 
 #include "nucleus/logging.h"
+#include "nucleus/utils/stl.h"
 
 #include "canvas/utils/gl_check.h"
 
@@ -23,16 +24,19 @@ namespace ca {
 Shader::Shader(ShaderType type) : m_type(type) {
 }
 
-bool Shader::loadFromFile(const nu::FilePath& filename) {
+bool Shader::loadFromStream(nu::InputStream* stream) {
   std::vector<char> data;
 
-#if 0
-  if (!getFileContents(filename, &data)) {
-    LOG(Error) << "Could not read shader file. (" << filename << ")";
-    return false;
+  const auto streamLength = stream->getLength();
+  if (!streamLength) {
+    // We don't need to do anything if the file is empty.
+    return true;
   }
-#endif  // 0
 
+  // Read the entire stream into the data buffer.
+  stream->read(nu::vectorAsArray(&data, streamLength), streamLength);
+
+  // Set the source data and return the success status.
   return setSource(data);
 }
 

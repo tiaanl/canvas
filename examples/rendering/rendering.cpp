@@ -14,8 +14,9 @@
 
 #include "canvas/app.h"
 #include "canvas/rendering/canvas.h"
-
+#include "canvas/rendering/shader.h"
 #include "nucleus/logging.h"
+#include "nucleus/streams/file_input_stream.h"
 
 class Rendering : public ca::WindowDelegate {
 public:
@@ -26,11 +27,18 @@ public:
 
   void onWindowCreated() override {
     LOG(Info) << "onWindowCreated";
+
+    nu::FileInputStream stream(nu::FilePath{
+        L"C:\\Workspace\\canvas\\examples\\rendering\\res\\shaders\\default."
+        L"vert.glsl"});
+    m_vertShader.loadFromStream(&stream);
   }
 
   void onPaint(ca::Canvas* canvas) override { canvas->clear(ca::Color{}); }
 
 private:
+  ca::Shader m_vertShader{ca::Shader::Vertex};
+
   DISALLOW_COPY_AND_ASSIGN(Rendering);
 };
 

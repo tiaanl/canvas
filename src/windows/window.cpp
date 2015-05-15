@@ -14,6 +14,8 @@
 
 #include "canvas/windows/window.h"
 
+#include <GL/glew.h>
+
 #include "nucleus/logging.h"
 #include "SFML/Window/Event.hpp"
 #include "SFML/Window/Window.hpp"
@@ -31,9 +33,19 @@ std::unique_ptr<Window> Window::create(WindowDelegate* delegate,
 
   auto newWindow = std::unique_ptr<Window>(new Window(delegate));
 
+  sf::ContextSettings settings{32u, 0u, 0u,
+                               4u,  5u, sf::ContextSettings::Default};
+
   // Create the implementation of the window.
-  newWindow->m_impl =
-      new sf::Window{sf::VideoMode{800, 480, 32}, title};
+  newWindow->m_impl = new sf::Window{sf::VideoMode{800, 480, 32}, title,
+                                     sf::Style::Default, settings};
+
+  // Once a window is created, we have to make sure then GLEW is initialized.
+  static bool glewInitialized = false;
+  if (!glewInitialized) {
+    glewInitialized = true;
+    glewInit();
+  }
 
   // Let the delegate know we were just created.
   delegate->onWindowCreated();

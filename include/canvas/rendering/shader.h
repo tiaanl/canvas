@@ -17,7 +17,7 @@
 
 #include <vector>
 
-#include "nucleus/files/file_path.h"
+#include "nucleus/streams/input_stream.h"
 #include "nucleus/macros.h"
 
 #include "canvas/opengl.h"
@@ -37,8 +37,8 @@ public:
   // Get the native handle of the shader.
   GLuint getNativeHandle() const { return m_name; }
 
-  // Load the shader source from a file.
-  bool loadFromFile(const nu::FilePath& path);
+  // Load the shader source from an input stream.
+  bool loadFromStream(nu::InputStream* stream);
 
 private:
   // Create the shader.
