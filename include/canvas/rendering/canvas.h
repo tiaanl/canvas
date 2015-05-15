@@ -12,29 +12,32 @@
 // OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 // PERFORMANCE OF THIS SOFTWARE.
 
-#ifndef CANVAS_WINDOWS_CONTEXT_SETTINGS_H_
-#define CANVAS_WINDOWS_CONTEXT_SETTINGS_H_
+#ifndef CANVAS_RENDERING_CANVAS_H_
+#define CANVAS_RENDERING_CANVAS_H_
 
-#include <cstdint>
+#include "nucleus/macros.h"
+
+#include "canvas/utils/color.h"
 
 namespace ca {
 
-struct ContextSettings {
-  // Bits of the depth buffer.
-  uint32_t depthBits = 0;
+class Window;
 
-  // Bits of the stencil buffer.
-  uint32_t stencilBits = 0;
+class Canvas {
+public:
+  explicit Canvas(Window* window);
+  ~Canvas();
 
-  // Level of antialiasing.
-  uint32_t antialiasingLevel = 0;
+  // Clear the entire surface of the canvas with the specified color.
+  void clear(const Color& color);
 
-  // Major/minor number of the context version to create.  Default to OpenGL
-  // version 2.1.
-  uint32_t versionMajor = 2;
-  uint32_t versionMinor = 1;
+private:
+  // The window we will paint to.
+  Window* m_window;
+
+  DISALLOW_COPY_AND_ASSIGN(Canvas);
 };
 
 }  // namespace ca
 
-#endif  // CANVAS_WINDOWS_CONTEXT_SETTINGS_H_
+#endif  // CANVAS_RENDERING_CANVAS_H_

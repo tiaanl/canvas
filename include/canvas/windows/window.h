@@ -17,127 +17,43 @@
 
 #include <memory>
 
-#include <nucleus/macros.h>
+#include "nucleus/macros.h"
 
-#include "canvas/utils/pos.h"
-#include "canvas/utils/size.h"
-#include "canvas/windows/context_settings.h"
-#include "canvas/windows/video_mode.h"
-#include "canvas/windows/window_detail.h"
-#include "canvas/windows/window_handle.h"
-#include "canvas/windows/window_style.h"
+#include "canvas/windows/window_delegate.h"
 
 namespace ca {
 
 class Window {
 public:
-  Window();
+  // Factory function to create a window with the specified delegate.
+  static std::unique_ptr<Window> create(WindowDelegate* delegate);
 
-  // Construct a new window with the specified settings.
-  Window(VideoMode mode, const std::string& title,
-         uint32_t style = WindowStyleDefault,
-         const ContextSettings& settings = ContextSettings());
-
-  // Construct a new window from an existing native window handle, with optional
-  // settings.
-  explicit Window(WindowHandle handle,
-                  const ContextSettings& settings = ContextSettings());
-
-  // Destruct the window.
+  // Cleanup.
   ~Window();
 
-  // Create or recreate the window.
-  void create(VideoMode mode, const std::string& title,
-              uint32_t style = WindowStyle::WindowStyleDefault,
-              const ContextSettings& settings = ContextSettings());
-
-  // Create or recreate the window from an existing native window handle, with
-  // optional settings.
-  void create(WindowHandle handle,
-              const ContextSettings& settings = ContextSettings());
-
-  // Close the window and destroy all the attached resources.
-  void close();
-
-  // Return true if the window is open.
+  // Returns true if this window is still open and on the screen.
   bool isOpen() const;
 
-  // Get the settings of the OpenGL context of the window.
-  const ContextSettings& getContextSettings() const;
+  // Process any pending events for this window.
+  void processEvents();
 
-  // Pop the event on top of the event queue, if any, and return it.
-  // bool pollEvent(Event& event);
+  // Activate this window's rendering context.
+  void activateContext();
 
-  // Wait for an event and return it.
-  // bool waitEvent(Event& event);
-
-  // Get the position of the window.
-  Pos<int32_t> getPosition() const;
-
-  // Set the position of the window on the screen.
-  void setPosition(const Pos<int32_t>& pos);
-
-  // Get the size of the rendering region of the window.
-  Size<uint32_t> getSize() const;
-
-  // Set the size of the rendering region of the window.
-  void setSize(const Size<uint32_t>& size);
-
-  // Set the title of the window.
-  void setTitle(const std::string& title);
-
-  // Show or hide the window.
-  void setVisible(bool visible);
-
-  // Enable or disable vertical sync on this window.
-  void setVerticalSyncEnabled(bool enabled);
-
-  // Show or hide the mouse cursor.
-  void setMouseCursorVisible(bool visible);
-
-  // Enable or disable automatic key-repeat.
-  void setKeyRepeatEnabled(bool enabled);
-
-  // Activate or deactivate the window as the current target for OpenGL
-  // rendering.
-  bool setActive(bool active);
-
-  // Request the current window to be made the active foreground window.
-  void requestFocus();
-
-  // Check whether this window has the input focus.
-  bool hasFocus() const;
-
-  // Swap the OpenGL rendering buffer with the buffer that is currently
-  // displaying on the screen.  Draw!
-  void swapBuffers();
-
-  // Get the native window handle of this window.
-  WindowHandle getNativeHandle() const;
+  // Request that the window paint it's contents.
+  void paint();
 
 private:
-  // Function called after the window has been created.
-  void onCreate();
+  // Construct a new window with the specified delegate.
+  Window(WindowDelegate* delegate);
 
-  // Function called after the window has been resized.
-  void onResize();
+  // The window delegate we pass events to.
+  WindowDelegate* m_delegate;
 
-  // Processes an event before it is sent to the user.
-  // bool filterEvent(const Event& event);
+  // Our internal pointer to the window's implementation.
+  void* m_impl{nullptr};
 
-  // Perform some common internal initializations.
-  void initialize();
-
-  // Platform-specific implementation of the window.
-  std::unique_ptr<detail::WindowDetail> m_detail;
-
-  // Platform-specific implemantation of the OpenGL context.
-  // std::unique_ptr<GlContext> m_context;
-
-  // Current size of the window.
-  Size<uint32_t> m_size;
-
-  DISALLOW_COPY_AND_ASSIGN(Window);
+  DISALLOW_IMPLICIT_CONSTRUCTORS(Window);
 };
 
 }  // namespace ca

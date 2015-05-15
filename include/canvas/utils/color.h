@@ -12,40 +12,26 @@
 // OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 // PERFORMANCE OF THIS SOFTWARE.
 
-#include "canvas/windows/window_detail.h"
+#ifndef CANVAS_UTILS_COLOR_H_
+#define CANVAS_UTILS_COLOR_H_
 
-#include <nucleus/config.h>
-
-#if OS(WIN)
-#include "canvas/windows/win/window_detail_win.h"
-using WindowDetailType = ca::detail::WindowDetailWin;
-#else
-#error "Your platform is not supported."
-#endif
+#include <cstdint>
 
 namespace ca {
 
-namespace detail {
+struct Color {
+  uint8_t r;
+  uint8_t g;
+  uint8_t b;
+  uint8_t a;
 
-// static
-std::unique_ptr<WindowDetail> WindowDetail::create(
-    VideoMode mode, const std::string& title, uint32_t style,
-    const ContextSettings& settings) {
-  return std::move(
-      std::make_unique<WindowDetailType>(mode, title, style, settings));
-}
+  // Construct a color without alpha component.
+  Color(uint8_t r, uint8_t g, uint8_t b) : r(r), g(g), b(b), a(255) {}
 
-// static
-std::unique_ptr<WindowDetail> WindowDetail::create(WindowHandle handle) {
-  return std::move(std::make_unique<WindowDetailType>(handle));
-}
-
-WindowDetail::~WindowDetail() {
-}
-
-WindowDetail::WindowDetail() {
-}
-
-}  // namespace detail
+  // Construct a color.
+  Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a) : r(r), g(g), b(b), a(a) {}
+};
 
 }  // namespace ca
+
+#endif  // CANVAS_UTILS_COLOR_H_

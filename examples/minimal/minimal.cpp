@@ -12,14 +12,53 @@
 // OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 // PERFORMANCE OF THIS SOFTWARE.
 
-#include "canvas/windows/window.h"
+#include "canvas/app.h"
+#include "canvas/rendering/canvas.h"
+#include "nucleus/logging.h"
+
+class MinimalWindow : public ca::WindowDelegate {
+public:
+  MinimalWindow();
+  ~MinimalWindow() override;
+
+  // Override: ca::WindowDelegate
+  void onPaint(ca::Canvas* canvas) override;
+  void onMouseMoved(const ca::MouseEvent& event) override;
+  void onMousePressed(const ca::MouseEvent& event) override;
+  void onMouseReleased(const ca::MouseEvent& event) override;
+
+private:
+  DISALLOW_COPY_AND_ASSIGN(MinimalWindow);
+};
 
 int main(int argc, char* argv[]) {
-  ca::Window window(ca::VideoMode(800, 600), "Canvas - Minimal");
+  MinimalWindow minimal;
 
-  while (window.isOpen()) {
-    
-  }
+  ca::App app;
+  app.addWindow(ca::Window::create(&minimal));
+  app.run();
 
-  return 1;
+  return EXIT_SUCCESS;
+}
+
+MinimalWindow::MinimalWindow() {
+}
+
+MinimalWindow::~MinimalWindow() {
+}
+
+void MinimalWindow::onPaint(ca::Canvas* canvas) {
+  canvas->clear(ca::Color{255, 0, 0, 255});
+}
+
+void MinimalWindow::onMouseMoved(const ca::MouseEvent& event) {
+  LOG(Info) << "onMouseMoved: " << event.pos;
+}
+
+void MinimalWindow::onMousePressed(const ca::MouseEvent& event) {
+  LOG(Info) << "onMousePressed: " << event.pos;
+}
+
+void MinimalWindow::onMouseReleased(const ca::MouseEvent& event) {
+  LOG(Info) << "onMouseReleased: " << event.pos;
 }

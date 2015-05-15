@@ -12,29 +12,34 @@
 // OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 // PERFORMANCE OF THIS SOFTWARE.
 
-#ifndef CANVAS_UTILS_POS_H_
-#define CANVAS_UTILS_POS_H_
+#ifndef CANVAS_WINDOWS_WINDOW_DELEGATE_H_
+#define CANVAS_WINDOWS_WINDOW_DELEGATE_H_
 
-#include <ostream>
+#include "nucleus/macros.h"
+
+#include "canvas/windows/event.h"
 
 namespace ca {
 
-template <typename T>
-struct Pos {
-  T x{0};
-  T y{0};
+class Canvas;
 
-  Pos() {}
+class WindowDelegate {
+public:
+  virtual ~WindowDelegate() {}
 
-  Pos(T x, T y) : x(x), y(y) {}
+  // Called right after the window was created.
+  virtual void onWindowCreated();
+
+  // Called when the window wants to paint to it's canvas.
+  virtual void onPaint(Canvas* canvas) = 0;
+
+  // Mouse events.
+  virtual void onMouseMoved(const MouseEvent& event);
+  virtual void onMousePressed(const MouseEvent& event);
+  virtual void onMouseDragged(const MouseEvent& event);
+  virtual void onMouseReleased(const MouseEvent& event);
 };
 
 }  // namespace ca
 
-template <typename T>
-inline std::ostream& operator<<(std::ostream& os, const ca::Pos<T>& pos) {
-  os << "(" << pos.x << ", " << pos.y << ")";
-  return os;
-}
-
-#endif  // CANVAS_UTILS_POS_H_
+#endif  // CANVAS_WINDOWS_WINDOW_DELEGATE_H_

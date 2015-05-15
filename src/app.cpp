@@ -12,29 +12,35 @@
 // OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 // PERFORMANCE OF THIS SOFTWARE.
 
-#ifndef CANVAS_WINDOWS_WINDOW_HANDLE_H_
-#define CANVAS_WINDOWS_WINDOW_HANDLE_H_
-
-#include <nucleus/config.h>
-
-#if OS(WIN)
-#include <nucleus/win/windows_mixin.h>
-#endif
+#include "canvas/app.h"
 
 namespace ca {
 
-// Native window handle type.
+App::App() {
+}
 
-#if OS(WIN)
-using WindowHandle = HWND;
-#elif OS(MACOSX) || OS(ANDROID)
-using WindowHandle = void*;
-#elif OS(POSIX)
-using WindowHandle = unsigned long;
-#else
-#error Your platform is not supported.
-#endif
+App::~App() {
+}
+
+void App::addWindow(std::unique_ptr<Window> window) {
+  m_windows.emplace_back(std::move(window));
+}
+
+void App::run() {
+  while (hasOpenWindows()) {
+    for (auto& window : m_windows) {
+      window->processEvents();
+      window->paint();
+    }
+  }
+}
+
+bool App::hasOpenWindows() const {
+  for (auto& window : m_windows) {
+    if (!window->isOpen())
+      return false;
+  }
+  return true;
+}
 
 }  // namespace ca
-
-#endif  // CANVAS_WINDOWS_WINDOW_HANDLE_H_

@@ -12,29 +12,38 @@
 // OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 // PERFORMANCE OF THIS SOFTWARE.
 
-#ifndef CANVAS_UTILS_POS_H_
-#define CANVAS_UTILS_POS_H_
+#ifndef CANVAS_APP_H_
+#define CANVAS_APP_H_
 
-#include <ostream>
+#include <vector>
+
+#include "nucleus/macros.h"
+
+#include "canvas/windows/window.h"
 
 namespace ca {
 
-template <typename T>
-struct Pos {
-  T x{0};
-  T y{0};
+class App {
+public:
+  App();
+  ~App();
 
-  Pos() {}
+  // Pass a window to the app so that we handle it.
+  void addWindow(std::unique_ptr<Window> window);
 
-  Pos(T x, T y) : x(x), y(y) {}
+  // Run the application and only return once all the windows are closed.
+  void run();
+
+private:
+  // Returns true if there are still windows open that requires attention.
+  bool hasOpenWindows() const;
+
+  // All the windows that we manage.
+  std::vector<std::unique_ptr<Window>> m_windows;
+
+  DISALLOW_COPY_AND_ASSIGN(App);
 };
 
 }  // namespace ca
 
-template <typename T>
-inline std::ostream& operator<<(std::ostream& os, const ca::Pos<T>& pos) {
-  os << "(" << pos.x << ", " << pos.y << ")";
-  return os;
-}
-
-#endif  // CANVAS_UTILS_POS_H_
+#endif  // CANVAS_APP_H_

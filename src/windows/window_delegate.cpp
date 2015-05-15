@@ -12,15 +12,23 @@
 // OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 // PERFORMANCE OF THIS SOFTWARE.
 
-#include "canvas/windows/video_mode.h"
-
-#include <algorithm>
+#include "canvas/windows/window_delegate.h"
 
 namespace ca {
 
-bool VideoMode::isValid() const {
-  std::vector<VideoMode> modes{getFullscreenModes()};
-  return std::find(std::begin(modes), std::end(modes), *this) != std::end(modes);
+void WindowDelegate::onWindowCreated() {
+}
+
+void WindowDelegate::onMouseMoved(const MouseEvent& event) {
+}
+
+void WindowDelegate::onMousePressed(const MouseEvent& event) {
+}
+
+void WindowDelegate::onMouseDragged(const MouseEvent& event) {
+}
+
+void WindowDelegate::onMouseReleased(const MouseEvent& event) {
 }
 
 }  // namespace ca

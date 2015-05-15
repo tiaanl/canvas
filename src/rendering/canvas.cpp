@@ -12,29 +12,26 @@
 // OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 // PERFORMANCE OF THIS SOFTWARE.
 
-#ifndef CANVAS_UTILS_POS_H_
-#define CANVAS_UTILS_POS_H_
+#include "canvas/rendering/canvas.h"
 
-#include <ostream>
+#include "canvas/opengl.h"
+#include "canvas/windows/window.h"
 
 namespace ca {
 
-template <typename T>
-struct Pos {
-  T x{0};
-  T y{0};
-
-  Pos() {}
-
-  Pos(T x, T y) : x(x), y(y) {}
-};
-
-}  // namespace ca
-
-template <typename T>
-inline std::ostream& operator<<(std::ostream& os, const ca::Pos<T>& pos) {
-  os << "(" << pos.x << ", " << pos.y << ")";
-  return os;
+Canvas::Canvas(Window* window) : m_window(window) {
+  // When the canvas is created, we set the window's context to active.
+  m_window->activateContext();
 }
 
-#endif  // CANVAS_UTILS_POS_H_
+Canvas::~Canvas() {
+}
+
+void Canvas::clear(const Color& color) {
+  glClearColor(
+      static_cast<float>(color.r) / 255, static_cast<float>(color.g) / 255,
+      static_cast<float>(color.b) / 255, static_cast<float>(color.a) / 255);
+  glClear(GL_COLOR_BUFFER_BIT);
+}
+
+}  // namespace ca

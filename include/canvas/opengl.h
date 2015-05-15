@@ -12,29 +12,14 @@
 // OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 // PERFORMANCE OF THIS SOFTWARE.
 
-#ifndef CANVAS_UTILS_POS_H_
-#define CANVAS_UTILS_POS_H_
+#ifndef CANVAS_OPENGL_H_
+#define CANVAS_OPENGL_H_
 
-#include <ostream>
+#include "nucleus/config.h"
 
-namespace ca {
+#if OS(WIN)
+#include "nucleus/win/windows_mixin.h"
+#include <GL/gl.h>
+#endif
 
-template <typename T>
-struct Pos {
-  T x{0};
-  T y{0};
-
-  Pos() {}
-
-  Pos(T x, T y) : x(x), y(y) {}
-};
-
-}  // namespace ca
-
-template <typename T>
-inline std::ostream& operator<<(std::ostream& os, const ca::Pos<T>& pos) {
-  os << "(" << pos.x << ", " << pos.y << ")";
-  return os;
-}
-
-#endif  // CANVAS_UTILS_POS_H_
+#endif  // CANVAS_OPENGL_H_
