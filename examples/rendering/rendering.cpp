@@ -16,23 +16,23 @@
 #include "canvas/rendering/canvas.h"
 #include "nucleus/logging.h"
 
-class MinimalWindow : public ca::WindowDelegate {
+class Rendering : public ca::WindowDelegate {
 public:
-  MinimalWindow() {}
-  ~MinimalWindow() override {}
+  Rendering() {}
+  ~Rendering() override {}
 
   // Override: ca::WindowDelegate
   void onPaint(ca::Canvas* canvas) override { canvas->clear(ca::Color{}); }
 
 private:
-  DISALLOW_COPY_AND_ASSIGN(MinimalWindow);
+  DISALLOW_COPY_AND_ASSIGN(Rendering);
 };
 
 int main(int argc, char* argv[]) {
-  MinimalWindow minimal;
+  Rendering rendering;
 
   ca::App app;
-  app.addWindow(ca::Window::create(&minimal, "canvas - Rendering Example"));
+  app.addWindow(ca::Window::create(&rendering, "canvas - Rendering Example"));
   app.run();
 
   return EXIT_SUCCESS;
