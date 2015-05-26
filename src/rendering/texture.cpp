@@ -39,9 +39,8 @@ bool Texture::createFromImage(const Image& image) {
   GL_CHECK(glBindTexture(GL_TEXTURE_2D, m_name));
 
   // Upload the image data.
-  GLint format = (image.getFormat() == Image::RGBA) ? GL_RGBA : GL_RGB;
-  GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, format, imageSize.width,
-                        imageSize.height, 0, format, GL_UNSIGNED_BYTE,
+  GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imageSize.width,
+                        imageSize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE,
                         image.getData().data()));
 
   // Set the texture clamping.

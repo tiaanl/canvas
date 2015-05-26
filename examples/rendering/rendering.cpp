@@ -57,10 +57,10 @@ public:
 
     // clang-format off
     static float vertices[] = {
-      -0.5f, -0.5f,
-       0.5f, -0.5f,
-       0.5f,  0.5f,
-      -0.5f,  0.5f,
+      -0.5f, -0.5f, 0.0f, 0.0f,
+       0.5f, -0.5f, 1.0f, 0.0f,
+       0.5f,  0.5f, 1.0f, 1.0f,
+      -0.5f,  0.5f, 0.0f, 1.0f,
     };
     // clang-format on
 
@@ -90,7 +90,10 @@ public:
     m_texture.bind();
     ca::VertexBufferObject::ScopedBind binder(m_vbo);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 4, 0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 4,
+                          (void*)(sizeof(GLfloat) * 2));
 
     GL_CHECK(glDrawArrays(GL_TRIANGLE_FAN, 0, 4));
   }

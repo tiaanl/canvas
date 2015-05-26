@@ -60,22 +60,9 @@ bool Image::loadFromStream(nu::InputStream* stream) {
     // Set the properties on the image.
     m_size.width = width;
     m_size.height = height;
-    switch (channels) {
-    case 3:
-      m_format = RGB;
-      break;
-
-    case 4:
-      m_format = RGBA;
-      break;
-
-    default:
-      m_format = NoFormat;
-      break;
-    };
 
     // Copy the pixels to the pixel buffer.
-    m_data.resize(width * height * channels);
+    m_data.resize(width * height * 4);
     std::memcpy(nu::vectorAsArray(&m_data), ptr, m_data.size());
 
     stbi_image_free(ptr);

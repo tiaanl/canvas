@@ -29,20 +29,11 @@ class Image {
 public:
   using DataType = std::vector<uint8_t>;
 
-  enum Format {
-    RGB,
-    RGBA,
-    NoFormat,
-  };
-
   Image() = default;
   ~Image() = default;
 
   // Get the size of the image.
   const Size<uint32_t> getSize() const { return m_size; }
-
-  // Get the format of the pixel data.
-  Format getFormat() const { return m_format; }
 
   // Get the pixel data for the image.
   const DataType& getData() const { return m_data; }
@@ -53,9 +44,6 @@ public:
 private:
   // The dimensions of the image.
   Size<uint32_t> m_size;
-
-  // The format of the pixel data.
-  Format m_format{NoFormat};
 
   // The buffer that holds the pixel data.
   DataType m_data;
