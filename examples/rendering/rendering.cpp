@@ -16,7 +16,9 @@
 #include "canvas/rendering/canvas.h"
 #include "canvas/rendering/shader.h"
 #include "canvas/rendering/program.h"
+#include "canvas/rendering/texture.h"
 #include "canvas/rendering/vertex_buffer_object.h"
+#include "canvas/utils/image.h"
 #include "nucleus/logging.h"
 #include "nucleus/streams/file_input_stream.h"
 
@@ -30,15 +32,20 @@ public:
   void onWindowCreated() override {
     LOG(Info) << "onWindowCreated";
 
-    nu::FileInputStream vertStream(nu::FilePath{
-        L"C:\\Workspace\\canvas\\examples\\rendering\\res\\shaders\\default."
-        L"vert.glsl"});
+    nu::FilePath root{FILE_PATH_LITERAL("C:\\Workspace\\canvas\\examples\\rendering")};
+
+    nu::FileInputStream vertStream{
+        root.append(FILE_PATH_LITERAL("res"))
+            .append(FILE_PATH_LITERAL("shaders"))
+            .append(FILE_PATH_LITERAL("default.vert.glsl"))};
     m_vertShader.loadFromStream(&vertStream);
     m_program.setVertexShader(&m_vertShader);
 
-    nu::FileInputStream fragStream(nu::FilePath{
-        L"C:\\Workspace\\canvas\\examples\\rendering\\res\\shaders\\default."
-        L"frag.glsl"});
+    nu::FileInputStream fragStream{
+        root.append(FILE_PATH_LITERAL("res"))
+            .append(FILE_PATH_LITERAL("shaders"))
+            .append(FILE_PATH_LITERAL("default.frag.glsl"))};
+
     m_fragShader.loadFromStream(&fragStream);
     m_program.setFragmentShader(&m_fragShader);
 
@@ -58,11 +65,29 @@ public:
     // clang-format on
 
     m_vbo.setData(vertices, sizeof(vertices));
+
+    {
+      // Load a texture in.
+      nu::FileInputStream imageStream{
+          root.append(FILE_PATH_LITERAL("res"))
+              .append(FILE_PATH_LITERAL("images"))
+              .append(FILE_PATH_LITERAL("canvas.jpg"))};
+
+      ca::Image image;
+      if (!image.loadFromStream(&imageStream)) {
+        return;
+      }
+
+      if (!m_texture.createFromImage(image)) {
+        return;
+      }
+    }
   }
 
   void onPaint(ca::Canvas* canvas) override {
     canvas->clear(ca::Color{});
-    
+
+    m_texture.bind();
     ca::VertexBufferObject::ScopedBind binder(m_vbo);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
@@ -75,6 +100,7 @@ private:
   ca::Shader m_fragShader{ca::Shader::Fragment};
   ca::Program m_program;
   ca::VertexBufferObject m_vbo;
+  ca::Texture m_texture;
 
   DISALLOW_COPY_AND_ASSIGN(Rendering);
 };

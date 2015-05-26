@@ -30,9 +30,11 @@ set("canvas_INCLUDE_FILES"
   "include/canvas/rendering/canvas.h"
   "include/canvas/rendering/program.h"
   "include/canvas/rendering/shader.h"
+  "include/canvas/rendering/texture.h"
   "include/canvas/rendering/vertex_buffer_object.h"
   "include/canvas/utils/color.h"
   "include/canvas/utils/gl_check.h"
+  "include/canvas/utils/image.h"
   "include/canvas/utils/pos.h"
   "include/canvas/utils/rect.h"
   "include/canvas/utils/size.h"
@@ -47,8 +49,10 @@ set("canvas_SOURCE_FILES"
   "src/rendering/canvas.cpp"
   "src/rendering/program.cpp"
   "src/rendering/shader.cpp"
+  "src/rendering/texture.cpp"
   "src/rendering/vertex_buffer_object.cpp"
   "src/utils/gl_check.cpp"
+  "src/utils/image.cpp"
   "src/windows/window.cpp"
   "src/windows/window_delegate.cpp"
 )
@@ -57,6 +61,7 @@ add_library("canvas" STATIC ${canvas_INCLUDE_FILES} ${canvas_SOURCE_FILES})
 add_definitions("-DGLEW_STATIC")
 target_link_libraries("canvas" "nucleus" "sfml-main" "sfml-window" "sfml-system" ${GLEW_LIBRARIES})
 target_include_directories("canvas" PUBLIC "${canvas_SOURCE_DIR}/include" ${GLEW_INCLUDE_DIRECTORIES})
+target_include_directories("canvas" PRIVATE "${canvas_SOURCE_DIR}/third_party/stb")
 set_property(TARGET "canvas" PROPERTY FOLDER "canvas")
 
 add_subdirectory("examples")
