@@ -27,6 +27,9 @@ private:
   DISALLOW_COPY_AND_ASSIGN(MinimalWindow);
 };
 
+CANVAS_APP(MinimalWindow);
+
+#if 0
 int main(int argc, char* argv[]) {
   MinimalWindow minimal;
 
@@ -36,3 +39,4 @@ int main(int argc, char* argv[]) {
 
   return EXIT_SUCCESS;
 }
+#endif  // 0

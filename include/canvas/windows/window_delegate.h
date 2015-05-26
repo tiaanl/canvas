@@ -25,7 +25,12 @@ class Canvas;
 
 class WindowDelegate {
 public:
+  WindowDelegate() = default;
+
   virtual ~WindowDelegate() {}
+
+  // Get the title of the window.
+  const std::string& getTitle() const { return m_title; }
 
   // Called right after the window was created.
   virtual void onWindowCreated();
@@ -38,6 +43,13 @@ public:
   virtual void onMousePressed(const MouseEvent& event);
   virtual void onMouseDragged(const MouseEvent& event);
   virtual void onMouseReleased(const MouseEvent& event);
+
+protected:
+  // The title that appears in the window title bar.
+  std::string m_title{"Canvas Window"};
+
+private:
+  DISALLOW_COPY_AND_ASSIGN(WindowDelegate);
 };
 
 }  // namespace ca

@@ -25,25 +25,29 @@ namespace ca {
 
 class App {
 public:
-  App();
-  ~App();
+  // Construct a new app with the specified delegate that will control the app.
+  App(WindowDelegate* delegate);
 
-  // Pass a window to the app so that we handle it.
-  void addWindow(std::unique_ptr<Window> window);
+  // Destruct the app.
+  ~App();
 
   // Run the application and only return once all the windows are closed.
   void run();
 
 private:
-  // Returns true if there are still windows open that requires attention.
-  bool hasOpenWindows() const;
-
-  // All the windows that we manage.
-  std::vector<std::unique_ptr<Window>> m_windows;
+  // The single window we are managing.
+  std::unique_ptr<Window> m_window;
 
   DISALLOW_COPY_AND_ASSIGN(App);
 };
 
 }  // namespace ca
+
+#define CANVAS_APP(DelegateType)                                               \
+  int main(int argc, char* argv[]) {                                           \
+    ca::App app{new DelegateType};                                             \
+    app.run();                                                                 \
+    return 0;                                                                  \
+  }
 
 #endif  // CANVAS_APP_H_

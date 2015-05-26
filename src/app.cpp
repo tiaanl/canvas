@@ -16,31 +16,18 @@
 
 namespace ca {
 
-App::App() {
+App::App(WindowDelegate* delegate)
+  : m_window(Window::create(delegate, delegate->getTitle())) {
 }
 
 App::~App() {
 }
 
-void App::addWindow(std::unique_ptr<Window> window) {
-  m_windows.emplace_back(std::move(window));
-}
-
 void App::run() {
-  while (hasOpenWindows()) {
-    for (auto& window : m_windows) {
-      window->processEvents();
-      window->paint();
-    }
+  while (m_window->isOpen()) {
+    m_window->processEvents();
+    m_window->paint();
   }
-}
-
-bool App::hasOpenWindows() const {
-  for (auto& window : m_windows) {
-    if (!window->isOpen())
-      return false;
-  }
-  return true;
 }
 
 }  // namespace ca

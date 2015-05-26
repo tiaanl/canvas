@@ -24,7 +24,10 @@
 
 class Rendering : public ca::WindowDelegate {
 public:
-  Rendering() {}
+  Rendering() {
+    m_title = "Rendering";
+  }
+
   ~Rendering() override {}
 
   // Override: ca::WindowDelegate
@@ -108,12 +111,4 @@ private:
   DISALLOW_COPY_AND_ASSIGN(Rendering);
 };
 
-int main(int argc, char* argv[]) {
-  Rendering rendering;
-
-  ca::App app;
-  app.addWindow(ca::Window::create(&rendering, "canvas - Rendering Example"));
-  app.run();
-
-  return EXIT_SUCCESS;
-}
+CANVAS_APP(Rendering)
