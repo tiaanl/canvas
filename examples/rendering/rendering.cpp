@@ -89,7 +89,7 @@ public:
   }
 
   void onPaint(ca::Canvas* canvas) override {
-    canvas->clear(ca::Color{});
+    canvas->clear(ca::Color{31, 62, 93, 255});
 
     ca::Program::bind(&m_program);
     DCHECK(m_program.setUniform("uni_color", ca::Vec4f(1.0f, 1.0f, 0.0f, 1.0f)));
@@ -102,7 +102,13 @@ public:
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 4,
                           (void*)(sizeof(GLfloat) * 2));
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendEquation(GL_FUNC_ADD);
+
     GL_CHECK(glDrawArrays(GL_TRIANGLE_FAN, 0, 4));
+
+    glDisable(GL_BLEND);
   }
 
 private:
