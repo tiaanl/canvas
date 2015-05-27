@@ -23,7 +23,10 @@ struct Vec2 {
   T y{0};
 
   Vec2() {}
+  Vec2(float x, float y) : x(x), y(y) {}
 };
+
+using Vec2f = Vec2<float>;
 
 }  // namespace ca
 

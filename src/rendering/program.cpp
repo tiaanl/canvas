@@ -63,6 +63,52 @@ void Program::link() {
   linkInternal();
 }
 
+#define BIND_AND_GET_LOCATION()                                                \
+  bind(this);                                                                  \
+  GLint location = glGetUniformLocation(m_name, name.c_str());                 \
+  if (location == -1 || glGetError() != GL_NO_ERROR) {                         \
+    LOG(Warning) << "Could not find uniform location. (" << name << ")";       \
+    return false;                                                              \
+  }
+
+bool Program::setUniform(std::string name, const Vec2f& vec2) {
+  BIND_AND_GET_LOCATION()
+
+  // Get the value of the uniform.
+  glUniform2f(location, vec2.x, vec2.y);
+
+  return glGetError() == GL_NO_ERROR;
+}
+
+bool Program::setUniform(std::string name, const Vec3f& vec3) {
+  BIND_AND_GET_LOCATION()
+
+  // Get the value of the uniform.
+  glUniform3f(location, vec3.x, vec3.y, vec3.z);
+
+  return glGetError() == GL_NO_ERROR;
+}
+
+bool Program::setUniform(std::string name, const Vec4f& vec4) {
+  BIND_AND_GET_LOCATION()
+
+  // Get the value of the uniform.
+  glUniform4f(location, vec4.x, vec4.y, vec4.z, vec4.w);
+
+  return glGetError() == GL_NO_ERROR;
+}
+
+bool Program::setUniform(std::string name, const Mat4f& mat4) {
+  BIND_AND_GET_LOCATION()
+
+  // Get the value of the uniform.
+  glUniformMatrix4fv(location, 1, GL_FALSE, mat4.asArray());
+
+  return glGetError() == GL_NO_ERROR;
+}
+
+#undef BIND_AND_GET_LOCATION
+
 void Program::linkInternal() {
   // Make sure the program is created.
   if (!m_name) {

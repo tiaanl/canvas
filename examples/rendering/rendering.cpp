@@ -13,6 +13,7 @@
 // PERFORMANCE OF THIS SOFTWARE.
 
 #include "canvas/app.h"
+#include "canvas/math/vec4.h"
 #include "canvas/rendering/canvas.h"
 #include "canvas/rendering/shader.h"
 #include "canvas/rendering/program.h"
@@ -89,6 +90,9 @@ public:
 
   void onPaint(ca::Canvas* canvas) override {
     canvas->clear(ca::Color{});
+
+    ca::Program::bind(&m_program);
+    DCHECK(m_program.setUniform("uni_color", ca::Vec4f(1.0f, 1.0f, 0.0f, 1.0f)));
 
     m_texture.bind();
     ca::VertexBufferObject::ScopedBind binder(m_vbo);

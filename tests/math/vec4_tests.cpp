@@ -12,24 +12,23 @@
 // OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 // PERFORMANCE OF THIS SOFTWARE.
 
-#ifndef CANVAS_MATH_VEC4_H_
-#define CANVAS_MATH_VEC4_H_
+#include "canvas/math/vec4.h"
+#include "gtest/gtest.h"
 
 namespace ca {
 
-template <typename T>
-struct Vec4 {
-  T x{0};
-  T y{0};
-  T z{0};
-  T w{0};
+TEST(Vec4Test, Basic) {
+  Vec4<float> v1;
+  EXPECT_EQ(0.f, v1.x);
+  EXPECT_EQ(0.f, v1.y);
+  EXPECT_EQ(0.f, v1.z);
+  EXPECT_EQ(0.f, v1.w);
 
-  Vec4() {}
-  Vec4(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
-};
-
-using Vec4f = Vec4<float>;
+  Vec4<float> v2{1.f, 2.f, 3.f, 4.f};
+  EXPECT_EQ(1.f, v2.x);
+  EXPECT_EQ(2.f, v2.y);
+  EXPECT_EQ(3.f, v2.z);
+  EXPECT_EQ(4.f, v2.w);
+}
 
 }  // namespace ca
-
-#endif  // CANVAS_MATH_VEC2_H_

@@ -15,8 +15,14 @@
 #ifndef CANVAS_RENDERING_PROGRAM_H_
 #define CANVAS_RENDERING_PROGRAM_H_
 
+#include <string>
+
 #include "nucleus/macros.h"
 
+#include "canvas/math/vec2.h"
+#include "canvas/math/vec3.h"
+#include "canvas/math/vec4.h"
+#include "canvas/math/mat4.h"
 #include "canvas/opengl.h"
 
 namespace ca {
@@ -42,6 +48,12 @@ public:
 
   // Link the program.
   void link();
+
+  // Set uniforms inside the program.
+  bool setUniform(std::string name, const Vec2f& vec2);
+  bool setUniform(std::string name, const Vec3f& vec3);
+  bool setUniform(std::string name, const Vec4f& vec4);
+  bool setUniform(std::string name, const Mat4f& mat4);
 
 private:
   // Link the program.

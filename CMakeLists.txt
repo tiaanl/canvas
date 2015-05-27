@@ -11,15 +11,11 @@ endif()
 
 # Dependencies
 
-option(JUNCTIONS_BUILD_DEPENDENCIES "Build all dependencies with this library")
-if(JUNCTIONS_BUILD_DEPENDENCIES)
+option(CANVAS_BUILD_DEPENDENCIES "Build all dependencies with this library")
+if(CANVAS_BUILD_DEPENDENCIES)
   include("cmake/nucleus.cmake")
   include("cmake/sfml.cmake")
   include("cmake/glew.cmake")
-endif()
-
-if(NUCLEUS_BUILD_UNITTESTS)
-  option("JUNCTIONS_BUILD_UNITTESTS" "Enable unit testing for this library.")
 endif()
 
 # canvas
@@ -68,4 +64,5 @@ target_include_directories("canvas" PUBLIC "${canvas_SOURCE_DIR}/include" ${GLEW
 target_include_directories("canvas" PRIVATE "${canvas_SOURCE_DIR}/third_party/stb")
 set_property(TARGET "canvas" PROPERTY FOLDER "canvas")
 
+add_subdirectory("tests")
 add_subdirectory("examples")

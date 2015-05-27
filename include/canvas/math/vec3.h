@@ -24,7 +24,10 @@ struct Vec3 {
   T z{0};
 
   Vec3() {}
+  Vec3(float x, float y, float z) : x(x), y(y), z(z) {}
 };
+
+using Vec3f = Vec3<float>;
 
 }  // namespace ca
 
