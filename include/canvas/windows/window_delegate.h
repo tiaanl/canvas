@@ -17,6 +17,7 @@
 
 #include "nucleus/macros.h"
 
+#include "canvas/utils/size.h"
 #include "canvas/windows/event.h"
 
 namespace ca {
@@ -34,6 +35,9 @@ public:
 
   // Called right after the window was created.
   virtual void onWindowCreated();
+
+  // Called when the size of the window changed.
+  virtual void onWindowResized(const Size<uint32_t>& size);
 
   // Called when the window wants to paint to it's canvas.
   virtual void onPaint(Canvas* canvas) = 0;

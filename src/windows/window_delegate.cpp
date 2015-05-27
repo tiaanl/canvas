@@ -19,6 +19,9 @@ namespace ca {
 void WindowDelegate::onWindowCreated() {
 }
 
+void WindowDelegate::onWindowResized(const Size<uint32_t>& size) {
+}
+
 void WindowDelegate::onMouseMoved(const MouseEvent& event) {
 }
 

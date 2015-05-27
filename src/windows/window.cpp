@@ -67,6 +67,12 @@ void Window::processEvents() {
         IMPL->close();
         break;
 
+      case sf::Event::Resized: {
+        Size<uint32_t> clientSize{sfEvent.size.width, sfEvent.size.height};
+        glViewport(0, 0, clientSize.width, clientSize.height);
+        m_delegate->onWindowResized(clientSize);
+      } break;
+
       case sf::Event::MouseMoved: {
         MouseEvent event{Event::MouseMoved, Pos<int32_t>{sfEvent.mouseMove.x,
                                                          sfEvent.mouseMove.y}};
