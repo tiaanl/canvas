@@ -26,6 +26,10 @@ endif()
 
 set("canvas_INCLUDE_FILES"
   "include/canvas/app.h"
+  "include/canvas/math/mat4.h"
+  "include/canvas/math/vec2.h"
+  "include/canvas/math/vec3.h"
+  "include/canvas/math/vec4.h"
   "include/canvas/opengl.h"
   "include/canvas/rendering/canvas.h"
   "include/canvas/rendering/program.h"
