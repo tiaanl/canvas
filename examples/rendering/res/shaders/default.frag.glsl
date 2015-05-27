@@ -10,5 +10,8 @@ uniform sampler2D sampler;
 
 void main() {
   // final = texture(sampler, frag_texCoord);
-  final = uni_color * 0.5 * texture(sampler, frag_texCoord);
+
+  float adjust = sin(frag_texCoord.x * 3.14) * sin(frag_texCoord.y * 3.14);
+
+  final = texture(sampler, frag_texCoord) * uni_color * adjust;
 }
