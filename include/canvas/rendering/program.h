@@ -50,6 +50,7 @@ public:
   void link();
 
   // Set uniforms inside the program.
+  bool setUniform(std::string name, float f);
   bool setUniform(std::string name, const Vec2f& vec2);
   bool setUniform(std::string name, const Vec3f& vec3);
   bool setUniform(std::string name, const Vec4f& vec4);
