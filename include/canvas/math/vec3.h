@@ -15,19 +15,41 @@
 #ifndef CANVAS_MATH_VEC3_H_
 #define CANVAS_MATH_VEC3_H_
 
+#include <cmath>
+
+#include "nucleus/logging.h"
+
 namespace ca {
 
-template <typename T>
 struct Vec3 {
-  T x{0};
-  T y{0};
-  T z{0};
+  float x{0};
+  float y{0};
+  float z{0};
 
-  Vec3() {}
-  Vec3(float x, float y, float z) : x(x), y(y), z(z) {}
+  Vec3(float x = 0.f, float y = 0.f, float z = 0.f) : x(x), y(y), z(z) {}
+
+  float& operator[](std::size_t index) {
+    DCHECK(index <= 2);
+    return (&x)[index];
+  }
+
+  float operator[](std::size_t index) const {
+    DCHECK(index <= 2);
+    return (&x)[index];
+  }
+
+  friend Vec3 operator*(const Vec3& left, float right) {
+    return Vec3{left.x * right, left.y * right, left.z * right};
+  }
+
+  void normalize() {
+    float dist = std::sqrtf(x * x + y * y + z * z);
+
+    x /= dist;
+    y /= dist;
+    z /= dist;
+  }
 };
-
-using Vec3f = Vec3<float>;
 
 }  // namespace ca
 

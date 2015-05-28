@@ -21,22 +21,12 @@ public:
   ~MinimalWindow() override {}
 
   // Override: ca::WindowDelegate
-  void onPaint(ca::Canvas* canvas) override { canvas->clear(ca::Color{}); }
+  void onPaint(ca::Canvas* canvas) override {
+    canvas->clear(ca::Color{31, 63, 95});
+  }
 
 private:
   DISALLOW_COPY_AND_ASSIGN(MinimalWindow);
 };
 
 CANVAS_APP(MinimalWindow);
-
-#if 0
-int main(int argc, char* argv[]) {
-  MinimalWindow minimal;
-
-  ca::App app;
-  app.addWindow(ca::Window::create(&minimal, "canvas - Minimal Example"));
-  app.run();
-
-  return EXIT_SUCCESS;
-}
-#endif  // 0

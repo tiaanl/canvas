@@ -13,10 +13,12 @@
 // PERFORMANCE OF THIS SOFTWARE.
 
 #include "canvas/app.h"
+#include "canvas/math/mat4.h"
+#include "canvas/math/transform.h"
 #include "canvas/math/vec4.h"
 #include "canvas/rendering/canvas.h"
-#include "canvas/rendering/shader.h"
 #include "canvas/rendering/program.h"
+#include "canvas/rendering/shader.h"
 #include "canvas/rendering/texture.h"
 #include "canvas/rendering/vertex_buffer_object.h"
 #include "canvas/utils/image.h"
@@ -25,9 +27,7 @@
 
 class Rendering : public ca::WindowDelegate {
 public:
-  Rendering() {
-    m_title = "Rendering";
-  }
+  Rendering() { m_title = "Rendering"; }
 
   ~Rendering() override {}
 
@@ -36,7 +36,8 @@ public:
   void onWindowCreated() override {
     LOG(Info) << "onWindowCreated";
 
-    nu::FilePath root{FILE_PATH_LITERAL("C:\\Workspace\\canvas\\examples\\rendering")};
+    nu::FilePath root{
+        FILE_PATH_LITERAL("C:\\Workspace\\canvas\\examples\\rendering")};
 
     nu::FileInputStream vertStream{
         root.append(FILE_PATH_LITERAL("res"))
@@ -88,11 +89,30 @@ public:
     }
   }
 
+  void onWindowResized(const ca::Size<uint32_t>& size) override {
+    m_projectionMatrix = ca::ortho(-static_cast<float>(size.width) / 4.f,
+                                   static_cast<float>(size.width) / 4.f,
+                                   -static_cast<float>(size.height) / 4.f,
+                                   static_cast<float>(size.height) / 4.f);
+  }
+
   void onPaint(ca::Canvas* canvas) override {
     canvas->clear(ca::Color{31, 62, 93, 255});
 
+    static float counter = 0.f;
+    static float direction = 0.0001f;
+    counter += direction;
+    if (counter < 0.f || counter > 1.f) {
+      direction *= -1.f;
+    }
+
     ca::Program::bind(&m_program);
-    DCHECK(m_program.setUniform("uni_color", ca::Vec4f(1.0f, 1.0f, 0.0f, 1.0f)));
+
+    DCHECK(m_program.setUniform("uni_color", ca::Vec4(1.0f, 1.0f, 0.0f, 1.0f)));
+
+    ca::Mat4 viewMatrix = ca::rotation(counter * 30.f, ca::Vec3{0.0f, 0.0f, 1.0f}) * ca::translation(ca::Vec3{150.0f * counter, 150.0f * counter, 0.0f}) * ca::scaling(counter * 1000.0f);
+    ca::Mat4 mvp = m_projectionMatrix * viewMatrix;
+    DCHECK(m_program.setUniform("uni_mvp", mvp));
 
     m_texture.bind();
     ca::VertexBufferObject::ScopedBind binder(m_vbo);
@@ -117,6 +137,8 @@ private:
   ca::Program m_program;
   ca::VertexBufferObject m_vbo;
   ca::Texture m_texture;
+
+  ca::Mat4 m_projectionMatrix;
 
   DISALLOW_COPY_AND_ASSIGN(Rendering);
 };

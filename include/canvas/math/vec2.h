@@ -15,18 +15,26 @@
 #ifndef CANVAS_MATH_VEC2_H_
 #define CANVAS_MATH_VEC2_H_
 
+#include "nucleus/logging.h"
+
 namespace ca {
 
-template <typename T>
 struct Vec2 {
-  T x{0};
-  T y{0};
+  float x{0};
+  float y{0};
 
-  Vec2() {}
-  Vec2(float x, float y) : x(x), y(y) {}
+  Vec2(float x = 0.f, float y = 0.f) : x(x), y(y) {}
+
+  float& operator[](std::size_t index) {
+    DCHECK(index <= 1);
+    return (&x)[index];
+  }
+
+  float operator[](std::size_t index) const {
+    DCHECK(index <= 1);
+    return (&x)[index];
+  }
 };
-
-using Vec2f = Vec2<float>;
 
 }  // namespace ca
 

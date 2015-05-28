@@ -51,10 +51,10 @@ public:
 
   // Set uniforms inside the program.
   bool setUniform(std::string name, float f);
-  bool setUniform(std::string name, const Vec2f& vec2);
-  bool setUniform(std::string name, const Vec3f& vec3);
-  bool setUniform(std::string name, const Vec4f& vec4);
-  bool setUniform(std::string name, const Mat4f& mat4);
+  bool setUniform(std::string name, const Vec2& vec2);
+  bool setUniform(std::string name, const Vec3& vec3);
+  bool setUniform(std::string name, const Vec4& vec4);
+  bool setUniform(std::string name, const Mat4& mat4);
 
 private:
   // Link the program.

@@ -12,33 +12,18 @@
 // OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 // PERFORMANCE OF THIS SOFTWARE.
 
-#ifndef CANVAS_MATH_VEC4_H_
-#define CANVAS_MATH_VEC4_H_
-
-#include "nucleus/logging.h"
+#include "canvas/math/mat4.h"
 
 namespace ca {
 
-struct Vec4 {
-  float x{0.f};
-  float y{0.f};
-  float z{0.f};
-  float w{0.f};
-
-  Vec4(float x = 0.f, float y = 0.f, float z = 0.f, float w = 1.f)
-    : x(x), y(y), z(z), w(w) {}
-
-  float& operator[](std::size_t index) {
-    DCHECK(index <= 3);
-    return (&x)[index];
-  }
-
-  float operator[](std::size_t index) const {
-    DCHECK(index <= 3);
-    return (&x)[index];
-  }
+// static
+// clang-format off
+Mat4 Mat4::identity{
+    Vec4{1.f, 0.f, 0.0f, 0.f},
+    Vec4{0.f, 1.f, 0.0f, 0.f},
+    Vec4{0.f, 0.f, 1.0f, 0.f},
+    Vec4{0.f, 0.f, 0.0f, 1.f},
 };
+// clang-format on
 
 }  // namespace ca
-
-#endif  // CANVAS_MATH_VEC2_H_
