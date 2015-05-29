@@ -64,7 +64,7 @@ add_library("canvas" STATIC ${canvas_INCLUDE_FILES} ${canvas_SOURCE_FILES})
 add_definitions("-DGLEW_STATIC")
 target_link_libraries("canvas" "nucleus" "sfml-main" "sfml-window" "sfml-system" ${GLEW_LIBRARIES})
 target_include_directories("canvas" PUBLIC "${canvas_SOURCE_DIR}/include" ${GLEW_INCLUDE_DIRECTORIES})
-target_include_directories("canvas" PRIVATE "${canvas_SOURCE_DIR}/third_party/stb")
+target_include_directories("canvas" PUBLIC "${canvas_SOURCE_DIR}/third_party/stb")
 set_property(TARGET "canvas" PROPERTY FOLDER "canvas")
 
 add_subdirectory("tests")

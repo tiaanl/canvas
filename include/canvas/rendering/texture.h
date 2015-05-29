@@ -16,6 +16,7 @@
 #define CANVAS_RENDERING_TEXTURE_H_
 
 #include "nucleus/macros.h"
+#include "nucleus/types.h"
 
 #include "canvas/opengl.h"
 #include "canvas/utils/image.h"
@@ -30,6 +31,9 @@ public:
   // Bind the texture.
   void bind() const;
 
+  // Get the size of the texture.
+  const Size<i32>& getSize() const { return m_size; }
+
   // Create the texture from Image data.
   bool createFromImage(const Image& image);
 
@@ -39,6 +43,9 @@ private:
 
   // The OpenGL name of the texture.
   GLuint m_name{0};
+
+  // The size of the texture.
+  Size<i32> m_size;
 
   DISALLOW_COPY_AND_ASSIGN(Texture);
 };

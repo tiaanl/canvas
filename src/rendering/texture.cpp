@@ -33,15 +33,14 @@ void Texture::bind() const {
 
 bool Texture::createFromImage(const Image& image) {
   createNewName();
-  const Size<uint32_t> imageSize{image.getSize()};
+  m_size = image.getSize();
 
   // Bind the texture.
   GL_CHECK(glBindTexture(GL_TEXTURE_2D, m_name));
 
   // Upload the image data.
-  GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imageSize.width,
-                        imageSize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE,
-                        image.getData().data()));
+  GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_size.width, m_size.height,
+                        0, GL_RGBA, GL_UNSIGNED_BYTE, image.getData().data()));
 
   // Set the texture clamping.
   const bool smooth = false;

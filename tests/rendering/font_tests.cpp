@@ -13,12 +13,21 @@
 // PERFORMANCE OF THIS SOFTWARE.
 
 #include "gtest/gtest.h"
+#include "nucleus/streams/file_input_stream.h"
+
 #include "canvas/rendering/font.h"
 
 namespace ca {
 
 TEST(FontTest, Basic) {
   fontTest();
+
+  nu::FileInputStream fontStream{
+      nu::FilePath{FILE_PATH_LITERAL("C:\\Windows\\Fonts\\arial.ttf")}};
+
+  Font f;
+  f.loadFromStream(&fontStream);
+  f.getOrInsertGlyph('a');
 }
 
 }  // namespace ca

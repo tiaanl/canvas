@@ -15,11 +15,11 @@
 #ifndef CANVAS_UTILS_IMAGE_H_
 #define CANVAS_UTILS_IMAGE_H_
 
-#include <cstdint>
 #include <vector>
 
 #include "nucleus/macros.h"
 #include "nucleus/streams/input_stream.h"
+#include "nucleus/types.h"
 
 #include "canvas/utils/size.h"
 
@@ -33,7 +33,7 @@ public:
   ~Image() = default;
 
   // Get the size of the image.
-  const Size<uint32_t> getSize() const { return m_size; }
+  const Size<i32> getSize() const { return m_size; }
 
   // Get the pixel data for the image.
   const DataType& getData() const { return m_data; }
@@ -43,7 +43,7 @@ public:
 
 private:
   // The dimensions of the image.
-  Size<uint32_t> m_size;
+  Size<i32> m_size;
 
   // The buffer that holds the pixel data.
   DataType m_data;
