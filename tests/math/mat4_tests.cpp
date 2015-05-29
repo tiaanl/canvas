@@ -38,9 +38,28 @@ TEST(Mat4Test, Basic) {
   EXPECT_EQ(1.f, v1.row[3].w);
 }
 
+std::ostream& operator<<(std::ostream& os, const Mat4& mat) {
+  os << "\n";
+  for (size_t col = 0; col < 4; ++col) {
+    for (size_t row = 0; row < 4; ++row) {
+      os.width(6);
+      os.setf(std::ios::fixed, std::ios::floatfield);
+      os.precision(2);
+      os << std::showpoint << mat[col][row] << "  ";
+    }
+    os << "\n";
+  }
+
+  return os;
+}
+
 TEST(Mat4Test, Blah) {
   Mat4 m;
   m *= translation(Vec3{1.5f, 0.f, 0.f});
+  m *= rotation(30.f, Vec3{1.5f, 3.0f, 4.5f});
+  m *= scaling(Vec3{2.f, 3.f, 4.f});
+
+  LOG(Info) << m;
 
   int a = 10;
 }

@@ -22,15 +22,13 @@ namespace ca {
 
 inline Mat4 translation(const Vec3& vec) {
   Mat4 result;  // identity
-  result[0].w = vec.x;
-  result[1].w = vec.y;
-  result[2].w = vec.z;
+  result[3] = Vec4{vec, 1.f};
   return result;
 }
 
 inline Mat4 rotation(f32 degrees, const Vec3& rot) {
-  const f32 c{std::cosf(degrees * 180.f / 3.141592654f)};
-  const f32 s{std::sinf(degrees * 180.f / 3.141592654f)};
+  const f32 c{std::cosf(degrees)};
+  const f32 s{std::sinf(degrees)};
 
   const Vec3 axis{normalize(rot)};
   const Vec3 t{axis * (1.f - c)};
