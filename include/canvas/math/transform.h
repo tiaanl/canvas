@@ -20,41 +20,53 @@
 
 namespace ca {
 
-inline Mat4 translation(const Vec3& vec) {
-  Mat4 result;  // identity
+inline Mat4 translate(const Mat4& mat, const Vec3& vec) {
+  Mat4 result{mat};
   result[3] = Vec4{vec, 1.f};
   return result;
 }
 
-inline Mat4 rotation(f32 degrees, const Vec3& rot) {
-  const f32 c{std::cosf(degrees)};
-  const f32 s{std::sinf(degrees)};
+inline Mat4 rotate(const Mat4& mat, f32 radians, const Vec3& v) {
+  const f32 a = radians;
+  const f32 c = std::cosf(radians);
+  const f32 s = std::sinf(radians);
 
-  const Vec3 axis{normalize(rot)};
-  const Vec3 t{axis * (1.f - c)};
+  Vec3 axis(normalize(v));
+  Vec3 temp(axis * (1.f - c));
+
+  Mat4 rotate;
+
+  rotate[0][0] = c + temp[0] * axis[0];
+  rotate[0][1] = 0 + temp[0] * axis[1] + s * axis[2];
+  rotate[0][2] = 0 + temp[0] * axis[2] - s * axis[1];
+
+  rotate[1][0] = 0 + temp[1] * axis[0] - s * axis[2];
+  rotate[1][1] = c + temp[1] * axis[1];
+  rotate[1][2] = 0 + temp[1] * axis[2] + s * axis[0];
+
+  rotate[2][0] = 0 + temp[2] * axis[0] + s * axis[1];
+  rotate[2][1] = 0 + temp[2] * axis[1] - s * axis[0];
+  rotate[2][2] = c + temp[2] * axis[2];
 
   Mat4 result;
-  result[0][0] = c + t[0] * axis[0];
-  result[0][1] = 0 + t[0] * axis[1] + s * axis[2];
-  result[0][2] = 0 + t[0] * axis[2] - s * axis[1];
-  result[0][3] = 0;
-
-  result[1][0] = 0 + t[1] * axis[0] - s * axis[2];
-  result[1][1] = c + t[1] * axis[1];
-  result[1][2] = 0 + t[1] * axis[2] + s * axis[0];
-  result[1][3] = 0;
-
-  result[2][0] = 0 + t[2] * axis[0] + s * axis[1];
-  result[2][1] = 0 + t[2] * axis[1] - s * axis[0];
-  result[2][2] = c + t[2] * axis[2];
-  result[2][3] = 0;
+  result[0] =
+      mat[0] * rotate[0][0] + mat[1] * rotate[0][1] + mat[2] * rotate[0][2];
+  result[1] =
+      mat[0] * rotate[1][0] + mat[1] * rotate[1][1] + mat[2] * rotate[1][2];
+  result[2] =
+      mat[0] * rotate[2][0] + mat[1] * rotate[2][1] + mat[2] * rotate[2][2];
+  result[3] = mat[3];
 
   return result;
 }
 
-inline Mat4 scaling(const Vec3& scale) {
-  return Mat4{Vec4{scale.x, 0.f, 0.f, 0.f}, Vec4{0.f, scale.y, 0.f, 0.f},
-              Vec4{0.f, 0.f, scale.z, 0.f}, Vec4{0.f, 0.f, 0.f, 1.f}};
+inline Mat4 scale(const Mat4& mat, const Vec3& scale) {
+  Mat4 result;
+  result[0] = mat[0] * scale[0];
+  result[1] = mat[1] * scale[1];
+  result[2] = mat[2] * scale[2];
+  result[3] = mat[3];
+  return result;
 }
 
 Mat4 ortho(f32 left, f32 right, f32 bottom, f32 top) {

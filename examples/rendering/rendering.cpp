@@ -112,9 +112,9 @@ public:
     DCHECK(m_program.setUniform("uni_color", ca::Vec4(1.0f, 1.0f, 0.0f, 1.0f)));
 
     ca::Mat4 viewMatrix;
-    viewMatrix *= ca::translation(ca::Vec3{counter * 100.f, 0.f, 0.f});
-    viewMatrix *= ca::scaling(ca::Vec3{10.f, 10.f, 1.f});
-    viewMatrix *= ca::rotation(10.f, ca::Vec3{0.0f, 0.0f, counter});
+    viewMatrix = ca::scale(viewMatrix, ca::Vec3{10.f, 10.f, 1.f});
+    viewMatrix = ca::rotate(viewMatrix, counter* 20.f, ca::Vec3{0.f, 0.f, 1.f});
+    viewMatrix = ca::translate(viewMatrix, ca::Vec3{counter * 100.f, 0.f, 0.f});
     ca::Mat4 mvp = m_projectionMatrix * viewMatrix;
     DCHECK(m_program.setUniform("uni_mvp", mvp));
 
