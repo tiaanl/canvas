@@ -53,15 +53,4 @@ std::ostream& operator<<(std::ostream& os, const Mat4& mat) {
   return os;
 }
 
-TEST(Mat4Test, Blah) {
-  Mat4 m;
-  m *= translation(Vec3{1.5f, 0.f, 0.f});
-  m *= rotation(30.f, Vec3{1.5f, 3.0f, 4.5f});
-  m *= scaling(Vec3{2.f, 3.f, 4.f});
-
-  LOG(Info) << m;
-
-  int a = 10;
-}
-
 }  // namespace ca

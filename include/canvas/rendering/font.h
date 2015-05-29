@@ -12,26 +12,13 @@
 // OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 // PERFORMANCE OF THIS SOFTWARE.
 
-#ifndef CANVAS_UTILS_RECT_H_
-#define CANVAS_UTILS_RECT_H_
-
-#include "canvas/utils/pos.h"
-#include "canvas/utils/size.h"
+#ifndef CANVAS_RENDERING_FONT_H_
+#define CANVAS_RENDERING_FONT_H_
 
 namespace ca {
 
-template <typename T>
-struct Rect {
-  Pos<T> pos;
-  Size<T> size;
-
-  Rect() = default;
-
-  Rect(T x, T y, T width, T height) : pos(x, y), size(width, height) {}
-
-  Rect(const Pos<T>& pos, const Size<T>& size) : pos(pos), size(size) {}
-};
+void fontTest();
 
 }  // namespace ca
 
-#endif  // CANVAS_UTILS_RECT_H_
+#endif  // CANVAS_RENDERING_FONT_H_

@@ -6,10 +6,11 @@ if(NUCLEUS_BUILD_UNITTESTS)
   if(CANVAS_BUILD_UNITTESTS)
 
     set(canvas_TEST_FILES
+      "math/mat4_tests.cpp"
       "math/vec2_tests.cpp"
       "math/vec3_tests.cpp"
       "math/vec4_tests.cpp"
-      "math/mat4_tests.cpp"
+      "rendering/font_tests.cpp"
     )
 
     add_executable("canvas_tests" ${canvas_TEST_FILES})
