@@ -17,6 +17,7 @@
 #include <GL/glew.h>
 
 #include "nucleus/logging.h"
+#include "nucleus/types.h"
 #include "SFML/Window/Event.hpp"
 #include "SFML/Window/Window.hpp"
 
@@ -49,6 +50,11 @@ std::unique_ptr<Window> Window::create(WindowDelegate* delegate,
   // Let the delegate know we were just created.
   delegate->onWindowCreated();
 
+  // We send a window resized to the delegate as well so that it can do any
+  // setup needed.
+  Size<u32> clientSize{800, 480};
+  delegate->onWindowResized(clientSize);
+
   return newWindow;
 }
 
@@ -68,13 +74,13 @@ void Window::processEvents() {
         break;
 
       case sf::Event::Resized: {
-        Size<uint32_t> clientSize{sfEvent.size.width, sfEvent.size.height};
+        Size<u32> clientSize{sfEvent.size.width, sfEvent.size.height};
         glViewport(0, 0, clientSize.width, clientSize.height);
         m_delegate->onWindowResized(clientSize);
       } break;
 
       case sf::Event::MouseMoved: {
-        MouseEvent event{Event::MouseMoved, Pos<int32_t>{sfEvent.mouseMove.x,
+        MouseEvent event{Event::MouseMoved, Pos<i32>{sfEvent.mouseMove.x,
                                                          sfEvent.mouseMove.y}};
         m_delegate->onMouseMoved(event);
       } break;
@@ -82,14 +88,14 @@ void Window::processEvents() {
       case sf::Event::MouseButtonPressed: {
         MouseEvent event{
             Event::MousePressed,
-            Pos<int32_t>{sfEvent.mouseButton.x, sfEvent.mouseButton.y}};
+            Pos<i32>{sfEvent.mouseButton.x, sfEvent.mouseButton.y}};
         m_delegate->onMousePressed(event);
       } break;
 
       case sf::Event::MouseButtonReleased: {
         MouseEvent event{
             Event::MouseReleased,
-            Pos<int32_t>{sfEvent.mouseButton.x, sfEvent.mouseButton.y}};
+            Pos<i32>{sfEvent.mouseButton.x, sfEvent.mouseButton.y}};
         m_delegate->onMousePressed(event);
       } break;
 

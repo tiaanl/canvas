@@ -61,11 +61,12 @@ public:
     ca::Program::bind(&m_program);
 
     // clang-format off
+    const f32 kSize = 10.f;
     static float vertices[] = {
-      -0.5f, -0.5f, 0.0f, 0.0f,
-       0.5f, -0.5f, 1.0f, 0.0f,
-       0.5f,  0.5f, 1.0f, 1.0f,
-      -0.5f,  0.5f, 0.0f, 1.0f,
+      -kSize, -kSize, 0.0f, 0.0f,
+       kSize, -kSize, 1.0f, 0.0f,
+       kSize,  kSize, 1.0f, 1.0f,
+      -kSize,  kSize, 0.0f, 1.0f,
     };
     // clang-format on
 
@@ -110,7 +111,10 @@ public:
 
     DCHECK(m_program.setUniform("uni_color", ca::Vec4(1.0f, 1.0f, 0.0f, 1.0f)));
 
-    ca::Mat4 viewMatrix = ca::rotation(counter * 30.f, ca::Vec3{0.0f, 0.0f, 1.0f}) * ca::translation(ca::Vec3{150.0f * counter, 150.0f * counter, 0.0f}) * ca::scaling(counter * 1000.0f);
+    ca::Mat4 viewMatrix;
+    // viewMatrix *= ca::scaling(ca::Vec3{100.f, 100.f, 1.f});
+    viewMatrix *= ca::rotation(10.f, ca::Vec3{0.0f, 0.0f, counter});
+    // viewMatrix *= ca::translation(ca::Vec3{counter, 1.0f, 0.0f});
     ca::Mat4 mvp = m_projectionMatrix * viewMatrix;
     DCHECK(m_program.setUniform("uni_mvp", mvp));
 

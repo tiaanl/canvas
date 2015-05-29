@@ -13,28 +13,36 @@
 // PERFORMANCE OF THIS SOFTWARE.
 
 #include "canvas/math/mat4.h"
+#include "canvas/math/transform.h"
 #include "gtest/gtest.h"
 
 namespace ca {
 
 TEST(Mat4Test, Basic) {
-  Mat4<float> v1;
-  EXPECT_EQ(0.f, v1.c[0].x);
-  EXPECT_EQ(0.f, v1.c[0].y);
-  EXPECT_EQ(0.f, v1.c[0].z);
-  EXPECT_EQ(0.f, v1.c[0].w);
-  EXPECT_EQ(0.f, v1.c[1].x);
-  EXPECT_EQ(0.f, v1.c[1].y);
-  EXPECT_EQ(0.f, v1.c[1].z);
-  EXPECT_EQ(0.f, v1.c[1].w);
-  EXPECT_EQ(0.f, v1.c[2].x);
-  EXPECT_EQ(0.f, v1.c[2].y);
-  EXPECT_EQ(0.f, v1.c[2].z);
-  EXPECT_EQ(0.f, v1.c[2].w);
-  EXPECT_EQ(0.f, v1.c[3].x);
-  EXPECT_EQ(0.f, v1.c[3].y);
-  EXPECT_EQ(0.f, v1.c[3].z);
-  EXPECT_EQ(0.f, v1.c[3].w);
+  Mat4 v1;
+  EXPECT_EQ(1.f, v1.row[0].x);
+  EXPECT_EQ(0.f, v1.row[0].y);
+  EXPECT_EQ(0.f, v1.row[0].z);
+  EXPECT_EQ(0.f, v1.row[0].w);
+  EXPECT_EQ(0.f, v1.row[1].x);
+  EXPECT_EQ(1.f, v1.row[1].y);
+  EXPECT_EQ(0.f, v1.row[1].z);
+  EXPECT_EQ(0.f, v1.row[1].w);
+  EXPECT_EQ(0.f, v1.row[2].x);
+  EXPECT_EQ(0.f, v1.row[2].y);
+  EXPECT_EQ(1.f, v1.row[2].z);
+  EXPECT_EQ(0.f, v1.row[2].w);
+  EXPECT_EQ(0.f, v1.row[3].x);
+  EXPECT_EQ(0.f, v1.row[3].y);
+  EXPECT_EQ(0.f, v1.row[3].z);
+  EXPECT_EQ(1.f, v1.row[3].w);
+}
+
+TEST(Mat4Test, Blah) {
+  Mat4 m;
+  m *= translation(Vec3{1.5f, 0.f, 0.f});
+
+  int a = 10;
 }
 
 }  // namespace ca

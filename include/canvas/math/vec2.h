@@ -15,26 +15,99 @@
 #ifndef CANVAS_MATH_VEC2_H_
 #define CANVAS_MATH_VEC2_H_
 
+#include <cmath>
+
 #include "nucleus/logging.h"
+#include "nucleus/types.h"
 
 namespace ca {
 
 struct Vec2 {
-  float x{0};
-  float y{0};
+  f32 x{0.f};
+  f32 y{0.f};
 
-  Vec2(float x = 0.f, float y = 0.f) : x(x), y(y) {}
+  explicit Vec2(f32 x = 0.f, f32 y = 0.f) : x{x}, y{y} {}
 
-  float& operator[](std::size_t index) {
+  f32& operator[](size_t index) {
     DCHECK(index <= 1);
     return (&x)[index];
   }
 
-  float operator[](std::size_t index) const {
+  f32 operator[](size_t index) const {
     DCHECK(index <= 1);
     return (&x)[index];
+  }
+
+  // Comparison
+
+  bool operator==(const Vec2& right) const {
+    return x == right.x && y == right.y;
+  }
+
+  bool operator!=(const Vec2& right) const {
+    return x != right.x || y != right.y;
+  }
+
+  // Arithmatic
+
+  Vec2 operator-() const { return Vec2{-x, -y}; }
+
+  Vec2 operator+(const Vec2& right) const {
+    return Vec2{x + right.x, y + right.y};
+  }
+
+  Vec2& operator+=(const Vec2& other) {
+    x += other.x;
+    y += other.y;
+    return *this;
+  }
+
+  Vec2 operator-(const Vec2& right) const {
+    return Vec2{x - right.x, y - right.y};
+  }
+
+  Vec2& operator-=(const Vec2& other) {
+    x -= other.x;
+    y -= other.y;
+    return *this;
+  }
+
+  Vec2 operator*(f32 scalar) const { return Vec2{x * scalar, y * scalar}; }
+
+  Vec2& operator*=(f32 scalar) {
+    x *= scalar;
+    y *= scalar;
+    return *this;
+  }
+
+  Vec2 operator/(f32 scalar) const { return Vec2{x / scalar, y / scalar}; }
+
+  Vec2& operator/=(f32 scalar) {
+    x /= scalar;
+    y /= scalar;
+    return *this;
   }
 };
+
+inline f32 dotProduct(const Vec2& a, const Vec2& b) {
+  return a.x * b.x + a.y * b.y;
+}
+
+inline f32 crossProduct(const Vec2& a, const Vec2& b) {
+  return a.x * b.y - b.x * a.y;
+}
+
+inline f32 lengthSquared(const Vec2& a) {
+  return dotProduct(a, a);
+}
+
+inline f32 length(const Vec2& a) {
+  return std::sqrtf(lengthSquared(a));
+}
+
+inline Vec2 normalize(const Vec2& a) {
+  return a * (1.f / length(a));
+}
 
 }  // namespace ca
 

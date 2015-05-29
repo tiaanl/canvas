@@ -20,69 +20,67 @@
 
 namespace ca {
 
-Mat4 translation(const Vec3& vec) {
-  Mat4 result{Mat4::identity};
-  result[0].w = vec[0];
-  result[1].w = vec[1];
-  result[2].w = vec[2];
-  // result[3] = Vec4{vec[0], vec[1], vec[2], 1.0f};
+inline Mat4 translation(const Vec3& vec) {
+  Mat4 result;  // identity
+  result[0].w = vec.x;
+  result[1].w = vec.y;
+  result[2].w = vec.z;
   return result;
 }
 
-Mat4 rotation(float angle, const Vec3& rot) {
-  Mat4 result{Mat4::identity};
+inline Mat4 rotation(f32 degrees, const Vec3& rot) {
+  const f32 c{std::cosf(degrees * 180.f / 3.141592654f)};
+  const f32 s{std::sinf(degrees * 180.f / 3.141592654f)};
 
-  const float a = angle;
-  const float c = std::cosf(a);
-  const float s = std::sinf(a);
+  const Vec3 axis{normalize(rot)};
+  const Vec3 t{axis * (1.f - c)};
 
-  Vec3 nRot{rot};
-  nRot.normalize();
-  Vec3 axis(nRot);
-  Vec3 temp(axis * (1.0f - c));
+  Mat4 result;
+  result[0][0] = c + t[0] * axis[0];
+  result[0][1] = 0 + t[0] * axis[1] + s * axis[2];
+  result[0][2] = 0 + t[0] * axis[2] - s * axis[1];
+  result[0][3] = 0;
 
-  result[0][0] = c + temp[0] * axis[0];
-  result[0][1] = 0 + temp[0] * axis[1] + s * axis[2];
-  result[0][2] = 0 + temp[0] * axis[2] - s * axis[1];
+  result[1][0] = 0 + t[1] * axis[0] - s * axis[2];
+  result[1][1] = c + t[1] * axis[1];
+  result[1][2] = 0 + t[1] * axis[2] + s * axis[0];
+  result[1][3] = 0;
 
-  result[1][0] = 0 + temp[1] * axis[0] - s * axis[2];
-  result[1][1] = c + temp[1] * axis[1];
-  result[1][2] = 0 + temp[1] * axis[2] + s * axis[0];
-
-  result[2][0] = 0 + temp[2] * axis[0] + s * axis[1];
-  result[2][1] = 0 + temp[2] * axis[1] - s * axis[0];
-  result[2][2] = c + temp[2] * axis[2];
+  result[2][0] = 0 + t[2] * axis[0] + s * axis[1];
+  result[2][1] = 0 + t[2] * axis[1] - s * axis[0];
+  result[2][2] = c + t[2] * axis[2];
+  result[2][3] = 0;
 
   return result;
 }
 
-Mat4 scaling(float scale) {
-  Mat4 result{Mat4::identity};
-  result[0][0] *= scale;
-  result[1][1] *= scale;
-  result[2][2] *= scale;
-  return result;
+inline Mat4 scaling(const Vec3& scale) {
+  return Mat4{Vec4{scale.x, 0.f, 0.f, 0.f}, Vec4{0.f, scale.y, 0.f, 0.f},
+              Vec4{0.f, 0.f, scale.z, 0.f}, Vec4{0.f, 0.f, 0.f, 1.f}};
 }
 
-inline Mat4 ortho(float left, float right, float bottom, float top, float near,
-                  float far) {
-  Mat4 result{Mat4::identity};
-  result[0][0] = 2.0f / (right - left);
-  result[1][1] = 2.0f / (top - bottom);
-  result[2][2] = -2.0f / (far - near);
-  result[3][0] = -(right + left) / (right - left);
-  result[3][1] = -(top + bottom) / (top - bottom);
-  result[3][2] = -(far + near) / (far - near);
-  return result;
-}
+Mat4 ortho(f32 left, f32 right, f32 bottom, f32 top) {
+  Mat4 result;
 
-inline Mat4 ortho(float left, float right, float bottom, float top) {
-  Mat4 result{Mat4::identity};
   result[0][0] = 2.0f / (right - left);
   result[1][1] = 2.0f / (top - bottom);
   result[2][2] = -1.0f;
   result[3][0] = -(right + left) / (right - left);
   result[3][1] = -(top + bottom) / (top - bottom);
+
+  return result;
+}
+
+Mat4 ortho(f32 left, f32 right, f32 bottom, f32 top, f32 zNear, f32 zFar) {
+  Mat4 result;
+
+  result[0][0] = 2.0f / (right - left);
+  result[1][1] = 2.0f / (top - bottom);
+  result[2][2] = -2.0f / (zFar - zNear);
+  result[3][0] = -(right + left) / (right - left);
+  result[3][1] = -(top + bottom) / (top - bottom);
+  result[3][2] = -(zFar + zNear) / (zFar - zNear);
+
   return result;
 }
 

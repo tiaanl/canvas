@@ -15,7 +15,7 @@
 #ifndef CANVAS_WINDOWS_EVENT_H_
 #define CANVAS_WINDOWS_EVENT_H_
 
-#include <cstdint>
+#include "nucleus/types.h"
 
 #include "canvas/utils/pos.h"
 
@@ -36,13 +36,13 @@ struct Event {
 };
 
 struct PositionEvent : Event {
-  Pos<int32_t> pos;
+  Pos<i32> pos;
 
-  PositionEvent(Type type, const Pos<int32_t>& pos) : Event(type), pos(pos) {}
+  PositionEvent(Type type, const Pos<i32>& pos) : Event(type), pos(pos) {}
 };
 
 struct MouseEvent : PositionEvent {
-  MouseEvent(Type type, const Pos<int32_t>& pos) : PositionEvent(type, pos) {}
+  MouseEvent(Type type, const Pos<i32>& pos) : PositionEvent(type, pos) {}
 };
 
 }  // namespace ca

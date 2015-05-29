@@ -97,7 +97,7 @@ bool Program::setUniform(std::string name, const Vec4& vec4) {
 
 bool Program::setUniform(std::string name, const Mat4& mat4) {
   BIND_AND_GET_LOCATION()
-  glUniformMatrix4fv(location, 1, GL_FALSE, mat4.asArray());
+  glUniformMatrix4fv(location, 1, GL_FALSE, &mat4[0].x);
   return glGetError() == GL_NO_ERROR;
 }
 

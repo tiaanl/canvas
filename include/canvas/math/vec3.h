@@ -18,38 +18,105 @@
 #include <cmath>
 
 #include "nucleus/logging.h"
+#include "nucleus/types.h"
+
+#include "canvas/math/vec2.h"
 
 namespace ca {
 
 struct Vec3 {
-  float x{0};
-  float y{0};
-  float z{0};
+  f32 x{0.f};
+  f32 y{0.f};
+  f32 z{0.f};
 
-  Vec3(float x = 0.f, float y = 0.f, float z = 0.f) : x(x), y(y), z(z) {}
+  explicit Vec3(f32 x = 0.f, f32 y = 0.f, f32 z = 0.f) : x{x}, y{y}, z{z} {}
+  Vec3(const Vec2& xy, f32 z) : x{xy.x}, y{xy.y}, z{z} {}
 
-  float& operator[](std::size_t index) {
+  f32& operator[](size_t index) {
     DCHECK(index <= 2);
     return (&x)[index];
   }
 
-  float operator[](std::size_t index) const {
+  f32 operator[](size_t index) const {
     DCHECK(index <= 2);
     return (&x)[index];
   }
 
-  friend Vec3 operator*(const Vec3& left, float right) {
-    return Vec3{left.x * right, left.y * right, left.z * right};
+  bool operator==(const Vec3& other) const {
+    return x == other.x && y == other.y && z == other.z;
   }
 
-  void normalize() {
-    float dist = std::sqrtf(x * x + y * y + z * z);
+  bool operator!=(const Vec3& other) const {
+    return x != other.x || y != other.y || z != other.z;
+  }
 
-    x /= dist;
-    y /= dist;
-    z /= dist;
+  Vec3 operator-() const { return Vec3{-x, -y, -z}; }
+
+  Vec3 operator+(const Vec3& other) const {
+    return Vec3{x + other.x, y + other.y, z + other.z};
+  }
+
+  Vec3& operator+=(const Vec3& other) {
+    x += other.x;
+    y += other.y;
+    z += other.z;
+    return *this;
+  }
+
+  Vec3 operator-(const Vec3& other) const {
+    return Vec3{x - other.x, y - other.y, z - other.z};
+  }
+
+  Vec3& operator-=(const Vec3& other) {
+    x -= other.x;
+    y -= other.y;
+    z -= other.z;
+    return *this;
+  }
+
+  Vec3 operator*(f32 scalar) const {
+    return Vec3{x * scalar, y * scalar, z * scalar};
+  }
+
+  Vec3& operator*=(f32 scalar) {
+    x *= scalar;
+    y *= scalar;
+    z *= scalar;
+    return *this;
+  }
+
+  Vec3 operator/(f32 scalar) const {
+    return Vec3{x / scalar, y / scalar, z / scalar};
+  }
+
+  Vec3& operator/=(f32 scalar) {
+    x /= scalar;
+    y /= scalar;
+    z /= scalar;
+    return *this;
   }
 };
+
+inline f32 dotProduct(const Vec3& a, const Vec3& b) {
+  return a.x * b.x + a.y * b.y + a.z * b.z;
+}
+
+inline Vec3 crossProduct(const Vec3& a, const Vec3& b) {
+  return Vec3{a.y * b.z - b.y * a.z, a.z * b.x - b.z * a.x,
+              a.x * b.y - b.x * a.y};
+}
+
+inline f32 lengthSquared(const Vec3& a) {
+  return dotProduct(a, a);
+}
+
+inline f32 length(const Vec3& a) {
+  return std::sqrtf(lengthSquared(a));
+}
+
+inline Vec3 normalize(const Vec3& a) {
+  return a * (1.f / length(a));
+}
 
 }  // namespace ca
 

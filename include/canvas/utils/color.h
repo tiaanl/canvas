@@ -15,24 +15,21 @@
 #ifndef CANVAS_UTILS_COLOR_H_
 #define CANVAS_UTILS_COLOR_H_
 
-#include <cstdint>
+#include "nucleus/types.h"
 
 namespace ca {
 
 struct Color {
-  uint8_t r;
-  uint8_t g;
-  uint8_t b;
-  uint8_t a;
+  u8 r;
+  u8 g;
+  u8 b;
+  u8 a;
 
   // Construct a color with default values.
-  Color() : r(0), g(0), b(0), a(255) {}
+  Color() : r{0}, g{0}, b{0}, a{255} {}
 
   // Construct a color without alpha component.
-  Color(uint8_t r, uint8_t g, uint8_t b) : r(r), g(g), b(b), a(255) {}
-
-  // Construct a color.
-  Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a) : r(r), g(g), b(b), a(a) {}
+  Color(u8 r, u8 g, u8 b, u8 a = 255) : r{r}, g{g}, b{b}, a{a} {}
 };
 
 }  // namespace ca

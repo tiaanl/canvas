@@ -15,29 +15,115 @@
 #ifndef CANVAS_MATH_VEC4_H_
 #define CANVAS_MATH_VEC4_H_
 
+#include <cmath>
+
 #include "nucleus/logging.h"
+#include "nucleus/types.h"
+
+#include "canvas/math/vec2.h"
+#include "canvas/math/vec3.h"
 
 namespace ca {
 
 struct Vec4 {
-  float x{0.f};
-  float y{0.f};
-  float z{0.f};
-  float w{0.f};
+  f32 x{0.f};
+  f32 y{0.f};
+  f32 z{0.f};
+  f32 w{0.f};
 
-  Vec4(float x = 0.f, float y = 0.f, float z = 0.f, float w = 1.f)
-    : x(x), y(y), z(z), w(w) {}
+  explicit Vec4(f32 x = 0.f, f32 y = 0.f, f32 z = 0.f, f32 w = 1.f)
+    : x{x}, y{y}, z{z}, w{w} {}
 
-  float& operator[](std::size_t index) {
+  Vec4(const Vec3& xyz, f32 w) : x{xyz.x}, y{xyz.y}, z{xyz.z}, w{w} {}
+
+  Vec4(const Vec2& xy, const Vec2& zw) : x{xy.x}, y{xy.y}, z{zw.x}, w{zw.y} {}
+
+  f32& operator[](size_t index) {
     DCHECK(index <= 3);
     return (&x)[index];
   }
 
-  float operator[](std::size_t index) const {
+  f32 operator[](size_t index) const {
     DCHECK(index <= 3);
     return (&x)[index];
+  }
+
+  bool operator==(const Vec4& other) const {
+    return x == other.x && y == other.y && z == other.z && w == other.z;
+  }
+
+  bool operator!=(const Vec4& other) const {
+    return x != other.x || y != other.y || z != other.z || w != other.w;
+  }
+
+  Vec4 operator-() const {
+    return Vec4{-x, -y, -z, -w};
+  }
+
+  Vec4 operator+(const Vec4& other) const {
+    return Vec4{x + other.x, y + other.y, z + other.z, w + other.w};
+  }
+
+  Vec4& operator+=(const Vec4& other) {
+    x += other.x;
+    y += other.y;
+    z += other.z;
+    w += other.w;
+    return *this;
+  }
+
+  Vec4 operator-(const Vec4& other) const {
+    return Vec4{x - other.x, y - other.y, z - other.z, w - other.w};
+  }
+
+  Vec4& operator-=(const Vec4& other) {
+    x -= other.x;
+    y -= other.y;
+    z -= other.z;
+    w -= other.w;
+    return *this;
+  }
+
+  Vec4 operator*(f32 scalar) const {
+    return Vec4{x * scalar, y * scalar, z * scalar, w * scalar};
+  }
+
+  Vec4& operator*=(f32 scalar) {
+    x *= scalar;
+    y *= scalar;
+    z *= scalar;
+    w *= scalar;
+    return *this;
+  }
+
+  Vec4 operator/(f32 scalar) const {
+    return Vec4{x / scalar, y / scalar, z / scalar, w / scalar};
+  }
+
+  Vec4& operator/=(f32 scalar) {
+    x /= scalar;
+    y /= scalar;
+    z /= scalar;
+    w /= scalar;
+    return *this;
   }
 };
+
+inline f32 dotProduct(const Vec4& a, const Vec4& b) {
+  return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
+}
+
+inline f32 lengthSquared(const Vec4& a) {
+  return dotProduct(a, a);
+}
+
+inline f32 length(const Vec4& a) {
+  return std::sqrtf(lengthSquared(a));
+}
+
+inline Vec4 normalize(const Vec4& a) {
+  return a * (1.f / length(a));
+}
 
 }  // namespace ca
 
