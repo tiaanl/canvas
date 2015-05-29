@@ -78,6 +78,10 @@ private:
   // Internal font info data.
   stbtt_fontinfo m_fontInfo;
 
+  // The data buffer holding the font data.  We have to keep this alive for the
+  // lifetime of the font.
+  std::vector<u8> m_fontData;
+
   // All the glyphs we hold.
   GlyphTable m_glyphs;
 

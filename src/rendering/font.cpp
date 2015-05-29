@@ -28,9 +28,6 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
-// Handy shortcut.
-#define FONT_INFO static_cast<stbtt_fontinfo*>(m_fontInfo.get())
-
 namespace ca {
 
 Font::Font(i32 characterSize) : m_characterSize{characterSize} {
@@ -42,11 +39,10 @@ Font::~Font() {
 bool Font::loadFromStream(nu::InputStream* stream) {
   DCHECK(stream);
 
-  std::vector<u8> buffer;
   auto streamLength = stream->getLength();
-  stream->read(nu::vectorAsArray(&buffer, streamLength), streamLength);
+  stream->read(nu::vectorAsArray(&m_fontData, streamLength), streamLength);
 
-  if (!stbtt_InitFont(&m_fontInfo, nu::vectorAsArray(&buffer), 0)) {
+  if (!stbtt_InitFont(&m_fontInfo, nu::vectorAsArray(&m_fontData), 0)) {
     LOG(Error) << "Could not load font from stream";
     return false;
   }
@@ -75,7 +71,6 @@ i32 Font::getKerning(char32_t first, char32_t second) const {
 }
 
 f32 Font::getLineSpacing() const {
-
   i32 ascent, descent, lineGap;
   stbtt_GetFontVMetrics(&m_fontInfo, &ascent, &descent, &lineGap);
 
@@ -140,7 +135,8 @@ Rect<i32> Font::findGlyphRect(const Size<i32>& size) {
   if (!bestRow) {
     i32 rowHeight = size.height + size.height / 10;
 
-    if ((m_nextRow + rowHeight >= m_texture.getSize().height) || (size.width >= m_texture.getSize().width)) {
+    if ((m_nextRow + rowHeight >= m_texture.getSize().height) ||
+        (size.width >= m_texture.getSize().width)) {
       NOTREACHED() << "Texture is too small!";
       return Rect<i32>{};
     }
@@ -170,7 +166,7 @@ void fontTest() {
   stbtt_fontinfo fontInfo;
   if (!stbtt_InitFont(&fontInfo, nu::vectorAsArray(&buffer), 0)) {
     LOG(Error) << "Could not initialize font";
-    return;  
+    return;
   }
 
   const i32 bitmapWidth = 512;

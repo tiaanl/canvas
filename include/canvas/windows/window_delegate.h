@@ -50,7 +50,7 @@ public:
 
 protected:
   // The title that appears in the window title bar.
-  std::string m_title{"Canvas Window"};
+  std::string m_title;//{"Canvas Window"};
 
 private:
   DISALLOW_COPY_AND_ASSIGN(WindowDelegate);
