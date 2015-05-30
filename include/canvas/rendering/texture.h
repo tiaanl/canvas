@@ -25,14 +25,17 @@ namespace ca {
 
 class Texture {
 public:
+  // Bind the specified texture.
+  static void bind(Texture* texture);
+
   Texture() = default;
   ~Texture();
 
-  // Bind the texture.
-  void bind() const;
-
   // Get the size of the texture.
   const Size<i32>& getSize() const { return m_size; }
+
+  // Create a blank texture.
+  bool create(const Size<i32>& size);
 
   // Create the texture from Image data.
   bool createFromImage(const Image& image);

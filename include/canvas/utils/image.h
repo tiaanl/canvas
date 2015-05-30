@@ -21,13 +21,14 @@
 #include "nucleus/streams/input_stream.h"
 #include "nucleus/types.h"
 
+#include "canvas/utils/color.h"
 #include "canvas/utils/size.h"
 
 namespace ca {
 
 class Image {
 public:
-  using DataType = std::vector<uint8_t>;
+  using DataType = std::vector<u8>;
 
   Image() = default;
   ~Image() = default;
@@ -37,6 +38,9 @@ public:
 
   // Get the pixel data for the image.
   const DataType& getData() const { return m_data; }
+
+  // Create a blank image with the specified color.
+  void create(const Size<i32>& size, const Color& col = Color{});
 
   // Load the image data from a stream.
   bool loadFromStream(nu::InputStream* stream);

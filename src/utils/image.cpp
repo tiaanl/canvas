@@ -41,6 +41,30 @@ static int stbCallbackEof(void* user) {
 
 }  // namespace
 
+void Image::create(const Size<i32>& size, const Color& col) {
+  if (size.width && size.height) {
+    // Store the size of the image.
+    m_size = size;
+
+    // Resize the buffer to hold the image.
+    m_data.resize(size.width * size.height * 4);
+
+    // Fill the image with the specified color.
+    u8* data = nu::vectorAsArray(&m_data);
+    u8* end = data + m_data.size();
+    while (data < end) {
+      *data++ = col.r;
+      *data++ = col.g;
+      *data++ = col.b;
+      *data++ = col.a;
+    }
+  } else {
+    // Store the size and clear out the data.
+    m_size = {0, 0};
+    m_data.clear();
+  }
+}
+
 bool Image::loadFromStream(nu::InputStream* stream) {
   DCHECK(stream);
 

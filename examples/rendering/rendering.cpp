@@ -118,7 +118,7 @@ public:
     ca::Mat4 mvp = m_projectionMatrix * viewMatrix;
     DCHECK(m_program.setUniform("uni_mvp", mvp));
 
-    m_texture.bind();
+    ca::Texture::bind(&m_texture);
     ca::VertexBufferObject::ScopedBind binder(m_vbo);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 4, 0);

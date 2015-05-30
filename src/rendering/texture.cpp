@@ -20,15 +20,61 @@
 
 namespace ca {
 
+namespace {
+
+static i32 getMaxTextureSize() {
+  GLint size;
+  GL_CHECK(glGetIntegerv(GL_MAX_TEXTURE_SIZE, &size));
+  return size;
+}
+
+}  // namespace
+
+// static
+void Texture::bind(Texture* texture) {
+  if (!texture) {
+    GL_CHECK(glBindTexture(GL_TEXTURE_2D, 0));
+  } else {
+    GL_CHECK(glBindTexture(GL_TEXTURE_2D, texture->m_name));
+  }
+}
+
 Texture::~Texture() {
   if (m_name != 0) {
     glDeleteTextures(1, &m_name);
   }
 }
 
-void Texture::bind() const {
-  DCHECK(m_name != 0) << "Can't bind an invalid texture.";
+bool Texture::create(const Size<i32>& size) {
+  i32 maxTextureSize = getMaxTextureSize();
+  if (size.width == 0 || (size.width & (size.width - 1)) != 0 ||
+      size.width > maxTextureSize || size.height == 0 ||
+      (size.height & (size.height - 1)) != 0 || size.height > maxTextureSize) {
+    LOG(Error) << "Can't create texture with invalid size. (" << size.width
+               << ", " << size.height << ")";
+    return false;
+  }
+
+  // Store the size.
+  m_size = size;
+
+  // Create the texture name if it doesn't exist already.
+  if (m_name == 0) {
+    GL_CHECK(glGenTextures(1, &m_name));
+  }
+
+  // Initialize the texture.
   GL_CHECK(glBindTexture(GL_TEXTURE_2D, m_name));
+  GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_size.width, m_size.height,
+                        0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr));
+
+  const bool smooth = false;
+  GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+                           smooth ? GL_LINEAR : GL_NEAREST));
+  GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                           smooth ? GL_LINEAR : GL_NEAREST));
+
+  return true;
 }
 
 bool Texture::createFromImage(const Image& image) {
