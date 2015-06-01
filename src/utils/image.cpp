@@ -99,4 +99,12 @@ bool Image::loadFromStream(nu::InputStream* stream) {
   return true;
 }
 
+void Image::setPixel(const Pos<i32>& pos, const Color& color) {
+  u8* ptr = &m_data[pos.y * (m_size.width * 4) + (pos.x * 4)];
+  *ptr++ = color.r;
+  *ptr++ = color.g;
+  *ptr++ = color.b;
+  *ptr++ = color.a;
+}
+
 }  // namespace ca

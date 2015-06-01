@@ -20,7 +20,9 @@
 #include "nucleus/streams/file_input_stream.h"
 #include "nucleus/types.h"
 #include "nucleus/utils/stl.h"
+
 #include "canvas/utils/rect.h"
+#include "canvas/utils/gl_check.h"
 
 #define STB_TRUETYPE_IMPLEMENTATION
 #include "stb_truetype.h"
@@ -107,7 +109,7 @@ Font::Page::Page(Font* font, i32 characterSize) {
 
   // Make sure the texture is initialized by default.
   Image image;
-  image.create(Size<i32>{128, 128}, Color{255, 255, 255, 0});
+  image.create(Size<i32>{128, 128}, Color{255, 255, 0, 127});
 
   // Create the texture.
   texture.createFromImage(image);
@@ -152,6 +154,27 @@ Font::Glyph Font::loadGlyph(Page* page, char32_t codePoint) {
                             glyphRect.size.width, page->fontScale,
                             page->fontScale, codePoint);
 
+  // Save out a 1 channel image.
+  stbi_write_png("C:\\Workspace\\canvas\\out.png", glyphRect.size.width,
+                 glyphRect.size.height, 1, nu::vectorAsArray(&m_pixelBuffer),
+                 glyphRect.size.width);
+
+  Image image;
+  image.create(glyphRect.size, {255, 255, 255, 255});
+  for (i32 y = 0; y < glyphRect.size.height; ++y) {
+    for (i32 x = 0; x < glyphRect.size.width; ++x) {
+      u8 color = m_pixelBuffer[y * glyphRect.size.width + x];
+      image.setPixel({x, y}, Color(255, 255, 255, color));
+    }
+  }
+
+  Texture::bind(&page->texture);
+  GL_CHECK(glTexSubImage2D(
+      GL_TEXTURE_2D, 0, result.textureRect.pos.x, result.textureRect.pos.y,
+      result.textureRect.size.width, result.textureRect.size.height, GL_RGBA,
+      GL_UNSIGNED_BYTE, image.getData().data()));
+
+#if 0
   std::vector<u8> bb;
   u8* bbb = nu::vectorAsArray(&bb, m_pixelBuffer.size() * 4);
   for (size_t i = 0; i < m_pixelBuffer.size(); ++i) {
@@ -160,9 +183,12 @@ Font::Glyph Font::loadGlyph(Page* page, char32_t codePoint) {
     *bbb++ = 255;
     *bbb++ = m_pixelBuffer[i];
   }
+#endif  // 0
 
   // Update the texture with the new data.
-  page->texture.update(bbb, result.textureRect);
+  //page->texture.update(bbb, result.textureRect);
+  //result.textureRect.size.width *= 2;
+  //page->texture.update(nu::vectorAsArray(&m_pixelBuffer), result.textureRect);
 
   return result;
 }

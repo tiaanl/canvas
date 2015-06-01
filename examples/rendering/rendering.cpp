@@ -42,6 +42,13 @@ public:
 
     m_font.loadFromStream(&fontStream);
     m_font.getOrInsertGlyph(50, 'a');
+    m_font.getOrInsertGlyph(50, 'b');
+    m_font.getOrInsertGlyph(50, 'c');
+    m_font.getOrInsertGlyph(50, 'd');
+    m_font.getOrInsertGlyph(50, 'H');
+    m_font.getOrInsertGlyph(50, 'e');
+    m_font.getOrInsertGlyph(50, 'l');
+    m_font.getOrInsertGlyph(50, 'o');
 
     nu::FilePath root{
         FILE_PATH_LITERAL("C:\\Workspace\\canvas\\examples\\rendering")};
@@ -100,8 +107,8 @@ public:
   void onWindowResized(const ca::Size<uint32_t>& size) override {
     m_projectionMatrix = ca::ortho(-static_cast<float>(size.width) / 4.f,
                                    static_cast<float>(size.width) / 4.f,
-                                   -static_cast<float>(size.height) / 4.f,
-                                   static_cast<float>(size.height) / 4.f);
+                                   static_cast<float>(size.height) / 4.f,
+                                   -static_cast<float>(size.height) / 4.f);
   }
 
   void onPaint(ca::Canvas* canvas) override {
@@ -118,7 +125,7 @@ public:
 
     ca::Program::bind(&m_program);
 
-    DCHECK(m_program.setUniform("uni_color", ca::Vec4(1.0f, 1.0f, 0.0f, 1.0f)));
+    // DCHECK(m_program.setUniform("uni_color", ca::Vec4(1.0f, 1.0f, 0.0f, 1.0f)));
 
     ca::Mat4 viewMatrix;
     viewMatrix = ca::scale(viewMatrix, ca::Vec3{10.f, 10.f, 1.f});

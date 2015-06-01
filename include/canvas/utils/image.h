@@ -22,6 +22,7 @@
 #include "nucleus/types.h"
 
 #include "canvas/utils/color.h"
+#include "canvas/utils/pos.h"
 #include "canvas/utils/size.h"
 
 namespace ca {
@@ -44,6 +45,9 @@ public:
 
   // Load the image data from a stream.
   bool loadFromStream(nu::InputStream* stream);
+
+  // Set the color of a single pixel in the image.
+  void setPixel(const Pos<i32>& pos, const Color& color);
 
 private:
   // The dimensions of the image.
