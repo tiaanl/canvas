@@ -29,29 +29,32 @@ namespace ca {
 
 class Font {
 public:
+  // The type we use for character codepoints.
+  using Char = char32_t;
+
   struct Glyph {
     f32 advance{0.f};
     Rect<f32> bounds;
     Rect<i32> textureRect;
   };
 
-  explicit Font(i32 characterSize = 32);
-  ~Font();
+  Font() = default;
+  ~Font() = default;
 
   // Load a font from the given stream.
   bool loadFromStream(nu::InputStream* stream);
 
   // Get the glyph data corresponding to the given code point.
-  const Glyph& getOrInsertGlyph(char32_t codePoint);
+  const Glyph& getOrInsertGlyph(i32 characterSize, Char codePoint);
 
   // Get the amount of kerning between the first and second characters.
-  i32 getKerning(char32_t first, char32_t second) const;
+  i32 getKerning(i32 characterSize, Char first, Char second) const;
 
   // Get the line spacing for the font.
-  f32 getLineSpacing() const;
+  f32 getLineSpacing(i32 characterSize) const;
 
   // Get the texture that is backing this font.
-  const Texture* getTexture() const { return &m_texture; }
+  const Texture* getTexture(i32 characterSize) const;
 
 private:
   // A row of glyphs.
@@ -64,16 +67,35 @@ private:
       : width{width}, top{top}, height{height} {}
   };
 
-  using GlyphTable = std::unordered_map<u32, Glyph>;
+  // Table mapping a codepoint to it's glyph.
+  using GlyphTable = std::unordered_map<Char, Glyph>;
+
+  struct Page {
+    // The scale used to render characters for this page.
+    f32 fontScale{0.f};
+
+    // The glyphs in this page.
+    GlyphTable glyphs;
+
+    // The texture containing the glyphs.
+    Texture texture;
+
+    // Y position of the next row in the texture.
+    i32 nextRow{0};
+
+    // List containing the position of all the existing rows.
+    std::vector<Row> rows;
+
+    // Construct a new Page given the font we belong to and the size of the
+    // characters on this page.
+    Page(Font* font, i32 characterSize);
+  };
 
   // Load a new glyph and store it in the cache.
-  Glyph loadGlyph(char32_t codePoint);
+  Glyph loadGlyph(Page* page, Char codePoint);
 
   // Find a suitable rectangle within the texture for a glyph.
-  Rect<i32> findGlyphRect(const Size<i32>& size);
-
-  // The size of the characters we render with this font.
-  i32 m_characterSize;
+  Rect<i32> findGlyphRect(Page* page, const Size<i32>& size);
 
   // Internal font info data.
   stbtt_fontinfo m_fontInfo;
@@ -82,17 +104,8 @@ private:
   // lifetime of the font.
   std::vector<u8> m_fontData;
 
-  // All the glyphs we hold.
-  GlyphTable m_glyphs;
-
-  // The texture we use to back this font.
-  Texture m_texture;
-
-  // Starting point for the next row on the page.
-  i32 m_nextRow;
-
-  // All the rows we have.
-  std::vector<Row> m_rows;
+  // All the pages we have rendered so far.
+  std::unordered_map<i32, std::unique_ptr<Page>> m_pages;
 
   // A temporary pixel buffer that holds the pixel data before it's uploaded to
   // the GPU.

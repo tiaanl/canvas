@@ -31,7 +31,7 @@ static i32 getMaxTextureSize() {
 }  // namespace
 
 // static
-void Texture::bind(Texture* texture) {
+void Texture::bind(const Texture* texture) {
   if (!texture) {
     GL_CHECK(glBindTexture(GL_TEXTURE_2D, 0));
   } else {
@@ -99,6 +99,23 @@ bool Texture::createFromImage(const Image& image) {
   GL_CHECK(glBindTexture(GL_TEXTURE_2D, 0));
 
   return true;
+}
+
+void Texture::update(const u8* pixels, const Rect<i32>& rect) {
+  DCHECK(rect.pos.x + rect.size.width < m_size.width);
+  DCHECK(rect.pos.y + rect.size.height < m_size.height);
+
+  if (!pixels || !m_name) {
+    LOG(Warning) << "No texture update performed.";
+    return;
+  }
+
+  // TODO: Make sure there is a GL context available.
+
+  bind(this);
+  GL_CHECK(glTexSubImage2D(GL_TEXTURE_2D, 0, rect.pos.x, rect.pos.y,
+                           rect.size.width, rect.size.height, GL_RGBA,
+                           GL_UNSIGNED_BYTE, pixels));
 }
 
 void Texture::createNewName() {

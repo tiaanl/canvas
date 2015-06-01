@@ -27,7 +27,7 @@ TEST(FontTest, Basic) {
 
   Font f;
   f.loadFromStream(&fontStream);
-  f.getOrInsertGlyph('a');
+  f.getOrInsertGlyph(10, 'a');
 }
 
 }  // namespace ca

@@ -17,6 +17,7 @@
 #include "canvas/math/transform.h"
 #include "canvas/math/vec4.h"
 #include "canvas/rendering/canvas.h"
+#include "canvas/rendering/font.h"
 #include "canvas/rendering/program.h"
 #include "canvas/rendering/shader.h"
 #include "canvas/rendering/texture.h"
@@ -35,6 +36,12 @@ public:
 
   void onWindowCreated() override {
     LOG(Info) << "onWindowCreated";
+
+    nu::FileInputStream fontStream{
+        nu::FilePath{FILE_PATH_LITERAL("C:\\Windows\\Fonts\\arial.ttf")}};
+
+    m_font.loadFromStream(&fontStream);
+    m_font.getOrInsertGlyph(50, 'a');
 
     nu::FilePath root{
         FILE_PATH_LITERAL("C:\\Workspace\\canvas\\examples\\rendering")};
@@ -102,10 +109,12 @@ public:
 
     static float counter = 0.f;
     static float direction = 0.0001f;
+#if 0
     counter += direction;
     if (counter < 0.f || counter > 1.f) {
       direction *= -1.f;
     }
+#endif  // 0
 
     ca::Program::bind(&m_program);
 
@@ -118,7 +127,8 @@ public:
     ca::Mat4 mvp = m_projectionMatrix * viewMatrix;
     DCHECK(m_program.setUniform("uni_mvp", mvp));
 
-    ca::Texture::bind(&m_texture);
+    // ca::Texture::bind(&m_texture);
+    ca::Texture::bind(m_font.getTexture(50));
     ca::VertexBufferObject::ScopedBind binder(m_vbo);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 4, 0);
@@ -143,6 +153,8 @@ private:
   ca::Texture m_texture;
 
   ca::Mat4 m_projectionMatrix;
+
+  ca::Font m_font;
 
   DISALLOW_COPY_AND_ASSIGN(Rendering);
 };

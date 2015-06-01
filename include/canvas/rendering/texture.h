@@ -20,13 +20,14 @@
 
 #include "canvas/opengl.h"
 #include "canvas/utils/image.h"
+#include "canvas/utils/rect.h"
 
 namespace ca {
 
 class Texture {
 public:
   // Bind the specified texture.
-  static void bind(Texture* texture);
+  static void bind(const Texture* texture);
 
   Texture() = default;
   ~Texture();
@@ -39,6 +40,9 @@ public:
 
   // Create the texture from Image data.
   bool createFromImage(const Image& image);
+
+  // Update a portion of the texture on the GPU.
+  void update(const u8* pixels, const Rect<i32>& rect);
 
 private:
   // Create/recreate a new OpenGL name.
