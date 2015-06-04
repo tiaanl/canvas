@@ -65,11 +65,11 @@ bool VertexBufferObject::createInternal() {
   return true;
 }
 
-void VertexBufferObject::bind() {
+void VertexBufferObject::bind() const {
   GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, m_name));
 }
 
-void VertexBufferObject::unbind() {
+void VertexBufferObject::unbind() const {
   GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, 0));
 }
 

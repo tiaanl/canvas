@@ -26,8 +26,8 @@ class VertexBufferObject {
 public:
   // Scoper object to bind this object.
   struct ScopedBind {
-    VertexBufferObject& vbo;
-    ScopedBind(VertexBufferObject& vbo) : vbo(vbo) { vbo.bind(); }
+    const VertexBufferObject& vbo;
+    ScopedBind(const VertexBufferObject& vbo) : vbo(vbo) { vbo.bind(); }
     ~ScopedBind() { vbo.unbind(); }
   };
 
@@ -42,15 +42,13 @@ private:
   bool createInternal();
 
   // Bind the object.
-  void bind();
+  void bind() const;
 
   // Unbind the object.
-  void unbind();
+  void unbind() const;
 
   // The name of the vertex buffer object.
   GLuint m_name = 0;
-
-  DISALLOW_COPY_AND_ASSIGN(VertexBufferObject);
 };
 
 }  // namespace ca

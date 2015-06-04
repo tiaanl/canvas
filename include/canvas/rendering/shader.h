@@ -32,7 +32,7 @@ public:
   };
 
   explicit Shader(ShaderType type);
-  ~Shader() = default;
+  ~Shader();
 
   // Get the native handle of the shader.
   GLuint getNativeHandle() const { return m_name; }

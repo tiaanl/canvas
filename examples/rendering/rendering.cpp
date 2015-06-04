@@ -18,6 +18,7 @@
 #include "canvas/math/vec4.h"
 #include "canvas/rendering/canvas.h"
 #include "canvas/rendering/font.h"
+#include "canvas/rendering/geometry.h"
 #include "canvas/rendering/program.h"
 #include "canvas/rendering/shader.h"
 #include "canvas/rendering/texture.h"
@@ -57,34 +58,24 @@ public:
         root.append(FILE_PATH_LITERAL("res"))
             .append(FILE_PATH_LITERAL("shaders"))
             .append(FILE_PATH_LITERAL("default.vert.glsl"))};
-    m_vertShader.loadFromStream(&vertStream);
-    m_program.setVertexShader(&m_vertShader);
+    ca::Shader vertShader{ca::Shader::Vertex};
+    vertShader.loadFromStream(&vertStream);
+    m_program.setVertexShader(&vertShader);
 
     nu::FileInputStream fragStream{
         root.append(FILE_PATH_LITERAL("res"))
             .append(FILE_PATH_LITERAL("shaders"))
             .append(FILE_PATH_LITERAL("default.frag.glsl"))};
 
-    m_fragShader.loadFromStream(&fragStream);
-    m_program.setFragmentShader(&m_fragShader);
+    ca::Shader fragShader{ca::Shader::Fragment};
+    fragShader.loadFromStream(&fragStream);
+    m_program.setFragmentShader(&fragShader);
 
     // Make sure the program is linked.
     m_program.link();
 
     // And use the program.
     ca::Program::bind(&m_program);
-
-    // clang-format off
-    const f32 kSize = 10.f;
-    static float vertices[] = {
-      -kSize, -kSize, 0.0f, 0.0f,
-       kSize, -kSize, 1.0f, 0.0f,
-       kSize,  kSize, 1.0f, 1.0f,
-      -kSize,  kSize, 0.0f, 1.0f,
-    };
-    // clang-format on
-
-    m_vbo.setData(vertices, sizeof(vertices));
 
     {
       // Load a texture in.
@@ -102,6 +93,11 @@ public:
         return;
       }
     }
+
+    // Create some geometry that we can render.
+    m_geometry = ca::Geometry::createRectangle(
+        ca::Rect<f32>{-0.5f, -0.5f, 1.f, 1.f}, ca::Color{255, 0, 0, 127});
+    m_geometry.compileAndUpload();
   }
 
   void onWindowResized(const ca::Size<uint32_t>& size) override {
@@ -128,12 +124,16 @@ public:
     // DCHECK(m_program.setUniform("uni_color", ca::Vec4(1.0f, 1.0f, 0.0f, 1.0f)));
 
     ca::Mat4 viewMatrix;
-    viewMatrix = ca::scale(viewMatrix, ca::Vec3{10.f, 10.f, 1.f});
+    viewMatrix = ca::scale(viewMatrix, ca::Vec3{100.f, 100.f, 1.f});
     viewMatrix = ca::rotate(viewMatrix, counter* 20.f, ca::Vec3{0.f, 0.f, 1.f});
     viewMatrix = ca::translate(viewMatrix, ca::Vec3{counter * 100.f, 0.f, 0.f});
     ca::Mat4 mvp = m_projectionMatrix * viewMatrix;
     DCHECK(m_program.setUniform("uni_mvp", mvp));
 
+    ca::Texture::bind(&m_texture);
+    m_geometry.render();
+
+#if 0
     // ca::Texture::bind(&m_texture);
     ca::Texture::bind(m_font.getTexture(50));
     ca::VertexBufferObject::ScopedBind binder(m_vbo);
@@ -150,18 +150,16 @@ public:
     GL_CHECK(glDrawArrays(GL_TRIANGLE_FAN, 0, 4));
 
     glDisable(GL_BLEND);
+#endif  // 0
   }
 
 private:
-  ca::Shader m_vertShader{ca::Shader::Vertex};
-  ca::Shader m_fragShader{ca::Shader::Fragment};
   ca::Program m_program;
-  ca::VertexBufferObject m_vbo;
   ca::Texture m_texture;
+  ca::Geometry m_geometry;
+  ca::Font m_font;
 
   ca::Mat4 m_projectionMatrix;
-
-  ca::Font m_font;
 
   DISALLOW_COPY_AND_ASSIGN(Rendering);
 };

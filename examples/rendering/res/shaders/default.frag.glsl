@@ -1,18 +1,15 @@
 #version 420
 
+// We get the texture coordinates from the vertex shader.
 in vec2 frag_texCoord;
+in vec4 frag_color;
 
-uniform vec4 uni_color;
-
-out vec4 final;
-
+// The bound texture.
 uniform sampler2D sampler;
 
+// The final color of the fragment.
+out vec4 final;
+
 void main() {
-  // float adjust = sin(frag_texCoord.x * 3.14) * sin(frag_texCoord.y * 3.14);
-
-  // final = texture(sampler, frag_texCoord) * uni_color;
-  // final = vec4(final.rgb, adjust);
-
   final = texture(sampler, frag_texCoord);
 }
