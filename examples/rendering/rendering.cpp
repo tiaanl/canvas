@@ -14,18 +14,14 @@
 
 #include "canvas/app.h"
 #include "canvas/math/mat4.h"
-#include "canvas/math/transform.h"
-#include "canvas/math/vec4.h"
-#include "canvas/rendering/canvas.h"
-#include "canvas/rendering/font.h"
-#include "canvas/rendering/geometry.h"
+#include "nucleus/streams/file_input_stream.h"
 #include "canvas/rendering/program.h"
 #include "canvas/rendering/shader.h"
-#include "canvas/rendering/texture.h"
-#include "canvas/rendering/vertex_buffer_object.h"
+#include "canvas/rendering/geometry.h"
 #include "canvas/utils/image.h"
-#include "nucleus/logging.h"
-#include "nucleus/streams/file_input_stream.h"
+#include "canvas/math/transform.h"
+#include "canvas/rendering/canvas.h"
+#include "canvas/rendering/texture.h"
 
 class Rendering : public ca::WindowDelegate {
 public:
@@ -36,24 +32,10 @@ public:
   // Override: ca::WindowDelegate
 
   void onWindowCreated() override {
-    LOG(Info) << "onWindowCreated";
-
-    nu::FileInputStream fontStream{
-        nu::FilePath{FILE_PATH_LITERAL("C:\\Windows\\Fonts\\arial.ttf")}};
-
-    m_font.loadFromStream(&fontStream);
-    m_font.getOrInsertGlyph(50, 'a');
-    m_font.getOrInsertGlyph(50, 'b');
-    m_font.getOrInsertGlyph(50, 'c');
-    m_font.getOrInsertGlyph(50, 'd');
-    m_font.getOrInsertGlyph(50, 'H');
-    m_font.getOrInsertGlyph(50, 'e');
-    m_font.getOrInsertGlyph(50, 'l');
-    m_font.getOrInsertGlyph(50, 'o');
-
     nu::FilePath root{
         FILE_PATH_LITERAL("C:\\Workspace\\canvas\\examples\\rendering")};
 
+    // Load vertex shader.
     nu::FileInputStream vertStream{
         root.append(FILE_PATH_LITERAL("res"))
             .append(FILE_PATH_LITERAL("shaders"))
@@ -62,11 +44,11 @@ public:
     vertShader.loadFromStream(&vertStream);
     m_program.setVertexShader(&vertShader);
 
+    // Load fragment shader.
     nu::FileInputStream fragStream{
         root.append(FILE_PATH_LITERAL("res"))
             .append(FILE_PATH_LITERAL("shaders"))
             .append(FILE_PATH_LITERAL("default.frag.glsl"))};
-
     ca::Shader fragShader{ca::Shader::Fragment};
     fragShader.loadFromStream(&fragStream);
     m_program.setFragmentShader(&fragShader);
@@ -77,21 +59,19 @@ public:
     // And use the program.
     ca::Program::bind(&m_program);
 
-    {
-      // Load a texture in.
-      nu::FileInputStream imageStream{
-          root.append(FILE_PATH_LITERAL("res"))
-              .append(FILE_PATH_LITERAL("images"))
-              .append(FILE_PATH_LITERAL("canvas.jpg"))};
+    // Load a texture in.
+    nu::FileInputStream imageStream{
+        root.append(FILE_PATH_LITERAL("res"))
+            .append(FILE_PATH_LITERAL("images"))
+            .append(FILE_PATH_LITERAL("canvas.jpg"))};
 
-      ca::Image image;
-      if (!image.loadFromStream(&imageStream)) {
-        return;
-      }
+    ca::Image image;
+    if (!image.loadFromStream(&imageStream)) {
+      return;
+    }
 
-      if (!m_texture.createFromImage(image)) {
-        return;
-      }
+    if (!m_texture.createFromImage(image)) {
+      return;
     }
 
     // Create some geometry that we can render.
@@ -110,56 +90,25 @@ public:
   void onPaint(ca::Canvas* canvas) override {
     canvas->clear(ca::Color{31, 62, 93, 255});
 
-    static float counter = 0.f;
-    static float direction = 0.0001f;
-#if 0
-    counter += direction;
-    if (counter < 0.f || counter > 1.f) {
-      direction *= -1.f;
-    }
-#endif  // 0
-
     ca::Program::bind(&m_program);
-
-    // DCHECK(m_program.setUniform("uni_color", ca::Vec4(1.0f, 1.0f, 0.0f, 1.0f)));
 
     ca::Mat4 viewMatrix;
     viewMatrix = ca::scale(viewMatrix, ca::Vec3{100.f, 100.f, 1.f});
-    viewMatrix = ca::rotate(viewMatrix, counter* 20.f, ca::Vec3{0.f, 0.f, 1.f});
-    viewMatrix = ca::translate(viewMatrix, ca::Vec3{counter * 100.f, 0.f, 0.f});
+    viewMatrix = ca::rotate(viewMatrix, 20.f, ca::Vec3{0.f, 0.f, 1.f});
+    viewMatrix = ca::translate(viewMatrix, ca::Vec3{100.f, 0.f, 0.f});
     ca::Mat4 mvp = m_projectionMatrix * viewMatrix;
     DCHECK(m_program.setUniform("uni_mvp", mvp));
 
     ca::Texture::bind(&m_texture);
     m_geometry.render();
-
-#if 0
-    // ca::Texture::bind(&m_texture);
-    ca::Texture::bind(m_font.getTexture(50));
-    ca::VertexBufferObject::ScopedBind binder(m_vbo);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 4, 0);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 4,
-                          (void*)(sizeof(GLfloat) * 2));
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glBlendEquation(GL_FUNC_ADD);
-
-    GL_CHECK(glDrawArrays(GL_TRIANGLE_FAN, 0, 4));
-
-    glDisable(GL_BLEND);
-#endif  // 0
   }
 
 private:
+  ca::Mat4 m_projectionMatrix;
+
   ca::Program m_program;
   ca::Texture m_texture;
   ca::Geometry m_geometry;
-  ca::Font m_font;
-
-  ca::Mat4 m_projectionMatrix;
 
   DISALLOW_COPY_AND_ASSIGN(Rendering);
 };
