@@ -34,8 +34,14 @@ public:
   Geometry() = default;
   ~Geometry() = default;
 
+  // Add a single vertex to the geometry.
+  void addVertex(const Vertex& vertex);
+
   // Add an array of vertices to the geometry.
   void addVertices(Vertex* vertices, size_t count);
+
+  // Clear the list of vertices.
+  void clear();
 
   // Compile and upload the data to the GPU.
   void compileAndUpload();
