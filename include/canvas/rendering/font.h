@@ -35,7 +35,7 @@ public:
   struct Glyph {
     f32 advance{0.f};
     Rect<f32> bounds;
-    Rect<i32> textureRect;
+    Rect<f32> textureRect;
   };
 
   Font() = default;
@@ -113,8 +113,6 @@ private:
 
   DISALLOW_COPY_AND_ASSIGN(Font);
 };
-
-void fontTest();
 
 }  // namespace ca
 

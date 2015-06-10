@@ -17,20 +17,38 @@
 
 #include <string>
 
+#include "canvas/math/mat4.h"
 #include "canvas/rendering/geometry.h"
 #include "nucleus/macros.h"
 
 namespace ca {
 
+class Canvas;
 class Font;
 
 class Text {
 public:
-  Text() = default;
-  explicit Text(Font* font, const std::string& text = std::string());
+  Text();
+  explicit Text(Font* font, i32 textSize = 30,
+                const std::string& text = std::string());
   ~Text() = default;
 
+  // Set the font used to render the text.
+  void setFont(Font* font);
+
+  // Set the text we want to render.
+  void setText(const std::string& text);
+
+  // Set the size of the text we want to render.
+  void setTextSize(i32 textSize);
+
+  // Render the text.
+  void render(Canvas* canvas, const Mat4& transform) const;
+
 private:
+  // Make sure the shaders for text rendering is initialized.
+  void ensureShaders();
+
   // Take the font and create the geometry we use to render the text glyphs.
   void updateGeometry();
 
@@ -39,6 +57,9 @@ private:
 
   // The text we want to render.
   std::string m_text;
+
+  // The size of the text we want to render.
+  i32 m_textSize{30};
 
   // The geometry we render.
   Geometry m_geometry;

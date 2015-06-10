@@ -27,9 +27,6 @@
 #define STB_TRUETYPE_IMPLEMENTATION
 #include "stb_truetype.h"
 
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "stb_image_write.h"
-
 namespace ca {
 
 bool Font::loadFromStream(nu::InputStream* stream) {
@@ -109,7 +106,7 @@ Font::Page::Page(Font* font, i32 characterSize) {
 
   // Make sure the texture is initialized by default.
   Image image;
-  image.create(Size<i32>{128, 128}, Color{255, 255, 0, 127});
+  image.create(Size<i32>{128, 128}, Color{0, 0, 0, 0});
 
   // Create the texture.
   texture.createFromImage(image);
@@ -133,17 +130,19 @@ Font::Glyph Font::loadGlyph(Page* page, char32_t codePoint) {
   glyphRect.size.height -= glyphRect.pos.y;
 
   // Find a place for the glyph in the texture.
-  result.textureRect = findGlyphRect(page, glyphRect.size);
+  Rect<i32> textureRectI = findGlyphRect(page, glyphRect.size);
 
-#if 0
-  // Make sure the texture data is positioned in the center of the allocated
-  // texture rectangle.
-  const i32 kPadding = 1;
-  result.textureRect.pos.x += kPadding;
-  result.textureRect.pos.y += kPadding;
-  result.textureRect.size.width -= 2 * kPadding;
-  result.textureRect.size.height -= 2 * kPadding;
-#endif  // 0
+  const Size<f32> textureSize{
+      static_cast<float>(page->texture.getSize().width),
+      static_cast<float>(page->texture.getSize().height)};
+  result.textureRect.pos.x =
+      static_cast<float>(textureRectI.pos.x) / textureSize.width;
+  result.textureRect.pos.y =
+      static_cast<float>(textureRectI.pos.y) / textureSize.height;
+  result.textureRect.size.width =
+      static_cast<float>(textureRectI.size.width) / textureSize.width;
+  result.textureRect.size.height =
+      static_cast<float>(textureRectI.size.height) / textureSize.height;
 
   // Resize the pixel buffer so that we can fit the rendered glyph in it.
   m_pixelBuffer.resize(glyphRect.size.width * glyphRect.size.height);
@@ -153,11 +152,6 @@ Font::Glyph Font::loadGlyph(Page* page, char32_t codePoint) {
                             glyphRect.size.width, glyphRect.size.height,
                             glyphRect.size.width, page->fontScale,
                             page->fontScale, codePoint);
-
-  // Save out a 1 channel image.
-  stbi_write_png("C:\\Workspace\\canvas\\out.png", glyphRect.size.width,
-                 glyphRect.size.height, 1, nu::vectorAsArray(&m_pixelBuffer),
-                 glyphRect.size.width);
 
   Image image;
   image.create(glyphRect.size, {255, 255, 255, 255});
@@ -169,26 +163,15 @@ Font::Glyph Font::loadGlyph(Page* page, char32_t codePoint) {
   }
 
   Texture::bind(&page->texture);
-  GL_CHECK(glTexSubImage2D(
-      GL_TEXTURE_2D, 0, result.textureRect.pos.x, result.textureRect.pos.y,
-      result.textureRect.size.width, result.textureRect.size.height, GL_RGBA,
-      GL_UNSIGNED_BYTE, image.getData().data()));
+  GL_CHECK(glTexSubImage2D(GL_TEXTURE_2D, 0, textureRectI.pos.x,
+                           textureRectI.pos.y, textureRectI.size.width,
+                           textureRectI.size.height, GL_RGBA, GL_UNSIGNED_BYTE,
+                           image.getData().data()));
 
-#if 0
-  std::vector<u8> bb;
-  u8* bbb = nu::vectorAsArray(&bb, m_pixelBuffer.size() * 4);
-  for (size_t i = 0; i < m_pixelBuffer.size(); ++i) {
-    *bbb++ = 255;
-    *bbb++ = 255;
-    *bbb++ = 255;
-    *bbb++ = m_pixelBuffer[i];
-  }
-#endif  // 0
-
-  // Update the texture with the new data.
-  //page->texture.update(bbb, result.textureRect);
-  //result.textureRect.size.width *= 2;
-  //page->texture.update(nu::vectorAsArray(&m_pixelBuffer), result.textureRect);
+  result.bounds.pos.x = static_cast<f32>(glyphRect.pos.x);
+  result.bounds.pos.y = static_cast<f32>(glyphRect.pos.y);
+  result.bounds.size.width = static_cast<f32>(glyphRect.size.width);
+  result.bounds.size.height = static_cast<f32>(glyphRect.size.height);
 
   return result;
 }
@@ -244,71 +227,6 @@ Rect<i32> Font::findGlyphRect(Page* page, const Size<i32>& size) {
   bestRow->width += size.width;
 
   return rect;
-}
-
-void fontTest() {
-  nu::FileInputStream fontStream{
-      nu::FilePath{FILE_PATH_LITERAL("C:\\Windows\\Fonts\\arial.ttf")}};
-  std::vector<unsigned char> buffer;
-  auto length = fontStream.getLength();
-  fontStream.read(nu::vectorAsArray(&buffer, length), length);
-
-  stbtt_fontinfo fontInfo;
-  if (!stbtt_InitFont(&fontInfo, nu::vectorAsArray(&buffer), 0)) {
-    LOG(Error) << "Could not initialize font";
-    return;
-  }
-
-  const i32 bitmapWidth = 512;
-  const i32 bitmapHeight = 128;
-  const i32 lineHeight = 64;
-
-  std::vector<u8> bitmap;
-  nu::vectorAsArray(&bitmap, bitmapWidth * bitmapHeight);
-
-  const f32 fontScale =
-      stbtt_ScaleForPixelHeight(&fontInfo, static_cast<float>(lineHeight));
-
-  std::string words = "How are you?";
-
-  i32 x = 0;
-  i32 ascent, descent, lineGap;
-  stbtt_GetFontVMetrics(&fontInfo, &ascent, &descent, &lineGap);
-  ascent *= fontScale;
-  descent *= fontScale;
-
-  for (i32 i = 0; i < words.length(); ++i) {
-    // Get bounding box for character (may be offset to account for chars that
-    // dip above or below the line.
-    Rect<i32> rect;
-    stbtt_GetCodepointBitmapBox(&fontInfo, words[i], fontScale, fontScale,
-                                &rect.pos.x, &rect.pos.y, &rect.size.width,
-                                &rect.size.height);
-    rect.size.width -= rect.pos.x;
-    rect.size.height -= rect.pos.y;
-
-    // Computer Y (different characters have different heights.
-    i32 y = ascent + rect.pos.y;
-
-    // Render character (stride and offset is important here.
-    i32 byteOffset = x + (y * bitmapWidth);
-    stbtt_MakeCodepointBitmap(
-        &fontInfo, nu::vectorAsArray(&bitmap) + byteOffset, rect.size.width,
-        rect.size.height, bitmapWidth, fontScale, fontScale, words[i]);
-
-    // How wide is the character?
-    i32 ax;
-    stbtt_GetCodepointHMetrics(&fontInfo, words[i], &ax, 0);
-    x += ax * fontScale;
-
-    // Add kerning.
-    i32 kern = stbtt_GetCodepointKernAdvance(&fontInfo, words[i], words[i + 1]);
-    x += kern * fontScale;
-  }
-
-  // Save out a 1 channel image.
-  stbi_write_png("C:\\Workspace\\canvas\\out.png", bitmapWidth, bitmapHeight, 1,
-                 nu::vectorAsArray(&bitmap), bitmapWidth);
 }
 
 }  // namespace ca
