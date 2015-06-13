@@ -24,7 +24,7 @@ namespace ca {
 
 class VertexBufferObject {
 public:
-  // Scoper object to bind this object.
+  // Scoper to bind this object.
   struct ScopedBind {
     const VertexBufferObject& vbo;
     ScopedBind(const VertexBufferObject& vbo) : vbo(vbo) { vbo.bind(); }

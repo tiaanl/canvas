@@ -21,6 +21,7 @@
 #include "canvas/rendering/geometry.h"
 #include "canvas/rendering/program.h"
 #include "canvas/rendering/shader.h"
+#include "canvas/rendering/text.h"
 #include "canvas/rendering/texture.h"
 #include "canvas/rendering/vertex_buffer_object.h"
 #include "canvas/utils/image.h"
@@ -48,34 +49,34 @@ public:
     m_font.getOrInsertGlyph(50, 'e');
     m_font.getOrInsertGlyph(50, 'l');
     m_font.getOrInsertGlyph(50, 'o');
+
+    m_text.reset(new ca::Text{&m_font, 50, "Hello, World!"});
   }
 
   void onWindowResized(const ca::Size<uint32_t>& size) override {
-    m_projectionMatrix = ca::ortho(-static_cast<float>(size.width) / 4.f,
-                                   static_cast<float>(size.width) / 4.f,
-                                   static_cast<float>(size.height) / 4.f,
-                                   -static_cast<float>(size.height) / 4.f);
+    m_projectionMatrix = ca::ortho(-static_cast<float>(size.width) / 2.f,
+                                   static_cast<float>(size.width) / 2.f,
+                                   static_cast<float>(size.height) / 2.f,
+                                   -static_cast<float>(size.height) / 2.f);
   }
 
   void onPaint(ca::Canvas* canvas) override {
     canvas->clear(ca::Color{31, 62, 93, 255});
 
-#if 0
     ca::Mat4 viewMatrix;
     // viewMatrix = ca::scale(viewMatrix, ca::Vec3{100.f, 100.f, 1.f});
     // viewMatrix = ca::rotate(viewMatrix, 20.f, ca::Vec3{0.f, 0.f, 1.f});
     // viewMatrix = ca::translate(viewMatrix, ca::Vec3{100.f, 0.f, 0.f});
     ca::Mat4 mvp = m_projectionMatrix * viewMatrix;
-    DCHECK(m_program.setUniform("uni_mvp", mvp));
-#endif  // 0
 
-
+    m_text->render(canvas, mvp);
   }
 
 private:
   ca::Mat4 m_projectionMatrix;
 
   ca::Font m_font;
+  std::unique_ptr<ca::Text> m_text;
 
   DISALLOW_COPY_AND_ASSIGN(Rendering);
 };

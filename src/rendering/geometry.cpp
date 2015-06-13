@@ -38,11 +38,23 @@ Geometry Geometry::createRectangle(const Rect<f32>& rect, const Color& color) {
   return result;
 }
 
+void Geometry::addVertex(const Vertex& vertex) {
+  m_vertices.push_back(vertex);
+
+  m_compiled = false;
+}
+
 void Geometry::addVertices(Vertex* vertices, size_t count) {
   m_vertices.reserve(m_vertices.size() + count);
   for (size_t i = 0; i < count; ++i) {
     m_vertices.push_back(vertices[i]);
   }
+
+  m_compiled = false;
+}
+
+void Geometry::clear() {
+  m_vertices.clear();
 
   m_compiled = false;
 }
@@ -74,7 +86,8 @@ void Geometry::render() const {
                                  sizeof(Vertex), (void*)(sizeof(float) * 5)));
   GL_CHECK(glEnableVertexAttribArray(2));
 
-  glDrawArrays(GL_TRIANGLE_FAN, 0, m_vertices.size());
+  // glDrawArrays(GL_TRIANGLE_FAN, 0, m_vertices.size());
+  glDrawArrays(GL_TRIANGLES, 0, m_vertices.size());
 
   GL_CHECK(glDisableVertexAttribArray(2));
   GL_CHECK(glDisableVertexAttribArray(1));

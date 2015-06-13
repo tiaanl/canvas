@@ -14,14 +14,14 @@
 
 #include "canvas/app.h"
 #include "canvas/math/mat4.h"
-#include "nucleus/streams/file_input_stream.h"
-#include "canvas/rendering/program.h"
-#include "canvas/rendering/shader.h"
-#include "canvas/rendering/geometry.h"
-#include "canvas/utils/image.h"
 #include "canvas/math/transform.h"
 #include "canvas/rendering/canvas.h"
+#include "canvas/rendering/geometry.h"
+#include "canvas/rendering/program.h"
+#include "canvas/rendering/shader.h"
 #include "canvas/rendering/texture.h"
+#include "canvas/utils/image.h"
+#include "nucleus/streams/file_input_stream.h"
 
 class Rendering : public ca::WindowDelegate {
 public:
