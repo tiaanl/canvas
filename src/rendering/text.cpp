@@ -17,7 +17,7 @@
 #include "canvas/rendering/font.h"
 #include "canvas/rendering/program.h"
 #include "canvas/rendering/shader.h"
-#include "nucleus/streams/memory_input_stream.h"
+#include "nucleus/streams/wrapped_memory_input_stream.h"
 
 namespace ca {
 
@@ -117,13 +117,13 @@ void Text::ensureShaders() {
     return;
   }
 
-  nu::MemoryInputStream vertexStream{kTextVertexShader,
-                                     std::strlen(kTextVertexShader)};
+  nu::WrappedMemoryInputStream vertexStream{kTextVertexShader,
+                                            std::strlen(kTextVertexShader)};
   gs_textVertexShader = new Shader{Shader::Vertex};
   gs_textVertexShader->loadFromStream(&vertexStream);
 
-  nu::MemoryInputStream fragmentStream{kTextFragmentShader,
-                                       std::strlen(kTextFragmentShader)};
+  nu::WrappedMemoryInputStream fragmentStream{kTextFragmentShader,
+                                              std::strlen(kTextFragmentShader)};
   gs_textFragmentShader = new Shader{Shader::Fragment};
   gs_textFragmentShader->loadFromStream(&fragmentStream);
 
@@ -143,7 +143,7 @@ void Text::updateGeometry() {
     return;
   }
 
-  i32 left = 0.f;
+  f32 left = 0.f;
 
   // Build geometry for each character in the text.
   for (size_t i = 0; i < m_text.length(); ++i) {
@@ -154,6 +154,7 @@ void Text::updateGeometry() {
 
     // Add vertices for one block.
     // clang-format off
+
     // 0
     m_geometry.addVertex(
       Vertex{
