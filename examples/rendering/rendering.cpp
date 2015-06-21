@@ -19,6 +19,7 @@
 #include "canvas/rendering/geometry.h"
 #include "canvas/rendering/program.h"
 #include "canvas/rendering/shader.h"
+#include "canvas/rendering/sprite.h"
 #include "canvas/rendering/texture.h"
 #include "canvas/utils/image.h"
 #include "nucleus/streams/file_input_stream.h"
@@ -78,6 +79,9 @@ public:
     m_geometry = ca::Geometry::createRectangle(
         ca::Rect<f32>{-0.5f, -0.5f, 1.f, 1.f}, ca::Color{255, 0, 0, 127});
     m_geometry.compileAndUpload();
+
+    // Set up the sprite.
+    m_sprite.setTexture(&m_texture);
   }
 
   void onWindowResized(const ca::Size<uint32_t>& size) override {
@@ -90,17 +94,24 @@ public:
   void onPaint(ca::Canvas* canvas) override {
     canvas->clear(ca::Color{31, 62, 93, 255});
 
+#if 0
     ca::Program::bind(&m_program);
+#endif  // 0
 
     ca::Mat4 viewMatrix;
-    viewMatrix = ca::scale(viewMatrix, ca::Vec3{100.f, 100.f, 1.f});
-    viewMatrix = ca::rotate(viewMatrix, 20.f, ca::Vec3{0.f, 0.f, 1.f});
-    viewMatrix = ca::translate(viewMatrix, ca::Vec3{100.f, 0.f, 0.f});
+    viewMatrix = ca::scale(viewMatrix, ca::Vec3{0.5f, 0.5f, 1.f});
+    // viewMatrix = ca::rotate(viewMatrix, 20.f, ca::Vec3{0.f, 0.f, 1.f});
+    // viewMatrix = ca::translate(viewMatrix, ca::Vec3{100.f, 0.f, 0.f});
     ca::Mat4 mvp = m_projectionMatrix * viewMatrix;
+
+#if 0
     DCHECK(m_program.setUniform("uni_mvp", mvp));
 
     ca::Texture::bind(&m_texture);
     m_geometry.render();
+#endif  // 0
+
+    m_sprite.render(canvas, mvp);
   }
 
 private:
@@ -109,6 +120,8 @@ private:
   ca::Program m_program;
   ca::Texture m_texture;
   ca::Geometry m_geometry;
+
+  ca::Sprite m_sprite;
 
   DISALLOW_COPY_AND_ASSIGN(Rendering);
 };

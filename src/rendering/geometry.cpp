@@ -20,7 +20,7 @@ namespace ca {
 
 // static
 Geometry Geometry::createRectangle(const Rect<f32>& rect, const Color& color) {
-  Geometry result;
+  Geometry result{TriangleFan};
 
   Vertex vertices[] = {
       Vertex{Vec3{rect.pos.x, rect.pos.y, 0.f}, Vec2{0.f, 0.f}, color},
@@ -36,6 +36,10 @@ Geometry Geometry::createRectangle(const Rect<f32>& rect, const Color& color) {
   result.addVertices(vertices, ARRAY_SIZE(vertices));
 
   return result;
+}
+
+Geometry::Geometry(PrimitiveType primitiveType)
+  : m_primitiveType(primitiveType) {
 }
 
 void Geometry::addVertex(const Vertex& vertex) {
@@ -86,8 +90,27 @@ void Geometry::render() const {
                                  sizeof(Vertex), (void*)(sizeof(float) * 5)));
   GL_CHECK(glEnableVertexAttribArray(2));
 
-  // glDrawArrays(GL_TRIANGLE_FAN, 0, m_vertices.size());
-  glDrawArrays(GL_TRIANGLES, 0, m_vertices.size());
+  GLenum prim = 0;
+  switch (m_primitiveType) {
+    case Triangles:
+      prim = GL_TRIANGLES;
+      break;
+
+    case TriangleStrip:
+      prim = GL_TRIANGLE_STRIP;
+      break;
+
+    case TriangleFan:
+      prim = GL_TRIANGLE_FAN;
+      break;
+
+    default:
+      NOTREACHED();
+      break;
+  }
+
+  // Draw the vertices with the specified primitive type.
+  glDrawArrays(prim, 0, m_vertices.size());
 
   GL_CHECK(glDisableVertexAttribArray(2));
   GL_CHECK(glDisableVertexAttribArray(1));

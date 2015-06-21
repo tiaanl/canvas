@@ -28,10 +28,16 @@ namespace ca {
 
 class Geometry {
 public:
+  enum PrimitiveType {
+    Triangles,
+    TriangleStrip,
+    TriangleFan,
+  };
+
   // Create a rectangle geometry with the given dimensions.
   static Geometry createRectangle(const Rect<f32>& rect, const Color& color);
 
-  Geometry() = default;
+  explicit Geometry(PrimitiveType primitiveType = Triangles);
   ~Geometry() = default;
 
   // Add a single vertex to the geometry.
@@ -50,6 +56,9 @@ public:
   void render() const;
 
 private:
+  // The type of primitives we want to render.
+  PrimitiveType m_primitiveType;
+
   // All the vertices we contain.
   std::vector<Vertex> m_vertices;
 
