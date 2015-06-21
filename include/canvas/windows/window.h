@@ -21,6 +21,8 @@
 
 #include "canvas/windows/window_delegate.h"
 
+typedef struct GLFWwindow GLFWwindow;
+
 namespace ca {
 
 class Window {
@@ -35,8 +37,9 @@ public:
   // Returns true if this window is still open and on the screen.
   bool isOpen() const;
 
-  // Process any pending events for this window.
-  void processEvents();
+  // Process any pending events for this window.  Returns false if the window
+  // should stop processing messages.
+  bool processEvents();
 
   // Activate this window's rendering context.
   void activateContext();
@@ -48,11 +51,19 @@ private:
   // Construct a new window with the specified delegate.
   Window(WindowDelegate* delegate);
 
+  // Callbacks
+  static void frameBufferSizeCallback(GLFWwindow* window, int width,
+                                      int height);
+  static void cursorPositionCallback(GLFWwindow* window, double xpos,
+                                     double ypos);
+  static void mouseButtonCallback(GLFWwindow* window, int button, int action,
+                                  int mods);
+
   // The window delegate we pass events to.
   WindowDelegate* m_delegate;
 
   // Our internal pointer to the window's implementation.
-  void* m_impl{nullptr};
+  GLFWwindow* m_window;
 
   DISALLOW_IMPLICIT_CONSTRUCTORS(Window);
 };

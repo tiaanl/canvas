@@ -15,13 +15,17 @@
 #ifndef CANVAS_APP_H_
 #define CANVAS_APP_H_
 
-#include <vector>
+#include <memory>
 
+#include "nucleus/config.h"
 #include "nucleus/macros.h"
+#include "nucleus/win/windows_mixin.h"
 
-#include "canvas/windows/window.h"
+#include "canvas/windows/window_delegate.h"
 
 namespace ca {
+
+class Window;
 
 class App {
 public:
@@ -43,8 +47,14 @@ private:
 
 }  // namespace ca
 
+#if OS(WIN)
+#define MAIN_HEADER int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
+#else
+#define MAIN_HEADER int main(int argc, char* argv)
+#endif
+
 #define CANVAS_APP(DelegateType)                                               \
-  int main(int argc, char* argv[]) {                                           \
+  MAIN_HEADER {                                                                \
     ca::App app{new DelegateType};                                             \
     app.run();                                                                 \
     return 0;                                                                  \

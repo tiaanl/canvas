@@ -14,18 +14,23 @@
 
 #include "canvas/windows/window.h"
 
-#include <GL/glew.h>
-
 #include "nucleus/logging.h"
 #include "nucleus/types.h"
-#include "SFML/Window/Event.hpp"
-#include "SFML/Window/Window.hpp"
 
+#include "canvas/opengl.h"
 #include "canvas/rendering/canvas.h"
+
+#include <GLFW/glfw3.h>
 
 namespace ca {
 
-#define IMPL static_cast<sf::Window*>(m_impl)
+namespace {
+
+inline Window* getUserPointer(GLFWwindow* window) {
+  return static_cast<Window*>(glfwGetWindowUserPointer(window));
+}
+
+}  // namespace
 
 // static
 std::unique_ptr<Window> Window::create(WindowDelegate* delegate,
@@ -34,18 +39,29 @@ std::unique_ptr<Window> Window::create(WindowDelegate* delegate,
 
   auto newWindow = std::unique_ptr<Window>(new Window(delegate));
 
-  sf::ContextSettings settings{0u, 0u, 0u, 3u, 1u, sf::ContextSettings::Core};
-
-  // Create the implementation of the window.
-  newWindow->m_impl = new sf::Window{sf::VideoMode{800, 480, 32}, title,
-                                     sf::Style::Default, settings};
-
-  // Once a window is created, we have to make sure then GLEW is initialized.
-  static bool glewInitialized = false;
-  if (!glewInitialized) {
-    glewInitialized = true;
-    glewInit();
+  // Initialize GLFW.
+  if (!glfwInit()) {
+    return nullptr;
   }
+
+  // Create the window.
+  newWindow->m_window = glfwCreateWindow(800, 480, delegate->getTitle().c_str(),
+                                         nullptr, nullptr);
+
+  // Set up the callbacks for the window.
+  glfwSetWindowUserPointer(newWindow->m_window, newWindow.get());
+  glfwSetFramebufferSizeCallback(newWindow->m_window, frameBufferSizeCallback);
+  glfwSetCursorPosCallback(newWindow->m_window, cursorPositionCallback);
+  glfwSetMouseButtonCallback(newWindow->m_window, mouseButtonCallback);
+
+  // Make the new window the current context.
+  glfwMakeContextCurrent(newWindow->m_window);
+
+  // Enable v-sync.
+  glfwSwapInterval(1);
+
+  // Initialize glad, so we can use GL extensions.
+  gladLoadGL();
 
   // Let the delegate know we were just created.
   delegate->onWindowCreated();
@@ -59,54 +75,21 @@ std::unique_ptr<Window> Window::create(WindowDelegate* delegate,
 }
 
 Window::~Window() {
+  glfwDestroyWindow(m_window);
+
+  glfwTerminate();
 }
 
-bool Window::isOpen() const {
-  return IMPL->isOpen();
-}
+bool Window::processEvents() {
+  // Handle events...
+  glfwPollEvents();
 
-void Window::processEvents() {
-  sf::Event sfEvent;
-  while (IMPL->pollEvent(sfEvent)) {
-    switch (sfEvent.type) {
-      case sf::Event::Closed:
-        IMPL->close();
-        break;
-
-      case sf::Event::Resized: {
-        Size<u32> clientSize{sfEvent.size.width, sfEvent.size.height};
-        glViewport(0, 0, clientSize.width, clientSize.height);
-        m_delegate->onWindowResized(clientSize);
-      } break;
-
-      case sf::Event::MouseMoved: {
-        MouseEvent event{Event::MouseMoved, Pos<i32>{sfEvent.mouseMove.x,
-                                                         sfEvent.mouseMove.y}};
-        m_delegate->onMouseMoved(event);
-      } break;
-
-      case sf::Event::MouseButtonPressed: {
-        MouseEvent event{
-            Event::MousePressed,
-            Pos<i32>{sfEvent.mouseButton.x, sfEvent.mouseButton.y}};
-        m_delegate->onMousePressed(event);
-      } break;
-
-      case sf::Event::MouseButtonReleased: {
-        MouseEvent event{
-            Event::MouseReleased,
-            Pos<i32>{sfEvent.mouseButton.x, sfEvent.mouseButton.y}};
-        m_delegate->onMousePressed(event);
-      } break;
-
-      default:
-        break;
-    }
-  }
+  // ...and tell the caller if event processing should continue or not.
+  return !glfwWindowShouldClose(m_window);
 }
 
 void Window::activateContext() {
-  IMPL->setActive(true);
+  glfwMakeContextCurrent(m_window);
 }
 
 void Window::paint() {
@@ -117,10 +100,53 @@ void Window::paint() {
   m_delegate->onPaint(&canvas);
 
   // Swap buffers.
-  IMPL->display();
+  glfwSwapBuffers(m_window);
 }
 
 Window::Window(WindowDelegate* delegate) : m_delegate(delegate) {
+}
+
+// static
+void Window::frameBufferSizeCallback(GLFWwindow* window, int width, int height) {
+  Window* windowPtr = getUserPointer(window);
+
+  // We set up the viewport for the window before letting the delegate know the
+  // size changed.
+  glViewport(0, 0, width, height);
+
+  Size<u32> windowSize(width, height);
+  windowPtr->m_delegate->onWindowResized(windowSize);
+}
+
+// static
+void Window::cursorPositionCallback(GLFWwindow* window, double xPos,
+                                    double yPos) {
+  Window* windowPtr = getUserPointer(window);
+
+  // Send the event to the delegate.
+  Pos<i32> mousePos{static_cast<i32>(std::round(xPos)),
+                    static_cast<i32>(std::round(yPos))};
+  MouseEvent evt{Event::MouseMoved, mousePos};
+  windowPtr->m_delegate->onMouseMoved(evt);
+}
+
+// static
+void Window::mouseButtonCallback(GLFWwindow* window, int button, int action,
+                                 int mods) {
+  Window* windowPtr = getUserPointer(window);
+
+  double xPos, yPos;
+  glfwGetCursorPos(window, &xPos, &yPos);
+  Pos<i32> mousePos{static_cast<i32>(std::round(xPos)),
+                    static_cast<i32>(std::round(yPos))};
+
+  if (action == GLFW_PRESS) {
+    MouseEvent evt{Event::MousePressed, mousePos};
+    windowPtr->m_delegate->onMousePressed(evt);
+  } else if (action == GLFW_RELEASE) {
+    MouseEvent evt{Event::MouseReleased, mousePos};
+    windowPtr->m_delegate->onMouseReleased(evt);
+  }
 }
 
 }  // namespace ca
