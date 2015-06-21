@@ -41,19 +41,11 @@ public:
         nu::FilePath{FILE_PATH_LITERAL("C:\\Windows\\Fonts\\arial.ttf")}};
 
     m_font.loadFromStream(&fontStream);
-    m_font.getOrInsertGlyph(50, 'a');
-    m_font.getOrInsertGlyph(50, 'b');
-    m_font.getOrInsertGlyph(50, 'c');
-    m_font.getOrInsertGlyph(50, 'd');
-    m_font.getOrInsertGlyph(50, 'H');
-    m_font.getOrInsertGlyph(50, 'e');
-    m_font.getOrInsertGlyph(50, 'l');
-    m_font.getOrInsertGlyph(50, 'o');
 
     m_text.reset(new ca::Text{&m_font, 50, "Hello, World!"});
   }
 
-  void onWindowResized(const ca::Size<uint32_t>& size) override {
+  void onWindowResized(const ca::Size<u32>& size) override {
     m_projectionMatrix = ca::ortho(-static_cast<float>(size.width) / 2.f,
                                    static_cast<float>(size.width) / 2.f,
                                    static_cast<float>(size.height) / 2.f,

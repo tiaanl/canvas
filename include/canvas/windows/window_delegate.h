@@ -37,7 +37,7 @@ public:
   virtual void onWindowCreated();
 
   // Called when the size of the window changed.
-  virtual void onWindowResized(const Size<uint32_t>& size);
+  virtual void onWindowResized(const Size<u32>& size);
 
   // Called when the window wants to paint to it's canvas.
   virtual void onPaint(Canvas* canvas) = 0;
