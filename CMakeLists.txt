@@ -14,10 +14,11 @@ endif()
 option(CANVAS_BUILD_DEPENDENCIES "Build all dependencies with this library")
 if(CANVAS_BUILD_DEPENDENCIES)
   include("cmake/nucleus.cmake")
-  include("cmake/glfw.cmake")
 endif()
 
-add_subdirectory("${CMAKE_SOURCE_DIR}/third_party/glad")
+include("cmake/glfw.cmake")
+
+add_subdirectory("${canvas_SOURCE_DIR}/third_party/glad")
 
 # canvas
 
@@ -74,5 +75,5 @@ target_include_directories("canvas" PUBLIC "${canvas_SOURCE_DIR}/include")
 target_include_directories("canvas" PUBLIC "${canvas_SOURCE_DIR}/third_party/stb")
 set_property(TARGET "canvas" PROPERTY FOLDER "canvas")
 
-add_subdirectory("tests")
-add_subdirectory("examples")
+# add_subdirectory("tests")
+# add_subdirectory("examples")

@@ -11,5 +11,4 @@ add_library("glad"
 )
 
 target_include_directories("glad" PUBLIC "${glad_SOURCE_DIR}/include")
-
 target_link_libraries("glad" ${OPENGL_LIBRARIES})
