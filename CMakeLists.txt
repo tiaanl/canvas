@@ -14,8 +14,7 @@ endif()
 option(CANVAS_BUILD_DEPENDENCIES "Build all dependencies with this library")
 if(CANVAS_BUILD_DEPENDENCIES)
   include("cmake/nucleus.cmake")
-  include("cmake/sfml.cmake")
-  include("cmake/glew.cmake")
+  include("cmake/glfw.cmake")
 endif()
 
 # canvas
@@ -66,9 +65,8 @@ set("canvas_SOURCE_FILES"
 )
 
 add_library("canvas" STATIC ${canvas_INCLUDE_FILES} ${canvas_SOURCE_FILES})
-add_definitions("-DGLEW_STATIC")
-target_link_libraries("canvas" "nucleus" "sfml-main" "sfml-window" "sfml-system" ${GLEW_LIBRARIES})
-target_include_directories("canvas" PUBLIC "${canvas_SOURCE_DIR}/include" ${GLEW_INCLUDE_DIRECTORIES})
+target_link_libraries("canvas" "nucleus" "glfw")
+target_include_directories("canvas" PUBLIC "${canvas_SOURCE_DIR}/include")
 target_include_directories("canvas" PUBLIC "${canvas_SOURCE_DIR}/third_party/stb")
 set_property(TARGET "canvas" PROPERTY FOLDER "canvas")
 
