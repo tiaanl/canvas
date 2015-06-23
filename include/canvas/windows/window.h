@@ -34,8 +34,8 @@ public:
   // Cleanup.
   ~Window();
 
-  // Returns true if this window is still open and on the screen.
-  bool isOpen() const;
+  // Get the client size of the window.
+  ca::Size<i32> getClientSize() const;
 
   // Process any pending events for this window.  Returns false if the window
   // should stop processing messages.

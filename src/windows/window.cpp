@@ -80,6 +80,12 @@ Window::~Window() {
   glfwTerminate();
 }
 
+ca::Size<i32> Window::getClientSize() const {
+  int width, height;
+  glfwGetFramebufferSize(m_window, &width, &height);
+  return ca::Size<i32>{width, height};
+}
+
 bool Window::processEvents() {
   // Handle events...
   glfwPollEvents();

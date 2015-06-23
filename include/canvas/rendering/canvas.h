@@ -18,6 +18,7 @@
 #include "nucleus/macros.h"
 
 #include "canvas/utils/color.h"
+#include "canvas/utils/size.h"
 
 namespace ca {
 
@@ -27,6 +28,9 @@ class Canvas {
 public:
   explicit Canvas(Window* window);
   ~Canvas();
+
+  // Get the size of the render area of the canvas.
+  ca::Size<i32> getSize() const;
 
   // Clear the entire surface of the canvas with the specified color.
   void clear(const Color& color);

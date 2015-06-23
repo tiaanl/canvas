@@ -14,6 +14,8 @@
 
 #include "canvas/rendering/canvas.h"
 
+#include "nucleus/logging.h"
+
 #include "canvas/opengl.h"
 #include "canvas/windows/window.h"
 
@@ -25,6 +27,11 @@ Canvas::Canvas(Window* window) : m_window(window) {
 }
 
 Canvas::~Canvas() {
+}
+
+ca::Size<i32> Canvas::getSize() const {
+  DCHECK(m_window);
+  return m_window->getClientSize();
 }
 
 void Canvas::clear(const Color& color) {

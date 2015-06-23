@@ -69,7 +69,7 @@ inline Mat4 scale(const Mat4& mat, const Vec3& scale) {
   return result;
 }
 
-Mat4 ortho(f32 left, f32 right, f32 bottom, f32 top) {
+inline Mat4 ortho(f32 left, f32 right, f32 bottom, f32 top) {
   Mat4 result;
 
   result[0][0] = 2.0f / (right - left);
@@ -81,7 +81,8 @@ Mat4 ortho(f32 left, f32 right, f32 bottom, f32 top) {
   return result;
 }
 
-Mat4 ortho(f32 left, f32 right, f32 bottom, f32 top, f32 zNear, f32 zFar) {
+inline Mat4 ortho(f32 left, f32 right, f32 bottom, f32 top, f32 zNear,
+                  f32 zFar) {
   Mat4 result;
 
   result[0][0] = 2.0f / (right - left);
