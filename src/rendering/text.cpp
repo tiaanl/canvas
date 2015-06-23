@@ -132,7 +132,9 @@ void Text::ensureShaders() {
 }
 
 void Text::updateGeometry() {
-  DCHECK(m_font);
+  if (!m_font) {
+    return;
+  }
 
   // Clear out the old geometry.
   m_geometry.clear();

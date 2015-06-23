@@ -33,8 +33,9 @@ public:
   // Get the title of the window.
   const std::string& getTitle() const { return m_title; }
 
-  // Called right after the window was created.
-  virtual void onWindowCreated();
+  // Called right after the window was created.  Return false if the app
+  // creation failed.
+  virtual bool onWindowCreated();
 
   // Called when the size of the window changed.
   virtual void onWindowResized(const Size<u32>& size);

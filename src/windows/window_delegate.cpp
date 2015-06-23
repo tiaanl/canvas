@@ -16,7 +16,8 @@
 
 namespace ca {
 
-void WindowDelegate::onWindowCreated() {
+bool WindowDelegate::onWindowCreated() {
+  return true;
 }
 
 void WindowDelegate::onWindowResized(const Size<u32>& size) {
