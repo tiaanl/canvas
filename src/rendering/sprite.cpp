@@ -66,6 +66,17 @@ Sprite::Sprite(Texture* texture) : m_texture{texture} {
 Sprite::~Sprite() {
 }
 
+ca::Rect<f32> Sprite::getBounds() const {
+  if (!m_texture) {
+    return Rect<f32>{};
+  }
+
+  Size<i32> textureSize = m_texture->getSize();
+  const f32 width = static_cast<f32>(textureSize.width) / 2.f;
+  const f32 height = static_cast<f32>(textureSize.width) / 2.f;
+  return Rect<f32>{-width, -height, width * 2.f, height * 2.f};
+}
+
 void Sprite::setTexture(Texture* texture) {
   m_texture = texture;
   updateGeometry();
@@ -82,11 +93,20 @@ void Sprite::render(Canvas* canvas, const Mat4& transform) const {
   DCHECK(s_shaderProgram->setUniform("uni_mvp", transform));
 
   Texture::bind(m_texture);
+
+  // Enable blending.
+  glEnable(GL_BLEND);
+
   m_geometry.render();
+
+  glDisable(GL_BLEND);
 }
 
 void Sprite::updateGeometry() {
-  DCHECK(m_texture);
+  if (!m_texture) {
+    return;
+  }
+
   ensureShaderProgram();
 
   // Clear out the old geometry.

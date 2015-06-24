@@ -30,6 +30,9 @@ public:
   explicit Sprite(Texture* texture = nullptr);
   ~Sprite();
 
+  // Get the bounds of the sprite.
+  ca::Rect<f32> getBounds() const;
+
   void setTexture(Texture* texture);
 
   // Render the sprite on the specified canvas at the specified transform

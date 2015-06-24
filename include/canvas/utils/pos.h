@@ -35,6 +35,8 @@ struct Pos {
   bool operator!=(const Pos& other) const {
     return x != other.x || y != other.y;
   }
+
+  Pos operator-(const Pos& other) { return Pos{x - other.x, y - other.y}; }
 };
 
 }  // namespace ca

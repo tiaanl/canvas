@@ -132,6 +132,7 @@ void Window::cursorPositionCallback(GLFWwindow* window, double xPos,
   // Send the event to the delegate.
   Pos<i32> mousePos{static_cast<i32>(std::round(xPos)),
                     static_cast<i32>(std::round(yPos))};
+
   MouseEvent evt{Event::MouseMoved, mousePos};
   windowPtr->m_delegate->onMouseMoved(evt);
 }

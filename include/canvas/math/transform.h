@@ -26,6 +26,14 @@ inline Mat4 translate(const Vec3& vec) {
   return result;
 }
 
+inline Mat4 translate(f32 x, f32 y, f32 z) {
+  Mat4 result;
+  result[3][0] = x;
+  result[3][1] = y;
+  result[3][2] = z;
+  return result;
+}
+
 inline Mat4 rotate(f32 radians, const Vec3& v) {
   const f32 a = radians;
   const f32 c = std::cosf(radians);

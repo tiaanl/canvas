@@ -108,25 +108,41 @@ struct Mat4 {
     Mat4 result;
     const Mat4& left = *this;
 
-    result[0][0] = left[0][0] * right[0][0] + left[1][0] * right[0][1] + left[2][0] * right[0][2] + left[3][0] * right[0][3];
-    result[0][1] = left[0][1] * right[0][0] + left[1][1] * right[0][1] + left[2][1] * right[0][2] + left[3][1] * right[0][3];
-    result[0][2] = left[0][2] * right[0][0] + left[1][2] * right[0][1] + left[2][2] * right[0][2] + left[3][2] * right[0][3];
-    result[0][3] = left[0][3] * right[0][0] + left[1][3] * right[0][1] + left[2][3] * right[0][2] + left[3][3] * right[0][3];
+    result[0][0] = left[0][0] * right[0][0] + left[1][0] * right[0][1] +
+                   left[2][0] * right[0][2] + left[3][0] * right[0][3];
+    result[0][1] = left[0][1] * right[0][0] + left[1][1] * right[0][1] +
+                   left[2][1] * right[0][2] + left[3][1] * right[0][3];
+    result[0][2] = left[0][2] * right[0][0] + left[1][2] * right[0][1] +
+                   left[2][2] * right[0][2] + left[3][2] * right[0][3];
+    result[0][3] = left[0][3] * right[0][0] + left[1][3] * right[0][1] +
+                   left[2][3] * right[0][2] + left[3][3] * right[0][3];
 
-    result[1][0] = left[0][0] * right[1][0] + left[1][0] * right[1][1] + left[2][0] * right[1][2] + left[3][0] * right[1][3];
-    result[1][1] = left[0][1] * right[1][0] + left[1][1] * right[1][1] + left[2][1] * right[1][2] + left[3][1] * right[1][3];
-    result[1][2] = left[0][2] * right[1][0] + left[1][2] * right[1][1] + left[2][2] * right[1][2] + left[3][2] * right[1][3];
-    result[1][3] = left[0][3] * right[1][0] + left[1][3] * right[1][1] + left[2][3] * right[1][2] + left[3][3] * right[1][3];
+    result[1][0] = left[0][0] * right[1][0] + left[1][0] * right[1][1] +
+                   left[2][0] * right[1][2] + left[3][0] * right[1][3];
+    result[1][1] = left[0][1] * right[1][0] + left[1][1] * right[1][1] +
+                   left[2][1] * right[1][2] + left[3][1] * right[1][3];
+    result[1][2] = left[0][2] * right[1][0] + left[1][2] * right[1][1] +
+                   left[2][2] * right[1][2] + left[3][2] * right[1][3];
+    result[1][3] = left[0][3] * right[1][0] + left[1][3] * right[1][1] +
+                   left[2][3] * right[1][2] + left[3][3] * right[1][3];
 
-    result[2][0] = left[0][0] * right[2][0] + left[1][0] * right[2][1] + left[2][0] * right[2][2] + left[3][0] * right[2][3];
-    result[2][1] = left[0][1] * right[2][0] + left[1][1] * right[2][1] + left[2][1] * right[2][2] + left[3][1] * right[2][3];
-    result[2][2] = left[0][2] * right[2][0] + left[1][2] * right[2][1] + left[2][2] * right[2][2] + left[3][2] * right[2][3];
-    result[2][3] = left[0][3] * right[2][0] + left[1][3] * right[2][1] + left[2][3] * right[2][2] + left[3][3] * right[2][3];
+    result[2][0] = left[0][0] * right[2][0] + left[1][0] * right[2][1] +
+                   left[2][0] * right[2][2] + left[3][0] * right[2][3];
+    result[2][1] = left[0][1] * right[2][0] + left[1][1] * right[2][1] +
+                   left[2][1] * right[2][2] + left[3][1] * right[2][3];
+    result[2][2] = left[0][2] * right[2][0] + left[1][2] * right[2][1] +
+                   left[2][2] * right[2][2] + left[3][2] * right[2][3];
+    result[2][3] = left[0][3] * right[2][0] + left[1][3] * right[2][1] +
+                   left[2][3] * right[2][2] + left[3][3] * right[2][3];
 
-    result[3][0] = left[0][0] * right[3][0] + left[1][0] * right[3][1] + left[2][0] * right[3][2] + left[3][0] * right[3][3];
-    result[3][1] = left[0][1] * right[3][0] + left[1][1] * right[3][1] + left[2][1] * right[3][2] + left[3][1] * right[3][3];
-    result[3][2] = left[0][2] * right[3][0] + left[1][2] * right[3][1] + left[2][2] * right[3][2] + left[3][2] * right[3][3];
-    result[3][3] = left[0][3] * right[3][0] + left[1][3] * right[3][1] + left[2][3] * right[3][2] + left[3][3] * right[3][3];
+    result[3][0] = left[0][0] * right[3][0] + left[1][0] * right[3][1] +
+                   left[2][0] * right[3][2] + left[3][0] * right[3][3];
+    result[3][1] = left[0][1] * right[3][0] + left[1][1] * right[3][1] +
+                   left[2][1] * right[3][2] + left[3][1] * right[3][3];
+    result[3][2] = left[0][2] * right[3][0] + left[1][2] * right[3][1] +
+                   left[2][2] * right[3][2] + left[3][2] * right[3][3];
+    result[3][3] = left[0][3] * right[3][0] + left[1][3] * right[3][1] +
+                   left[2][3] * right[3][2] + left[3][3] * right[3][3];
 
     return result;
   }
@@ -153,6 +169,13 @@ struct Mat4 {
     }
     return result;
   }
+
+  Mat4& operator/=(f32 scalar) {
+    for (auto i = 0; i < 4; ++i) {
+      col[i] /= scalar;
+    }
+    return *this;
+  }
 };
 
 inline Mat4 transpose(const Mat4& mat) {
@@ -164,114 +187,71 @@ inline Mat4 transpose(const Mat4& mat) {
   }
 }
 
-#if 0
-f32 determinant(const Mat4& mat)
-{
-  f32 coef00{mat[2][2] * mat[3][3] - mat[3][2] * mat[2][3]};
-  f32 coef02{mat[1][2] * mat[3][3] - mat[3][2] * mat[1][3]};
-  f32 coef03{mat[1][2] * mat[2][3] - mat[2][2] * mat[1][3]};
+inline Mat4 inverse(const Mat4& m) {
+  f32 SubFactor00 = m[2][2] * m[3][3] - m[3][2] * m[2][3];
+  f32 SubFactor01 = m[2][1] * m[3][3] - m[3][1] * m[2][3];
+  f32 SubFactor02 = m[2][1] * m[3][2] - m[3][1] * m[2][2];
+  f32 SubFactor03 = m[2][0] * m[3][3] - m[3][0] * m[2][3];
+  f32 SubFactor04 = m[2][0] * m[3][2] - m[3][0] * m[2][2];
+  f32 SubFactor05 = m[2][0] * m[3][1] - m[3][0] * m[2][1];
+  f32 SubFactor06 = m[1][2] * m[3][3] - m[3][2] * m[1][3];
+  f32 SubFactor07 = m[1][1] * m[3][3] - m[3][1] * m[1][3];
+  f32 SubFactor08 = m[1][1] * m[3][2] - m[3][1] * m[1][2];
+  f32 SubFactor09 = m[1][0] * m[3][3] - m[3][0] * m[1][3];
+  f32 SubFactor10 = m[1][0] * m[3][2] - m[3][0] * m[1][2];
+  f32 SubFactor11 = m[1][1] * m[3][3] - m[3][1] * m[1][3];
+  f32 SubFactor12 = m[1][0] * m[3][1] - m[3][0] * m[1][1];
+  f32 SubFactor13 = m[1][2] * m[2][3] - m[2][2] * m[1][3];
+  f32 SubFactor14 = m[1][1] * m[2][3] - m[2][1] * m[1][3];
+  f32 SubFactor15 = m[1][1] * m[2][2] - m[2][1] * m[1][2];
+  f32 SubFactor16 = m[1][0] * m[2][3] - m[2][0] * m[1][3];
+  f32 SubFactor17 = m[1][0] * m[2][2] - m[2][0] * m[1][2];
+  f32 SubFactor18 = m[1][0] * m[2][1] - m[2][0] * m[1][1];
 
-  f32 coef04{mat[2][1] * mat[3][3] - mat[3][1] * mat[2][3]};
-  f32 coef06{mat[1][1] * mat[3][3] - mat[3][1] * mat[1][3]};
-  f32 coef07{mat[1][1] * mat[2][3] - mat[2][1] * mat[1][3]};
+  Mat4 inverse;
+  inverse[0][0] =
+      +(m[1][1] * SubFactor00 - m[1][2] * SubFactor01 + m[1][3] * SubFactor02);
+  inverse[0][1] =
+      -(m[1][0] * SubFactor00 - m[1][2] * SubFactor03 + m[1][3] * SubFactor04);
+  inverse[0][2] =
+      +(m[1][0] * SubFactor01 - m[1][1] * SubFactor03 + m[1][3] * SubFactor05);
+  inverse[0][3] =
+      -(m[1][0] * SubFactor02 - m[1][1] * SubFactor04 + m[1][2] * SubFactor05);
 
-  f32 coef08{mat[2][1] * mat[3][2] - mat[3][1] * mat[2][2]};
-  f32 coef10{mat[1][1] * mat[3][2] - mat[3][1] * mat[1][2]};
-  f32 coef11{mat[1][1] * mat[2][2] - mat[2][1] * mat[1][2]};
+  inverse[1][0] =
+      -(m[0][1] * SubFactor00 - m[0][2] * SubFactor01 + m[0][3] * SubFactor02);
+  inverse[1][1] =
+      +(m[0][0] * SubFactor00 - m[0][2] * SubFactor03 + m[0][3] * SubFactor04);
+  inverse[1][2] =
+      -(m[0][0] * SubFactor01 - m[0][1] * SubFactor03 + m[0][3] * SubFactor05);
+  inverse[1][3] =
+      +(m[0][0] * SubFactor02 - m[0][1] * SubFactor04 + m[0][2] * SubFactor05);
 
-  f32 coef12{mat[2][0] * mat[3][3] - mat[3][0] * mat[2][3]};
-  f32 coef14{mat[1][0] * mat[3][3] - mat[3][0] * mat[1][3]};
-  f32 coef15{mat[1][0] * mat[2][3] - mat[2][0] * mat[1][3]};
+  inverse[2][0] =
+      +(m[0][1] * SubFactor06 - m[0][2] * SubFactor07 + m[0][3] * SubFactor08);
+  inverse[2][1] =
+      -(m[0][0] * SubFactor06 - m[0][2] * SubFactor09 + m[0][3] * SubFactor10);
+  inverse[2][2] =
+      +(m[0][0] * SubFactor11 - m[0][1] * SubFactor09 + m[0][3] * SubFactor12);
+  inverse[2][3] =
+      -(m[0][0] * SubFactor08 - m[0][1] * SubFactor10 + m[0][2] * SubFactor12);
 
-  f32 coef16{mat[2][0] * mat[3][2] - mat[3][0] * mat[2][2]};
-  f32 coef18{mat[1][0] * mat[3][2] - mat[3][0] * mat[1][2]};
-  f32 coef19{mat[1][0] * mat[2][2] - mat[2][0] * mat[1][2]};
+  inverse[3][0] =
+      -(m[0][1] * SubFactor13 - m[0][2] * SubFactor14 + m[0][3] * SubFactor15);
+  inverse[3][1] =
+      +(m[0][0] * SubFactor13 - m[0][2] * SubFactor16 + m[0][3] * SubFactor17);
+  inverse[3][2] =
+      -(m[0][0] * SubFactor14 - m[0][1] * SubFactor16 + m[0][3] * SubFactor18);
+  inverse[3][3] =
+      +(m[0][0] * SubFactor15 - m[0][1] * SubFactor17 + m[0][2] * SubFactor18);
 
-  f32 coef20{mat[2][0] * mat[3][1] - mat[3][0] * mat[2][1]};
-  f32 coef22{mat[1][0] * mat[3][1] - mat[3][0] * mat[1][1]};
-  f32 coef23{mat[1][0] * mat[2][1] - mat[2][0] * mat[1][1]};
+  f32 determinant = +m[0][0] * inverse[0][0] + m[0][1] * inverse[0][1] +
+                    m[0][2] * inverse[0][2] + m[0][3] * inverse[0][3];
 
-  Vec4 fac0{coef00, coef00, coef02, coef03};
-	Vec4 fac1{coef04, coef04, coef06, coef07};
-	Vec4 fac2{coef08, coef08, coef10, coef11};
-	Vec4 fac3{coef12, coef12, coef14, coef15};
-	Vec4 fac4{coef16, coef16, coef18, coef19};
-	Vec4 fac5{coef20, coef20, coef22, coef23};
+  inverse /= determinant;
 
-	Vec4 vec0{m[1][0], m[0][0], m[0][0], m[0][0]};
-	Vec4 vec1{m[1][1], m[0][1], m[0][1], m[0][1]};
-	Vec4 vec2{m[1][2], m[0][2], m[0][2], m[0][2]};
-	Vec4 vec3{m[1][3], m[0][3], m[0][3], m[0][3]};
-
-	Vec4 inv0{vec1 * fac0 - vec2 * fac1 + vec3 * fac2};
-	Vec4 inv1{vec0 * fac0 - vec2 * fac3 + vec3 * fac4};
-	Vec4 inv2{vec0 * fac1 - vec1 * fac3 + vec3 * fac5};
-	Vec4 inv3{vec0 * fac2 - vec1 * fac4 + vec2 * fac5};
-
-	Vec4 signA{+1, -1, +1, -1};
-	Vec4 signB{-1, +1, -1, +1};
-	Mat4 inverse{inv0 * signA, inv1 * signB, inv2 * signA, inv3 * signB};
-
-	Vec4 row0{inverse[0][0], inverse[1][0], inverse[2][0], inverse[3][0]};
-
-	Vec4 dot0{m[0] * row0};
-	f32 dot1{(dot0.x + dot0.y) + (dot0.z + dot0.w)};
-	return dot1;
+  return inverse;
 }
-#endif  // 0
-
-#if 0
-Mat4 inverse(const Mat4& m)
-{
-	f32 coef00{m[2][2] * m[3][3] - m[3][2] * m[2][3]};
-	f32 coef02{m[1][2] * m[3][3] - m[3][2] * m[1][3]};
-	f32 coef03{m[1][2] * m[2][3] - m[2][2] * m[1][3]};
-	f32 coef04{m[2][1] * m[3][3] - m[3][1] * m[2][3]};
-	f32 coef06{m[1][1] * m[3][3] - m[3][1] * m[1][3]};
-	f32 coef07{m[1][1] * m[2][3] - m[2][1] * m[1][3]};
-	f32 coef08{m[2][1] * m[3][2] - m[3][1] * m[2][2]};
-	f32 coef10{m[1][1] * m[3][2] - m[3][1] * m[1][2]};
-	f32 coef11{m[1][1] * m[2][2] - m[2][1] * m[1][2]};
-	f32 coef12{m[2][0] * m[3][3] - m[3][0] * m[2][3]};
-	f32 coef14{m[1][0] * m[3][3] - m[3][0] * m[1][3]};
-	f32 coef15{m[1][0] * m[2][3] - m[2][0] * m[1][3]};
-	f32 coef16{m[2][0] * m[3][2] - m[3][0] * m[2][2]};
-	f32 coef18{m[1][0] * m[3][2] - m[3][0] * m[1][2]};
-	f32 coef19{m[1][0] * m[2][2] - m[2][0] * m[1][2]};
-	f32 coef20{m[2][0] * m[3][1] - m[3][0] * m[2][1]};
-	f32 coef22{m[1][0] * m[3][1] - m[3][0] * m[1][1]};
-	f32 coef23{m[1][0] * m[2][1] - m[2][0] * m[1][1]};
-
-	Vec4 fac0{coef00, coef00, coef02, coef03};
-	Vec4 fac1{coef04, coef04, coef06, coef07};
-	Vec4 fac2{coef08, coef08, coef10, coef11};
-	Vec4 fac3{coef12, coef12, coef14, coef15};
-	Vec4 fac4{coef16, coef16, coef18, coef19};
-	Vec4 fac5{coef20, coef20, coef22, coef23};
-
-	Vec4 vec0{m[1][0], m[0][0], m[0][0], m[0][0]};
-	Vec4 vec1{m[1][1], m[0][1], m[0][1], m[0][1]};
-	Vec4 vec2{m[1][2], m[0][2], m[0][2], m[0][2]};
-	Vec4 vec3{m[1][3], m[0][3], m[0][3], m[0][3]};
-
-	Vec4 inv0{vec1 * fac0 - vec2 * fac1 + vec3 * fac2};
-	Vec4 inv1{vec0 * fac0 - vec2 * fac3 + vec3 * fac4};
-	Vec4 inv2{vec0 * fac1 - vec1 * fac3 + vec3 * fac5};
-	Vec4 inv3{vec0 * fac2 - vec1 * fac4 + vec2 * fac5};
-
-	Vec4 signA{+1, -1, +1, -1};
-	Vec4 signB{-1, +1, -1, +1};
-	Mat4 inverse{inv0 * signA, inv1 * signB, inv2 * signA, inv3 * signB};
-
-	Vec4 row0{inverse[0][0], inverse[1][0], inverse[2][0], inverse[3][0]};
-
-	Vec4 dot0{m[0] * row0};
-	f32 dot1{(dot0.x + dot0.y) + (dot0.z + dot0.w)};
-
-	f32 oneOverDeterminant{1.0f / dot1};
-	return inverse * oneOverDeterminant;
-}
-#endif  // 0
 
 }  // namespace ca
 
