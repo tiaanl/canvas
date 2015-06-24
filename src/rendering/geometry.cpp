@@ -110,7 +110,7 @@ void Geometry::render() const {
   }
 
   // Draw the vertices with the specified primitive type.
-  glDrawArrays(prim, 0, m_vertices.size());
+  glDrawArrays(prim, 0, static_cast<GLint>(m_vertices.size()));
 
   GL_CHECK(glDisableVertexAttribArray(2));
   GL_CHECK(glDisableVertexAttribArray(1));

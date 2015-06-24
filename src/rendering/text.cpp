@@ -156,8 +156,8 @@ void Text::updateGeometry() {
 
     // Update the bounds.
     m_bounds = Rect<i32>{};
-    m_bounds.size.height =
-        m_font->getAscent(m_textSize) - m_font->getDescent(m_textSize);
+    m_bounds.size.height = static_cast<i32>(std::round(
+        m_font->getAscent(m_textSize) - m_font->getDescent(m_textSize)));
     return;
   }
 
