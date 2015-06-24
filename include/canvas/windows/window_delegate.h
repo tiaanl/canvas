@@ -46,7 +46,6 @@ public:
   // Mouse events.
   virtual void onMouseMoved(const MouseEvent& event);
   virtual void onMousePressed(const MouseEvent& event);
-  virtual void onMouseDragged(const MouseEvent& event);
   virtual void onMouseReleased(const MouseEvent& event);
 
 protected:

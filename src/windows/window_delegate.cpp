@@ -29,9 +29,6 @@ void WindowDelegate::onMouseMoved(const MouseEvent& event) {
 void WindowDelegate::onMousePressed(const MouseEvent& event) {
 }
 
-void WindowDelegate::onMouseDragged(const MouseEvent& event) {
-}
-
 void WindowDelegate::onMouseReleased(const MouseEvent& event) {
 }
 
