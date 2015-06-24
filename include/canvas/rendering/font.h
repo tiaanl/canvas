@@ -50,8 +50,11 @@ public:
   // Get the amount of kerning between the first and second characters.
   i32 getKerning(i32 characterSize, Char first, Char second) const;
 
-  // Get the line spacing for the font.
-  f32 getLineSpacing(i32 characterSize) const;
+  // Get the ascent of the font.
+  f32 getAscent(i32 characterSize);
+
+  // Get the descent of the font.
+  f32 getDescent(i32 characterSize);
 
   // Get the texture that is backing this font.
   const Texture* getTexture(i32 characterSize) const;
@@ -74,6 +77,10 @@ private:
     // The scale used to render characters for this page.
     f32 fontScale{0.f};
 
+    // Various bits of information about the font.
+    f32 ascent{0.f};
+    f32 descent{0.f};
+
     // The glyphs in this page.
     GlyphTable glyphs;
 
@@ -90,6 +97,8 @@ private:
     // characters on this page.
     Page(Font* font, i32 characterSize);
   };
+
+  Page* getPage(i32 characterSize);
 
   // Load a new glyph and store it in the cache.
   Glyph loadGlyph(Page* page, Char codePoint);

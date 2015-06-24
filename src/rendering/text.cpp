@@ -14,6 +14,8 @@
 
 #include "canvas/rendering/text.h"
 
+#include <algorithm>
+
 #include "canvas/rendering/font.h"
 #include "canvas/rendering/program.h"
 #include "canvas/rendering/shader.h"
@@ -38,7 +40,7 @@ const char* kTextVertexShader =
     "out vec4 frag_color;\n"
     "\n"
     "void main() {\n"
-    "  gl_Position = vec4(vert_position, 1.0) * uni_mvp;\n"
+    "  gl_Position = uni_mvp * vec4(vert_position, 1.0);\n"
     "  frag_texCoord = vert_texCoord;\n"
     "  frag_color = vert_color;\n"
     "}\n";
@@ -72,7 +74,7 @@ Text::Text(Font* font, i32 textSize, const std::string& text)
   : m_font(font), m_textSize(textSize), m_text(text) {
   ensureShaders();
 
-  if (m_font && !m_text.empty()) {
+  if (m_font) {
     updateGeometry();
   }
 }
@@ -93,8 +95,17 @@ void Text::setTextSize(i32 textSize) {
 }
 
 void Text::render(Canvas* canvas, const Mat4& transform) const {
+  if (!m_font) {
+    return;
+  }
+
+  const ca::Texture* texture = m_font->getTexture(m_textSize);
+  if (!texture) {
+    return;
+  }
+
   // Bind the font's texture.
-  Texture::bind(m_font->getTexture(m_textSize));
+  Texture::bind(texture);
 
   // Bind the program.
   Program::bind(gs_textProgram);
@@ -142,10 +153,17 @@ void Text::updateGeometry() {
   // If there is not text to render, then that's it.
   if (m_text.empty()) {
     m_geometry.compileAndUpload();
+
+    // Update the bounds.
+    m_bounds = Rect<i32>{};
+    m_bounds.size.height =
+        m_font->getAscent(m_textSize) - m_font->getDescent(m_textSize);
     return;
   }
 
   f32 left = 0.f;
+  
+  float bLeft = 0.f, bTop = 0.f, bRight = 0.f, bBottom = 0.f;
 
   // Build geometry for each character in the text.
   for (size_t i = 0; i < m_text.length(); ++i) {
@@ -154,13 +172,23 @@ void Text::updateGeometry() {
     // Get the glyph.
     const Font::Glyph& glyph = m_font->getOrInsertGlyph(m_textSize, ch);
 
+    const f32 newLeft = left + glyph.bounds.pos.x;
+    const f32 newTop = glyph.bounds.pos.y;
+    const f32 newRight = left + glyph.bounds.pos.x + glyph.bounds.size.width;
+    const f32 newBottom = glyph.bounds.pos.y + glyph.bounds.size.height;
+
+    bLeft = std::min(bLeft, newLeft);
+    bTop = std::min(bTop, newTop);
+    bRight = std::max(bRight, newRight);
+    bBottom = std::max(bBottom, newBottom);
+
     // Add vertices for one block.
     // clang-format off
 
     // 0
     m_geometry.addVertex(
       Vertex{
-        Vec3{left + glyph.bounds.pos.x, glyph.bounds.pos.y, 0.f},
+        Vec3{newLeft, newTop, 0.f},
         Vec2{glyph.textureRect.pos.x, glyph.textureRect.pos.y},
         // Vec2{0.f, 0.f},
         Color{255, 255, 255, 255}
@@ -169,7 +197,7 @@ void Text::updateGeometry() {
     // 1
     m_geometry.addVertex(
       Vertex{
-        Vec3{left + glyph.bounds.pos.x + glyph.bounds.size.width, glyph.bounds.pos.y, 0.f},
+        Vec3{newRight, newTop, 0.f},
         Vec2{glyph.textureRect.pos.x + glyph.textureRect.size.width, glyph.textureRect.pos.y},
         // Vec2{1.f, 0.f},
         Color{255, 255, 255, 255}
@@ -178,17 +206,26 @@ void Text::updateGeometry() {
     // 2
     m_geometry.addVertex(
       Vertex{
-        Vec3{left + glyph.bounds.pos.x + glyph.bounds.size.width, glyph.bounds.pos.y + glyph.bounds.size.height, 0.f},
+        Vec3{newRight, newBottom, 0.f},
         Vec2{glyph.textureRect.pos.x + glyph.textureRect.size.width, glyph.textureRect.pos.y + glyph.textureRect.size.height},
         // Vec2{1.f, 1.f},
         Color{255, 255, 255, 255}
       }
     );
 
+    // 0
+    m_geometry.addVertex(
+      Vertex{
+        Vec3{newLeft, newTop, 0.f},
+        Vec2{glyph.textureRect.pos.x, glyph.textureRect.pos.y},
+        // Vec2{0.f, 0.f},
+        Color{255, 255, 255, 255}
+      }
+    );
     // 2
     m_geometry.addVertex(
       Vertex{
-        Vec3{left + glyph.bounds.pos.x + glyph.bounds.size.width, glyph.bounds.pos.y + glyph.bounds.size.height, 0.f},
+        Vec3{newRight, newBottom, 0.f},
         Vec2{glyph.textureRect.pos.x + glyph.textureRect.size.width, glyph.textureRect.pos.y + glyph.textureRect.size.height},
         // Vec2{1.f, 1.f},
         Color{255, 255, 255, 255}
@@ -197,18 +234,9 @@ void Text::updateGeometry() {
     // 3
     m_geometry.addVertex(
       Vertex{
-        Vec3{left + glyph.bounds.pos.x, glyph.bounds.pos.y + glyph.bounds.size.height, 0.f},
+        Vec3{newLeft, newBottom, 0.f},
         Vec2{glyph.textureRect.pos.x, glyph.textureRect.pos.y + glyph.textureRect.size.height},
         // Vec2{0.f, 1.f},
-        Color{255, 255, 255, 255}
-      }
-    );
-    // 0
-    m_geometry.addVertex(
-      Vertex{
-        Vec3{left + glyph.bounds.pos.x, glyph.bounds.pos.y, 0.f},
-        Vec2{glyph.textureRect.pos.x, glyph.textureRect.pos.y},
-        // Vec2{0.f, 0.f},
         Color{255, 255, 255, 255}
       }
     );
@@ -216,6 +244,11 @@ void Text::updateGeometry() {
 
     left += glyph.advance;
   }
+
+  m_bounds.pos.x = static_cast<i32>(std::floor(bLeft));
+  m_bounds.pos.y = static_cast<i32>(std::floor(bTop));
+  m_bounds.size.width = static_cast<i32>(std::ceil(bRight - bLeft));
+  m_bounds.size.height = static_cast<i32>(std::ceil(bBottom - bTop));
 
   m_geometry.compileAndUpload();
 }

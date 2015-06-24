@@ -45,19 +45,7 @@ bool Font::loadFromStream(nu::InputStream* stream) {
 
 const Font::Glyph& Font::getOrInsertGlyph(i32 characterSize,
                                           char32_t codePoint) {
-  Page* page = nullptr;
-
-  // Get the page for the glyph.
-  auto pageIt = m_pages.find(characterSize);
-  if (pageIt == std::end(m_pages)) {
-    // If the page doesn't exist yet, create a new page.
-    auto result = m_pages.emplace(characterSize,
-                                  std::make_unique<Page>(this, characterSize));
-    page = result.first->second.get();
-  } else {
-    page = pageIt->second.get();
-  }
-
+  Page* page = getPage(characterSize);
   DCHECK(page);
 
   // Get the page corresponding to the character size.
@@ -84,11 +72,14 @@ i32 Font::getKerning(i32 characterSize, char32_t first, char32_t second) const {
   return stbtt_GetCodepointKernAdvance(&m_fontInfo, first, second);
 }
 
-f32 Font::getLineSpacing(i32 characterSize) const {
-  i32 ascent, descent, lineGap;
-  stbtt_GetFontVMetrics(&m_fontInfo, &ascent, &descent, &lineGap);
+f32 Font::getAscent(i32 characterSize) {
+  Page* page = getPage(characterSize);
+  return page->ascent;
+}
 
-  return static_cast<f32>(lineGap);
+f32 Font::getDescent(i32 characterSize) {
+  Page* page = getPage(characterSize);
+  return page->descent;
 }
 
 const Texture* Font::getTexture(i32 characterSize) const {
@@ -104,12 +95,31 @@ Font::Page::Page(Font* font, i32 characterSize) {
   fontScale = stbtt_ScaleForPixelHeight(&font->m_fontInfo,
                                         static_cast<float>(characterSize));
 
+  int iAscent, iDescent;
+  stbtt_GetFontVMetrics(&font->m_fontInfo, &iAscent, &iDescent, nullptr);
+  ascent = static_cast<f32>(iAscent) * fontScale;
+  descent = static_cast<f32>(iDescent) * fontScale;
+
   // Make sure the texture is initialized by default.
   Image image;
   image.create(Size<i32>{128, 128}, Color{0, 0, 0, 0});
 
   // Create the texture.
   texture.createFromImage(image);
+}
+
+Font::Page* Font::getPage(i32 characterSize) {
+  Page* page = nullptr;
+  auto pageIt = m_pages.find(characterSize);
+  if (pageIt == std::end(m_pages)) {
+    // If the page doesn't exist yet, create a new page.
+    auto result = m_pages.emplace(characterSize,
+                                  std::make_unique<Page>(this, characterSize));
+    page = result.first->second.get();
+  } else {
+    page = pageIt->second.get();
+  }
+  return page;
 }
 
 Font::Glyph Font::loadGlyph(Page* page, char32_t codePoint) {
@@ -119,6 +129,10 @@ Font::Glyph Font::loadGlyph(Page* page, char32_t codePoint) {
   i32 advance;
   stbtt_GetCodepointHMetrics(&m_fontInfo, codePoint, &advance, nullptr);
   result.advance = static_cast<f32>(advance) * page->fontScale;
+  
+  // Get the vertical dimensions of the font.
+  int ascent, descent, lineGap;
+  stbtt_GetFontVMetrics(&m_fontInfo, &ascent, &descent, &lineGap);
 
   // Get the bounds of the glyph.
   Rect<i32> glyphRect;

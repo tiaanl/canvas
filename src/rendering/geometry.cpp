@@ -69,7 +69,7 @@ void Geometry::compileAndUpload() {
 }
 
 void Geometry::render() const {
-  if (!m_compiled) {
+  if (!m_vertices.empty() && !m_compiled) {
     NOTREACHED() << "You have to compile the geometry before you use it.";
     return;
   }

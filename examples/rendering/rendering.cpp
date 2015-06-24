@@ -32,7 +32,7 @@ public:
 
   // Override: ca::WindowDelegate
 
-  void onWindowCreated() override {
+  bool onWindowCreated() override {
     nu::FilePath root{
         FILE_PATH_LITERAL("C:\\Workspace\\canvas\\examples\\rendering")};
 
@@ -68,11 +68,11 @@ public:
 
     ca::Image image;
     if (!image.loadFromStream(&imageStream)) {
-      return;
+      return false;
     }
 
     if (!m_texture.createFromImage(image)) {
-      return;
+      return false;
     }
 
     // Create some geometry that we can render.
@@ -82,13 +82,15 @@ public:
 
     // Set up the sprite.
     m_sprite.setTexture(&m_texture);
+
+    return true;
   }
 
   void onWindowResized(const ca::Size<uint32_t>& size) override {
-    m_projectionMatrix = ca::ortho(-static_cast<float>(size.width) / 4.f,
-                                   static_cast<float>(size.width) / 4.f,
-                                   static_cast<float>(size.height) / 4.f,
-                                   -static_cast<float>(size.height) / 4.f);
+    m_projectionMatrix = ca::ortho(-static_cast<float>(size.width) / 2.f,
+                                   static_cast<float>(size.width) / 2.f,
+                                   static_cast<float>(size.height) / 2.f,
+                                   -static_cast<float>(size.height) / 2.f);
   }
 
   void onPaint(ca::Canvas* canvas) override {
@@ -99,9 +101,14 @@ public:
 #endif  // 0
 
     ca::Mat4 viewMatrix;
-    viewMatrix = ca::scale(viewMatrix, ca::Vec3{0.5f, 0.5f, 1.f});
+    // viewMatrix = ca::scale(viewMatrix, ca::Vec3{0.5f, 0.5f, 1.f});
     // viewMatrix = ca::rotate(viewMatrix, 20.f, ca::Vec3{0.f, 0.f, 1.f});
     // viewMatrix = ca::translate(viewMatrix, ca::Vec3{100.f, 0.f, 0.f});
+
+    viewMatrix *= ca::rotate(10.f, ca::Vec3{0.f, 0.f, 1.0f});
+    viewMatrix *= ca::scale(ca::Vec3{0.5f, 0.5f, 1.0f});
+    viewMatrix *= ca::translate(ca::Vec3{100.f, 10.f, 0.f});
+
     ca::Mat4 mvp = m_projectionMatrix * viewMatrix;
 
 #if 0

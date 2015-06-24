@@ -71,7 +71,7 @@ void Sprite::setTexture(Texture* texture) {
   updateGeometry();
 }
 
-void Sprite::render(Canvas* canvas, const Mat4& transform) {
+void Sprite::render(Canvas* canvas, const Mat4& transform) const {
   if (!m_texture) {
     return;
   }

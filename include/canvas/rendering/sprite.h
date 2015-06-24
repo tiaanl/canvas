@@ -34,7 +34,7 @@ public:
 
   // Render the sprite on the specified canvas at the specified transform
   // location.
-  void render(Canvas* canvas, const Mat4& transform);
+  void render(Canvas* canvas, const Mat4& transform) const;
 
 private:
   // Rebuild the geometry when we change the internals of the sprite.

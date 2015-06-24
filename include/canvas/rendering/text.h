@@ -30,10 +30,11 @@ class Text {
 public:
   Text();
   explicit Text(Font* font, i32 textSize = 30,
-                const std::string& text = std::string());
+                const std::string& text = std::string{});
   ~Text() = default;
 
-  // Set the font used to render the text.
+  // Get/set the font used to render the text.
+  Font* getFont() const { return m_font; }
   void setFont(Font* font);
 
   // Set the text we want to render.
@@ -41,6 +42,9 @@ public:
 
   // Set the size of the text we want to render.
   void setTextSize(i32 textSize);
+
+  // Get the bounds of the text we're rendering.
+  const Rect<i32>& getBounds() const { return m_bounds; }
 
   // Render the text.
   void render(Canvas* canvas, const Mat4& transform) const;
@@ -62,7 +66,10 @@ private:
   i32 m_textSize{30};
 
   // The geometry we render.
-  Geometry m_geometry;
+  Geometry m_geometry{Geometry::Triangles};
+
+  // The bounds of the geometry.
+  Rect<i32> m_bounds;
 
   DISALLOW_COPY_AND_ASSIGN(Text);
 };

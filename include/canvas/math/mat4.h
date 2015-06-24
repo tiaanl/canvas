@@ -22,53 +22,54 @@
 namespace ca {
 
 struct Mat4 {
-  Vec4 row[4];
+  // Values in column major.
+  Vec4 col[4];
 
   Mat4() {
-    row[0] = Vec4{1.f, 0.f, 0.f, 0.f};
-    row[1] = Vec4{0.f, 1.f, 0.f, 0.f};
-    row[2] = Vec4{0.f, 0.f, 1.f, 0.f};
-    row[3] = Vec4{0.f, 0.f, 0.f, 1.f};
+    col[0] = Vec4{1.f, 0.f, 0.f, 0.f};
+    col[1] = Vec4{0.f, 1.f, 0.f, 0.f};
+    col[2] = Vec4{0.f, 0.f, 1.f, 0.f};
+    col[3] = Vec4{0.f, 0.f, 0.f, 1.f};
   }
 
   Mat4(f32 scale) {
-    row[0] = Vec4{scale, 0.f, 0.f, 0.f};
-    row[1] = Vec4{0.f, scale, 0.f, 0.f};
-    row[2] = Vec4{0.f, 0.f, scale, 0.f};
-    row[3] = Vec4{0.f, 0.f, 0.f, scale};
+    col[0] = Vec4{scale, 0.f, 0.f, 0.f};
+    col[1] = Vec4{0.f, scale, 0.f, 0.f};
+    col[2] = Vec4{0.f, 0.f, scale, 0.f};
+    col[3] = Vec4{0.f, 0.f, 0.f, scale};
   }
 
   Mat4(const Vec4& row1, const Vec4& row2, const Vec4& row3, const Vec4& row4) {
-    row[0] = row1;
-    row[1] = row2;
-    row[2] = row3;
-    row[3] = row4;
+    col[0] = row1;
+    col[1] = row2;
+    col[2] = row3;
+    col[3] = row4;
   }
 
   Mat4(f32 v11, f32 v12, f32 v13, f32 v14, f32 v21, f32 v22, f32 v23, f32 v24,
        f32 v31, f32 v32, f32 v33, f32 v34, f32 v41, f32 v42, f32 v43, f32 v44) {
-    row[0] = Vec4{v11, v12, v13, v14};
-    row[1] = Vec4{v21, v22, v23, v24};
-    row[2] = Vec4{v31, v32, v33, v34};
-    row[3] = Vec4{v41, v42, v43, v44};
+    col[0] = Vec4{v11, v12, v13, v14};
+    col[1] = Vec4{v21, v22, v23, v24};
+    col[2] = Vec4{v31, v32, v33, v34};
+    col[3] = Vec4{v41, v42, v43, v44};
   }
 
   Vec4& operator[](std::size_t index) {
     DCHECK(index <= 3);
-    return row[index];
+    return col[index];
   }
 
   const Vec4& operator[](std::size_t index) const {
     DCHECK(index <= 3);
-    return row[index];
+    return col[index];
   }
 
-  float* asArray() { return static_cast<float*>(&row[0].x); }
-  const float* asArray() const { return static_cast<const float*>(&row[0].x); }
+  float* asArray() { return static_cast<float*>(&col[0].x); }
+  const float* asArray() const { return static_cast<const float*>(&col[0].x); }
 
   bool operator==(const Mat4& other) const {
     for (size_t i = 0; i < 4; ++i) {
-      if (row[i] != other.row[i]) {
+      if (col[i] != other.col[i]) {
         return false;
       }
     }
@@ -77,7 +78,7 @@ struct Mat4 {
 
   bool operator!=(const Mat4& other) const {
     for (size_t i = 0; i < 4; ++i) {
-      if (row[i] != other.row[i]) {
+      if (col[i] != other.col[i]) {
         return true;
       }
     }
@@ -87,7 +88,7 @@ struct Mat4 {
   Mat4 operator+(const Mat4& other) const {
     Mat4 result;
     for (size_t i = 0; i < 4; ++i) {
-      result[i] = row[i] + other.row[i];
+      result[i] = col[i] + other.col[i];
     }
     return result;
   }
@@ -97,46 +98,50 @@ struct Mat4 {
   Mat4 operator-(const Mat4& other) const {
     Mat4 result;
     for (size_t i = 0; i < 4; ++i)
-      result[i] = row[i] - other.row[i];
+      result[i] = col[i] - other.col[i];
     return result;
   }
 
   Mat4& operator-=(const Mat4& other) { return (*this = (*this) - other); }
 
-  Mat4 Mat4::operator*(const Mat4& other) const {
-    const Vec4 srcA0{row[0]};
-    const Vec4 srcA1{row[1]};
-    const Vec4 srcA2{row[2]};
-    const Vec4 srcA3{row[3]};
-
-    const Vec4 srcB0{other.row[0]};
-    const Vec4 srcB1{other.row[1]};
-    const Vec4 srcB2{other.row[2]};
-    const Vec4 srcB3{other.row[3]};
-
+  Mat4 operator*(const Mat4& right) const {
     Mat4 result;
-    result[0] = srcA0 * srcB0[0] + srcA1 * srcB0[1] + srcA2 * srcB0[2] +
-                srcA3 * srcB0[3];
-    result[1] = srcA0 * srcB1[0] + srcA1 * srcB1[1] + srcA2 * srcB1[2] +
-                srcA3 * srcB1[3];
-    result[2] = srcA0 * srcB2[0] + srcA1 * srcB2[1] + srcA2 * srcB2[2] +
-                srcA3 * srcB2[3];
-    result[3] = srcA0 * srcB3[0] + srcA1 * srcB3[1] + srcA2 * srcB3[2] +
-                srcA3 * srcB3[3];
+    const Mat4& left = *this;
+
+    result[0][0] = left[0][0] * right[0][0] + left[1][0] * right[0][1] + left[2][0] * right[0][2] + left[3][0] * right[0][3];
+    result[0][1] = left[0][1] * right[0][0] + left[1][1] * right[0][1] + left[2][1] * right[0][2] + left[3][1] * right[0][3];
+    result[0][2] = left[0][2] * right[0][0] + left[1][2] * right[0][1] + left[2][2] * right[0][2] + left[3][2] * right[0][3];
+    result[0][3] = left[0][3] * right[0][0] + left[1][3] * right[0][1] + left[2][3] * right[0][2] + left[3][3] * right[0][3];
+
+    result[1][0] = left[0][0] * right[1][0] + left[1][0] * right[1][1] + left[2][0] * right[1][2] + left[3][0] * right[1][3];
+    result[1][1] = left[0][1] * right[1][0] + left[1][1] * right[1][1] + left[2][1] * right[1][2] + left[3][1] * right[1][3];
+    result[1][2] = left[0][2] * right[1][0] + left[1][2] * right[1][1] + left[2][2] * right[1][2] + left[3][2] * right[1][3];
+    result[1][3] = left[0][3] * right[1][0] + left[1][3] * right[1][1] + left[2][3] * right[1][2] + left[3][3] * right[1][3];
+
+    result[2][0] = left[0][0] * right[2][0] + left[1][0] * right[2][1] + left[2][0] * right[2][2] + left[3][0] * right[2][3];
+    result[2][1] = left[0][1] * right[2][0] + left[1][1] * right[2][1] + left[2][1] * right[2][2] + left[3][1] * right[2][3];
+    result[2][2] = left[0][2] * right[2][0] + left[1][2] * right[2][1] + left[2][2] * right[2][2] + left[3][2] * right[2][3];
+    result[2][3] = left[0][3] * right[2][0] + left[1][3] * right[2][1] + left[2][3] * right[2][2] + left[3][3] * right[2][3];
+
+    result[3][0] = left[0][0] * right[3][0] + left[1][0] * right[3][1] + left[2][0] * right[3][2] + left[3][0] * right[3][3];
+    result[3][1] = left[0][1] * right[3][0] + left[1][1] * right[3][1] + left[2][1] * right[3][2] + left[3][1] * right[3][3];
+    result[3][2] = left[0][2] * right[3][0] + left[1][2] * right[3][1] + left[2][2] * right[3][2] + left[3][2] * right[3][3];
+    result[3][3] = left[0][3] * right[3][0] + left[1][3] * right[3][1] + left[2][3] * right[3][2] + left[3][3] * right[3][3];
+
     return result;
   }
 
   Mat4& operator*=(const Mat4& other) { return (*this = (*this) * other); }
 
   Vec4 operator*(const Vec4& other) const {
-    return (row[0] * other[0] + row[1] * other[1]) +
-           (row[2] * other[2] + row[3] * other[3]);
+    return (col[0] * other[0] + col[1] * other[1]) +
+           (col[2] * other[2] + col[3] * other[3]);
   }
 
   Mat4 operator*(f32 scalar) const {
     Mat4 result;
     for (size_t i = 0; i < 4; ++i) {
-      result[i] = row[i] * scalar;
+      result[i] = col[i] * scalar;
     }
     return result;
   }
@@ -144,7 +149,7 @@ struct Mat4 {
   Mat4 operator/(f32 scalar) const {
     Mat4 result;
     for (size_t i = 0; i < 4; ++i) {
-      result[i] = row[i] / scalar;
+      result[i] = col[i] / scalar;
     }
     return result;
   }
@@ -154,7 +159,7 @@ inline Mat4 transpose(const Mat4& mat) {
   Mat4 result;
   for (size_t i = 0; i < 4; ++i) {
     for (size_t j = 0; j < 4; ++j) {
-      result[i][j] = mat.row[j][i];
+      result[i][j] = mat.col[j][i];
     }
   }
 }
