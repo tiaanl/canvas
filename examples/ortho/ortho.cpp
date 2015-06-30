@@ -112,7 +112,6 @@ public:
 
     ca::Mat4 inv = ca::inverse(finalMatrix);
     ca::Vec4 mousePosInWorld = inv * adjustedMousePos;
-    LOG(Info) << mousePosInWorld;
 
     m_object.render();
 

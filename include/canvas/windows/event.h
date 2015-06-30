@@ -18,6 +18,7 @@
 #include "nucleus/types.h"
 
 #include "canvas/utils/pos.h"
+#include "canvas/windows/keyboard.h"
 
 namespace ca {
 
@@ -28,11 +29,19 @@ struct Event {
     MouseDragged,
     MouseReleased,
     MouseWheel,
+    KeyPressed,
+    KeyReleased,
   };
 
   Type type;
 
   Event(Type type) : type(type) {}
+};
+
+struct KeyEvent : Event {
+  Key key;
+
+  KeyEvent(Type type, Key key) : Event(type), key(key) {}
 };
 
 struct PositionEvent : Event {
@@ -43,6 +52,13 @@ struct PositionEvent : Event {
 
 struct MouseEvent : PositionEvent {
   MouseEvent(Type type, const Pos<i32>& pos) : PositionEvent(type, pos) {}
+};
+
+struct MouseWheelEvent : MouseEvent {
+  Pos<i32> wheelOffset;
+
+  MouseWheelEvent(Type type, const Pos<i32>& pos, Pos<i32>& wheelOffset)
+    : MouseEvent(type, pos), wheelOffset(wheelOffset) {}
 };
 
 }  // namespace ca

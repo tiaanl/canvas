@@ -23,13 +23,22 @@ bool WindowDelegate::onWindowCreated() {
 void WindowDelegate::onWindowResized(const Size<u32>& size) {
 }
 
-void WindowDelegate::onMouseMoved(const MouseEvent& event) {
+void WindowDelegate::onMouseMoved(const MouseEvent& evt) {
 }
 
-void WindowDelegate::onMousePressed(const MouseEvent& event) {
+void WindowDelegate::onMousePressed(const MouseEvent& evt) {
 }
 
-void WindowDelegate::onMouseReleased(const MouseEvent& event) {
+void WindowDelegate::onMouseReleased(const MouseEvent& evt) {
+}
+
+void WindowDelegate::onMouseWheel(const MouseWheelEvent& evt) {
+}
+
+void WindowDelegate::onKeyPressed(const KeyEvent& evt) {
+}
+
+void WindowDelegate::onKeyReleased(const KeyEvent& evt) {
 }
 
 }  // namespace ca

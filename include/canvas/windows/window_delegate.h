@@ -44,9 +44,12 @@ public:
   virtual void onPaint(Canvas* canvas) = 0;
 
   // Mouse events.
-  virtual void onMouseMoved(const MouseEvent& event);
-  virtual void onMousePressed(const MouseEvent& event);
-  virtual void onMouseReleased(const MouseEvent& event);
+  virtual void onMouseMoved(const MouseEvent& evt);
+  virtual void onMousePressed(const MouseEvent& evt);
+  virtual void onMouseReleased(const MouseEvent& evt);
+  virtual void onMouseWheel(const MouseWheelEvent& evt);
+  virtual void onKeyPressed(const KeyEvent& evt);
+  virtual void onKeyReleased(const KeyEvent& evt);
 
 protected:
   // The title that appears in the window title bar.

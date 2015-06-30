@@ -67,6 +67,14 @@ inline Mat4 scale(const Vec3& scale) {
   return result;
 }
 
+inline Mat4 scale(f32 x, f32 y, f32 z) {
+  Mat4 result;
+  result[0][0] = x;
+  result[1][1] = y;
+  result[2][2] = z;
+  return result;
+}
+
 inline Mat4 ortho(f32 left, f32 right, f32 bottom, f32 top, f32 zNear,
                   f32 zFar) {
   Mat4 result;

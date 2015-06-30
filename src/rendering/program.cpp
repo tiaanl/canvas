@@ -125,7 +125,7 @@ void Program::linkInternal() {
                                nu::vectorAsArray(&buffer, infoLength)));
 
   if (infoLength) {
-    LOG(Info) << buffer.data();
+    LOG(Error) << buffer.data();
   }
 
   m_isLinked = true;

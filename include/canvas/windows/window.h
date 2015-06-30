@@ -58,6 +58,10 @@ private:
                                      double ypos);
   static void mouseButtonCallback(GLFWwindow* window, int button, int action,
                                   int mods);
+  static void scrollCallback(GLFWwindow* window, double xOffset,
+                             double yOffset);
+  static void keyCallback(GLFWwindow* window, int key, int scancode, int action,
+                          int mods);
 
   // The window delegate we pass events to.
   WindowDelegate* m_delegate;
