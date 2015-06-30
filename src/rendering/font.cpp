@@ -93,7 +93,7 @@ const Texture* Font::getTexture(i32 characterSize) const {
 Font::Page::Page(Font* font, i32 characterSize) {
   // Calculate the scale for the characterSize.
   fontScale = stbtt_ScaleForPixelHeight(&font->m_fontInfo,
-                                        static_cast<float>(characterSize));
+                                        static_cast<f32>(characterSize));
 
   int iAscent, iDescent;
   stbtt_GetFontVMetrics(&font->m_fontInfo, &iAscent, &iDescent, nullptr);
@@ -147,16 +147,16 @@ Font::Glyph Font::loadGlyph(Page* page, char32_t codePoint) {
   Rect<i32> textureRectI = findGlyphRect(page, glyphRect.size);
 
   const Size<f32> textureSize{
-      static_cast<float>(page->texture.getSize().width),
-      static_cast<float>(page->texture.getSize().height)};
+      static_cast<f32>(page->texture.getSize().width),
+      static_cast<f32>(page->texture.getSize().height)};
   result.textureRect.pos.x =
-      static_cast<float>(textureRectI.pos.x) / textureSize.width;
+      static_cast<f32>(textureRectI.pos.x) / textureSize.width;
   result.textureRect.pos.y =
-      static_cast<float>(textureRectI.pos.y) / textureSize.height;
+      static_cast<f32>(textureRectI.pos.y) / textureSize.height;
   result.textureRect.size.width =
-      static_cast<float>(textureRectI.size.width) / textureSize.width;
+      static_cast<f32>(textureRectI.size.width) / textureSize.width;
   result.textureRect.size.height =
-      static_cast<float>(textureRectI.size.height) / textureSize.height;
+      static_cast<f32>(textureRectI.size.height) / textureSize.height;
 
   // Resize the pixel buffer so that we can fit the rendered glyph in it.
   m_pixelBuffer.resize(glyphRect.size.width * glyphRect.size.height);
