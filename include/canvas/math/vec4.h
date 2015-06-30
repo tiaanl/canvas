@@ -16,6 +16,7 @@
 #define CANVAS_MATH_VEC4_H_
 
 #include <cmath>
+#include <ostream>
 
 #include "nucleus/logging.h"
 #include "nucleus/types.h"
@@ -31,7 +32,11 @@ struct Vec4 {
   f32 z{0.f};
   f32 w{0.f};
 
-  explicit Vec4(f32 x = 0.f, f32 y = 0.f, f32 z = 0.f, f32 w = 1.f)
+  Vec4() = default;
+
+  Vec4(f32 scalar) : x{scalar}, y{scalar}, z{scalar}, w{scalar} {}
+
+  Vec4(f32 x, f32 y, f32 z, f32 w)
     : x{x}, y{y}, z{z}, w{w} {}
 
   Vec4(const Vec3& xyz, f32 w) : x{xyz.x}, y{xyz.y}, z{xyz.z}, w{w} {}
@@ -49,7 +54,7 @@ struct Vec4 {
   }
 
   bool operator==(const Vec4& other) const {
-    return x == other.x && y == other.y && z == other.z && w == other.z;
+    return x == other.x && y == other.y && z == other.z && w == other.w;
   }
 
   bool operator!=(const Vec4& other) const {
@@ -76,11 +81,27 @@ struct Vec4 {
     return Vec4{x - other.x, y - other.y, z - other.z, w - other.w};
   }
 
+  Vec4 operator-(f32 scalar) const {
+    return Vec4{x - scalar, y - scalar, z - scalar, w - scalar};
+  }
+
   Vec4& operator-=(const Vec4& other) {
     x -= other.x;
     y -= other.y;
     z -= other.z;
     w -= other.w;
+    return *this;
+  }
+
+  Vec4 operator*(const Vec4& other) const {
+    return Vec4{x * other.x, y * other.y, z * other.z, w * other.w};
+  }
+
+  Vec4& operator*=(const Vec4& other) {
+    x *= other.x;
+    y *= other.y;
+    z *= other.z;
+    w *= other.w;
     return *this;
   }
 
@@ -126,5 +147,11 @@ inline Vec4 normalize(const Vec4& a) {
 }
 
 }  // namespace ca
+
+inline std::ostream& operator<<(std::ostream& os, const ca::Vec4& vec4) {
+  os << "{" << vec4.x << ", " << vec4.y << ", " << vec4.z << ", " << vec4.w
+     << "}";
+  return os;
+}
 
 #endif  // CANVAS_MATH_VEC2_H_

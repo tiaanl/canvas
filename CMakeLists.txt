@@ -75,5 +75,5 @@ target_include_directories("canvas" PUBLIC "${canvas_SOURCE_DIR}/include")
 target_include_directories("canvas" PUBLIC "${canvas_SOURCE_DIR}/third_party/stb")
 set_property(TARGET "canvas" PROPERTY FOLDER "canvas")
 
-# add_subdirectory("tests")
+add_subdirectory("tests")
 add_subdirectory("examples")

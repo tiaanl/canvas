@@ -44,9 +44,11 @@ std::unique_ptr<Window> Window::create(WindowDelegate* delegate,
     return nullptr;
   }
 
+  const Size<u32> clientSize{1600, 900};
+
   // Create the window.
   newWindow->m_window = glfwCreateWindow(
-      1600, 900, delegate->getTitle().c_str(), nullptr, nullptr);
+      clientSize.width, clientSize.height, delegate->getTitle().c_str(), nullptr, nullptr);
 
   // Set up the callbacks for the window.
   glfwSetWindowUserPointer(newWindow->m_window, newWindow.get());
@@ -68,7 +70,6 @@ std::unique_ptr<Window> Window::create(WindowDelegate* delegate,
 
   // We send a window resized to the delegate as well so that it can do any
   // setup needed.
-  Size<u32> clientSize{800, 480};
   delegate->onWindowResized(clientSize);
 
   return newWindow;
