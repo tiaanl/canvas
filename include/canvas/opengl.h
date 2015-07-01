@@ -19,7 +19,8 @@
 
 #if OS(WIN)
 #include "nucleus/win/windows_mixin.h"
-#include <glad/glad.h>
 #endif
+
+#include <glad/glad.h>
 
 #endif  // CANVAS_OPENGL_H_

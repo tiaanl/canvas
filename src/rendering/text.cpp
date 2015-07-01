@@ -71,7 +71,7 @@ Text::Text() {
 }
 
 Text::Text(Font* font, i32 textSize, const std::string& text)
-  : m_font(font), m_textSize(textSize), m_text(text) {
+  : m_font(font), m_text(text), m_textSize(textSize) {
   ensureShaders();
 
   if (m_font) {
@@ -162,7 +162,7 @@ void Text::updateGeometry() {
   }
 
   f32 left = 0.f;
-  
+
   float bLeft = 0.f, bTop = 0.f, bRight = 0.f, bBottom = 0.f;
 
   // Build geometry for each character in the text.

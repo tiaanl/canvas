@@ -14,6 +14,8 @@
 
 #include "canvas/windows/window.h"
 
+#include <cmath>
+
 #include "nucleus/logging.h"
 #include "nucleus/types.h"
 
@@ -296,10 +298,20 @@ std::unique_ptr<Window> Window::create(WindowDelegate* delegate,
 
   const Size<u32> clientSize{1600, 900};
 
+  // Set up our hints.
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
   // Create the window.
   newWindow->m_window =
       glfwCreateWindow(clientSize.width, clientSize.height,
                        delegate->getTitle().c_str(), nullptr, nullptr);
+  if (!newWindow->m_window) {
+    LOG(Error) << "Could not create window.";
+    return nullptr;
+  }
 
   // Set up the callbacks for the window.
   glfwSetWindowUserPointer(newWindow->m_window, newWindow.get());
@@ -317,6 +329,16 @@ std::unique_ptr<Window> Window::create(WindowDelegate* delegate,
 
   // Initialize glad, so we can use GL extensions.
   gladLoadGL();
+
+  int major =
+      glfwGetWindowAttrib(newWindow->m_window, GLFW_CONTEXT_VERSION_MAJOR);
+  int minor =
+      glfwGetWindowAttrib(newWindow->m_window, GLFW_CONTEXT_VERSION_MINOR);
+  int rev = glfwGetWindowAttrib(newWindow->m_window, GLFW_CONTEXT_REVISION);
+
+  LOG(Info) << "OpenGL version: " << major << "." << minor << "." << rev;
+  LOG(Info) << "Supported OpenGL is " << glGetString(GL_VERSION);
+  LOG(Info) << "Supported GLSL is " << glGetString(GL_SHADING_LANGUAGE_VERSION);
 
   // Let the delegate know we were just created.
   delegate->onWindowCreated();
@@ -422,7 +444,8 @@ void Window::scrollCallback(GLFWwindow* window, double xOffset,
   Pos<i32> mousePos{static_cast<i32>(std::round(xPos)),
                     static_cast<i32>(std::round(yPos))};
 
-  Pos<i32> scrollOffset{std::lround(xOffset), std::lround(yOffset)};
+  Pos<i32> scrollOffset{static_cast<i32>(std::lround(xOffset)),
+                        static_cast<i32>(std::lround(yOffset))};
   MouseWheelEvent evt{Event::MouseWheel, mousePos, scrollOffset};
   windowPtr->m_delegate->onMouseWheel(evt);
 }
