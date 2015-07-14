@@ -86,7 +86,7 @@ public:
     return true;
   }
 
-  void onWindowResized(const ca::Size<uint32_t>& size) override {
+  void onWindowResized(const ca::Size<u32>& size) override {
     m_projectionMatrix = ca::ortho(-static_cast<float>(size.width) / 2.f,
                                    static_cast<float>(size.width) / 2.f,
                                    static_cast<float>(size.height) / 2.f,

@@ -43,12 +43,12 @@ struct Vec4 {
 
   Vec4(const Vec2& xy, const Vec2& zw) : x{xy.x}, y{xy.y}, z{zw.x}, w{zw.y} {}
 
-  f32& operator[](size_t index) {
+  f32& operator[](usize index) {
     DCHECK(index <= 3);
     return (&x)[index];
   }
 
-  f32 operator[](size_t index) const {
+  f32 operator[](usize index) const {
     DCHECK(index <= 3);
     return (&x)[index];
   }

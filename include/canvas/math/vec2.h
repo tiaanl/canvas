@@ -28,12 +28,12 @@ struct Vec2 {
 
   explicit Vec2(f32 x = 0.f, f32 y = 0.f) : x{x}, y{y} {}
 
-  f32& operator[](size_t index) {
+  f32& operator[](usize index) {
     DCHECK(index <= 1);
     return (&x)[index];
   }
 
-  f32 operator[](size_t index) const {
+  f32 operator[](usize index) const {
     DCHECK(index <= 1);
     return (&x)[index];
   }

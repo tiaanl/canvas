@@ -32,12 +32,12 @@ struct Vec3 {
   explicit Vec3(f32 x = 0.f, f32 y = 0.f, f32 z = 0.f) : x{x}, y{y}, z{z} {}
   Vec3(const Vec2& xy, f32 z) : x{xy.x}, y{xy.y}, z{z} {}
 
-  f32& operator[](size_t index) {
+  f32& operator[](usize index) {
     DCHECK(index <= 2);
     return (&x)[index];
   }
 
-  f32 operator[](size_t index) const {
+  f32 operator[](usize index) const {
     DCHECK(index <= 2);
     return (&x)[index];
   }

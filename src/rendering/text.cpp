@@ -166,7 +166,7 @@ void Text::updateGeometry() {
   float bLeft = 0.f, bTop = 0.f, bRight = 0.f, bBottom = 0.f;
 
   // Build geometry for each character in the text.
-  for (size_t i = 0; i < m_text.length(); ++i) {
+  for (usize i = 0; i < m_text.length(); ++i) {
     char32_t ch = m_text[i];
 
     // Get the glyph.

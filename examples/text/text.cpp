@@ -36,13 +36,15 @@ public:
 
   // Override: ca::WindowDelegate
 
-  void onWindowCreated() override {
+  bool onWindowCreated() override {
     nu::FileInputStream fontStream{
         nu::FilePath{FILE_PATH_LITERAL("C:\\Windows\\Fonts\\arial.ttf")}};
 
     m_font.loadFromStream(&fontStream);
 
     m_text.reset(new ca::Text{&m_font, 50, "Hello, World!"});
+
+    return true;
   }
 
   void onWindowResized(const ca::Size<u32>& size) override {
