@@ -45,7 +45,7 @@ void glCheck() {
         break;
     }
 
-#if OS(WIN)
+#if OS(WIN) && COMPILER(MSVC)
     // Break into the debugger.
     __debugbreak();
 #endif

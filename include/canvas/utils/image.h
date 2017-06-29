@@ -29,29 +29,29 @@ namespace ca {
 
 class Image {
 public:
-  using DataType = std::vector<u8>;
+  using DataType = std::vector<U8>;
 
   Image() = default;
   ~Image() = default;
 
   // Get the size of the image.
-  const Size<i32> getSize() const { return m_size; }
+  const Size<I32> getSize() const { return m_size; }
 
   // Get the pixel data for the image.
   const DataType& getData() const { return m_data; }
 
   // Create a blank image with the specified color.
-  void create(const Size<i32>& size, const Color& col = Color{});
+  void create(const Size<I32>& size, const Color& col = Color{});
 
   // Load the image data from a stream.
   bool loadFromStream(nu::InputStream* stream);
 
   // Set the color of a single pixel in the image.
-  void setPixel(const Pos<i32>& pos, const Color& color);
+  void setPixel(const Pos<I32>& pos, const Color& color);
 
 private:
   // The dimensions of the image.
-  Size<i32> m_size;
+  Size<I32> m_size;
 
   // The buffer that holds the pixel data.
   DataType m_data;

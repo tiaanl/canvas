@@ -20,7 +20,7 @@ bool WindowDelegate::onWindowCreated() {
   return true;
 }
 
-void WindowDelegate::onWindowResized(const Size<u32>& size) {
+void WindowDelegate::onWindowResized(const Size<U32>& size) {
 }
 
 void WindowDelegate::onMouseMoved(const MouseEvent& evt) {

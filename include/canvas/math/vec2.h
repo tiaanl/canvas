@@ -23,17 +23,17 @@
 namespace ca {
 
 struct Vec2 {
-  f32 x{0.f};
-  f32 y{0.f};
+  F32 x{0.f};
+  F32 y{0.f};
 
-  explicit Vec2(f32 x = 0.f, f32 y = 0.f) : x{x}, y{y} {}
+  explicit Vec2(F32 x = 0.f, F32 y = 0.f) : x{x}, y{y} {}
 
-  f32& operator[](usize index) {
+  F32& operator[](USize index) {
     DCHECK(index <= 1);
     return (&x)[index];
   }
 
-  f32 operator[](usize index) const {
+  F32 operator[](USize index) const {
     DCHECK(index <= 1);
     return (&x)[index];
   }
@@ -72,37 +72,37 @@ struct Vec2 {
     return *this;
   }
 
-  Vec2 operator*(f32 scalar) const { return Vec2{x * scalar, y * scalar}; }
+  Vec2 operator*(F32 scalar) const { return Vec2{x * scalar, y * scalar}; }
 
-  Vec2& operator*=(f32 scalar) {
+  Vec2& operator*=(F32 scalar) {
     x *= scalar;
     y *= scalar;
     return *this;
   }
 
-  Vec2 operator/(f32 scalar) const { return Vec2{x / scalar, y / scalar}; }
+  Vec2 operator/(F32 scalar) const { return Vec2{x / scalar, y / scalar}; }
 
-  Vec2& operator/=(f32 scalar) {
+  Vec2& operator/=(F32 scalar) {
     x /= scalar;
     y /= scalar;
     return *this;
   }
 };
 
-inline f32 dotProduct(const Vec2& a, const Vec2& b) {
+inline F32 dotProduct(const Vec2& a, const Vec2& b) {
   return a.x * b.x + a.y * b.y;
 }
 
-inline f32 crossProduct(const Vec2& a, const Vec2& b) {
+inline F32 crossProduct(const Vec2& a, const Vec2& b) {
   return a.x * b.y - b.x * a.y;
 }
 
-inline f32 lengthSquared(const Vec2& a) {
+inline F32 lengthSquared(const Vec2& a) {
   return dotProduct(a, a);
 }
 
-inline f32 length(const Vec2& a) {
-  return std::sqrtf(lengthSquared(a));
+inline F32 length(const Vec2& a) {
+  return std::sqrt(lengthSquared(a));
 }
 
 inline Vec2 normalize(const Vec2& a) {

@@ -35,7 +35,7 @@ public:
   };
 
   // Create a rectangle geometry with the given dimensions.
-  static Geometry createRectangle(const Rect<f32>& rect, const Color& color);
+  static Geometry createRectangle(const Rect<F32>& rect, const Color& color);
 
   explicit Geometry(PrimitiveType primitiveType = Triangles);
   ~Geometry() = default;
@@ -44,7 +44,7 @@ public:
   void addVertex(const Vertex& vertex);
 
   // Add an array of vertices to the geometry.
-  void addVertices(Vertex* vertices, usize count);
+  void addVertices(Vertex* vertices, USize count);
 
   // Clear the list of vertices.
   void clear();

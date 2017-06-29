@@ -25,19 +25,19 @@
 namespace ca {
 
 struct Vec3 {
-  f32 x{0.f};
-  f32 y{0.f};
-  f32 z{0.f};
+  F32 x{0.f};
+  F32 y{0.f};
+  F32 z{0.f};
 
-  explicit Vec3(f32 x = 0.f, f32 y = 0.f, f32 z = 0.f) : x{x}, y{y}, z{z} {}
-  Vec3(const Vec2& xy, f32 z) : x{xy.x}, y{xy.y}, z{z} {}
+  explicit Vec3(F32 x = 0.f, F32 y = 0.f, F32 z = 0.f) : x{x}, y{y}, z{z} {}
+  Vec3(const Vec2& xy, F32 z) : x{xy.x}, y{xy.y}, z{z} {}
 
-  f32& operator[](usize index) {
+  F32& operator[](USize index) {
     DCHECK(index <= 2);
     return (&x)[index];
   }
 
-  f32 operator[](usize index) const {
+  F32 operator[](USize index) const {
     DCHECK(index <= 2);
     return (&x)[index];
   }
@@ -74,22 +74,22 @@ struct Vec3 {
     return *this;
   }
 
-  Vec3 operator*(f32 scalar) const {
+  Vec3 operator*(F32 scalar) const {
     return Vec3{x * scalar, y * scalar, z * scalar};
   }
 
-  Vec3& operator*=(f32 scalar) {
+  Vec3& operator*=(F32 scalar) {
     x *= scalar;
     y *= scalar;
     z *= scalar;
     return *this;
   }
 
-  Vec3 operator/(f32 scalar) const {
+  Vec3 operator/(F32 scalar) const {
     return Vec3{x / scalar, y / scalar, z / scalar};
   }
 
-  Vec3& operator/=(f32 scalar) {
+  Vec3& operator/=(F32 scalar) {
     x /= scalar;
     y /= scalar;
     z /= scalar;
@@ -97,7 +97,7 @@ struct Vec3 {
   }
 };
 
-inline f32 dotProduct(const Vec3& a, const Vec3& b) {
+inline F32 dotProduct(const Vec3& a, const Vec3& b) {
   return a.x * b.x + a.y * b.y + a.z * b.z;
 }
 
@@ -106,12 +106,12 @@ inline Vec3 crossProduct(const Vec3& a, const Vec3& b) {
               a.x * b.y - b.x * a.y};
 }
 
-inline f32 lengthSquared(const Vec3& a) {
+inline F32 lengthSquared(const Vec3& a) {
   return dotProduct(a, a);
 }
 
-inline f32 length(const Vec3& a) {
-  return std::sqrtf(lengthSquared(a));
+inline F32 length(const Vec3& a) {
+  return std::sqrt(lengthSquared(a));
 }
 
 inline Vec3 normalize(const Vec3& a) {

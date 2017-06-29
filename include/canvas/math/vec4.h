@@ -27,28 +27,28 @@
 namespace ca {
 
 struct Vec4 {
-  f32 x{0.f};
-  f32 y{0.f};
-  f32 z{0.f};
-  f32 w{0.f};
+  F32 x{0.f};
+  F32 y{0.f};
+  F32 z{0.f};
+  F32 w{0.f};
 
   Vec4() = default;
 
-  Vec4(f32 scalar) : x{scalar}, y{scalar}, z{scalar}, w{scalar} {}
+  Vec4(F32 scalar) : x{scalar}, y{scalar}, z{scalar}, w{scalar} {}
 
-  Vec4(f32 x, f32 y, f32 z, f32 w)
+  Vec4(F32 x, F32 y, F32 z, F32 w)
     : x{x}, y{y}, z{z}, w{w} {}
 
-  Vec4(const Vec3& xyz, f32 w) : x{xyz.x}, y{xyz.y}, z{xyz.z}, w{w} {}
+  Vec4(const Vec3& xyz, F32 w) : x{xyz.x}, y{xyz.y}, z{xyz.z}, w{w} {}
 
   Vec4(const Vec2& xy, const Vec2& zw) : x{xy.x}, y{xy.y}, z{zw.x}, w{zw.y} {}
 
-  f32& operator[](usize index) {
+  F32& operator[](USize index) {
     DCHECK(index <= 3);
     return (&x)[index];
   }
 
-  f32 operator[](usize index) const {
+  F32 operator[](USize index) const {
     DCHECK(index <= 3);
     return (&x)[index];
   }
@@ -81,7 +81,7 @@ struct Vec4 {
     return Vec4{x - other.x, y - other.y, z - other.z, w - other.w};
   }
 
-  Vec4 operator-(f32 scalar) const {
+  Vec4 operator-(F32 scalar) const {
     return Vec4{x - scalar, y - scalar, z - scalar, w - scalar};
   }
 
@@ -105,11 +105,11 @@ struct Vec4 {
     return *this;
   }
 
-  Vec4 operator*(f32 scalar) const {
+  Vec4 operator*(F32 scalar) const {
     return Vec4{x * scalar, y * scalar, z * scalar, w * scalar};
   }
 
-  Vec4& operator*=(f32 scalar) {
+  Vec4& operator*=(F32 scalar) {
     x *= scalar;
     y *= scalar;
     z *= scalar;
@@ -117,11 +117,11 @@ struct Vec4 {
     return *this;
   }
 
-  Vec4 operator/(f32 scalar) const {
+  Vec4 operator/(F32 scalar) const {
     return Vec4{x / scalar, y / scalar, z / scalar, w / scalar};
   }
 
-  Vec4& operator/=(f32 scalar) {
+  Vec4& operator/=(F32 scalar) {
     x /= scalar;
     y /= scalar;
     z /= scalar;
@@ -130,16 +130,16 @@ struct Vec4 {
   }
 };
 
-inline f32 dotProduct(const Vec4& a, const Vec4& b) {
+inline F32 dotProduct(const Vec4& a, const Vec4& b) {
   return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
 }
 
-inline f32 lengthSquared(const Vec4& a) {
+inline F32 lengthSquared(const Vec4& a) {
   return dotProduct(a, a);
 }
 
-inline f32 length(const Vec4& a) {
-  return std::sqrtf(lengthSquared(a));
+inline F32 length(const Vec4& a) {
+  return std::sqrt(lengthSquared(a));
 }
 
 inline Vec4 normalize(const Vec4& a) {

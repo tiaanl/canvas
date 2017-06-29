@@ -15,6 +15,8 @@
 #ifndef CANVAS_MATH_TRANSFORM_H_
 #define CANVAS_MATH_TRANSFORM_H_
 
+#include <cmath>
+
 #include "canvas/math/mat4.h"
 #include "canvas/math/vec3.h"
 
@@ -26,7 +28,7 @@ inline Mat4 translate(const Vec3& vec) {
   return result;
 }
 
-inline Mat4 translate(f32 x, f32 y, f32 z) {
+inline Mat4 translate(F32 x, F32 y, F32 z) {
   Mat4 result;
   result[3][0] = x;
   result[3][1] = y;
@@ -34,10 +36,10 @@ inline Mat4 translate(f32 x, f32 y, f32 z) {
   return result;
 }
 
-inline Mat4 rotate(f32 radians, const Vec3& v) {
-  const f32 a = radians;
-  const f32 c = std::cosf(radians);
-  const f32 s = std::sinf(radians);
+inline Mat4 rotate(F32 radians, const Vec3& v) {
+  const F32 a = radians;
+  const F32 c = std::cos(radians);
+  const F32 s = std::sin(radians);
 
   Vec3 axis(normalize(v));
   Vec3 temp(axis * (1.f - c));
@@ -67,7 +69,7 @@ inline Mat4 scale(const Vec3& scale) {
   return result;
 }
 
-inline Mat4 scale(f32 x, f32 y, f32 z) {
+inline Mat4 scale(F32 x, F32 y, F32 z) {
   Mat4 result;
   result[0][0] = x;
   result[1][1] = y;
@@ -75,8 +77,8 @@ inline Mat4 scale(f32 x, f32 y, f32 z) {
   return result;
 }
 
-inline Mat4 ortho(f32 left, f32 right, f32 bottom, f32 top, f32 zNear,
-                  f32 zFar) {
+inline Mat4 ortho(F32 left, F32 right, F32 bottom, F32 top, F32 zNear,
+                  F32 zFar) {
   Mat4 result;
 
   result[0][0] = 2.f / (right - left);
@@ -90,7 +92,7 @@ inline Mat4 ortho(f32 left, f32 right, f32 bottom, f32 top, f32 zNear,
   return result;
 }
 
-inline Mat4 ortho(f32 left, f32 right, f32 bottom, f32 top) {
+inline Mat4 ortho(F32 left, F32 right, F32 bottom, F32 top) {
   Mat4 result;
 
   result[0][0] = 2.f / (right - left);

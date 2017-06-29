@@ -35,7 +35,7 @@ public:
   ~Window();
 
   // Get the client size of the window.
-  ca::Size<i32> getClientSize() const;
+  ca::Size<I32> getClientSize() const;
 
   // Process any pending events for this window.  Returns false if the window
   // should stop processing messages.

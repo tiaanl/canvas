@@ -14,6 +14,8 @@
 
 #include "canvas/utils/image.h"
 
+#include <cstring>
+
 #include "nucleus/logging.h"
 #include "nucleus/utils/stl.h"
 
@@ -41,7 +43,7 @@ static int stbCallbackEof(void* user) {
 
 }  // namespace
 
-void Image::create(const Size<i32>& size, const Color& col) {
+void Image::create(const Size<I32>& size, const Color& col) {
   if (size.width && size.height) {
     // Store the size of the image.
     m_size = size;
@@ -50,8 +52,8 @@ void Image::create(const Size<i32>& size, const Color& col) {
     m_data.resize(size.width * size.height * 4);
 
     // Fill the image with the specified color.
-    u8* data = nu::vectorAsArray(&m_data);
-    u8* end = data + m_data.size();
+    U8* data = nu::vectorAsArray(&m_data);
+    U8* end = data + m_data.size();
     while (data < end) {
       *data++ = col.r;
       *data++ = col.g;
@@ -99,8 +101,8 @@ bool Image::loadFromStream(nu::InputStream* stream) {
   return true;
 }
 
-void Image::setPixel(const Pos<i32>& pos, const Color& color) {
-  u8* ptr = &m_data[pos.y * (m_size.width * 4) + (pos.x * 4)];
+void Image::setPixel(const Pos<I32>& pos, const Color& color) {
+  U8* ptr = &m_data[pos.y * (m_size.width * 4) + (pos.x * 4)];
   *ptr++ = color.r;
   *ptr++ = color.g;
   *ptr++ = color.b;

@@ -63,17 +63,17 @@ public:
     m_program.link();
 
     m_object = ca::Geometry::createRectangle(
-        ca::Rect<f32>{-50.0f, -50.0f, 100.0f, 100.0f}, ca::Color{255, 0, 0, 255});
+        ca::Rect<F32>{-50.0f, -50.0f, 100.0f, 100.0f}, ca::Color{255, 0, 0, 255});
     m_object.compileAndUpload();
 
     m_mouse = ca::Geometry::createRectangle(
-        ca::Rect<f32>{-5.0f, -5.0f, 10.0f, 10.0f}, ca::Color{255, 0, 0, 255});
+        ca::Rect<F32>{-5.0f, -5.0f, 10.0f, 10.0f}, ca::Color{255, 0, 0, 255});
     m_mouse.compileAndUpload();
 
     return true;
   }
 
-  void onWindowResized(const ca::Size<u32>& clientSize) override {
+  void onWindowResized(const ca::Size<U32>& clientSize) override {
     m_clientSize = clientSize;
   }
 
@@ -88,10 +88,10 @@ public:
     ca::Program::bind(&m_program);
 
     ca::Mat4 projectionMatrix = ca::ortho(
-      -static_cast<f32>(m_clientSize.width) / 2.0f,
-       static_cast<f32>(m_clientSize.width) / 2.0f,
-      -static_cast<f32>(m_clientSize.height) / 2.0f,
-       static_cast<f32>(m_clientSize.height) / 2.0f);
+      -static_cast<F32>(m_clientSize.width) / 2.0f,
+       static_cast<F32>(m_clientSize.width) / 2.0f,
+      -static_cast<F32>(m_clientSize.height) / 2.0f,
+       static_cast<F32>(m_clientSize.height) / 2.0f);
     m_program.setUniform("uni_projectionMatrix", projectionMatrix);
 
     ca::Mat4 viewMatrix = ca::translate(150.0f, 0.0f, 0.0f);
@@ -102,10 +102,10 @@ public:
 
     ca::Mat4 finalMatrix = projectionMatrix * viewMatrix * modelMatrix;
 
-    // m_mousePos = ca::Pos<i32>{50, 250};
+    // m_mousePos = ca::Pos<I32>{50, 250};
     ca::Vec4 adjustedMousePos{
-      -1.f + 2.f * static_cast<f32>(m_mousePos.x) / static_cast<f32>(m_clientSize.width),
-      -1.f + 2.f * static_cast<f32>(m_mousePos.y) / static_cast<f32>(m_clientSize.height),
+      -1.f + 2.f * static_cast<F32>(m_mousePos.x) / static_cast<F32>(m_clientSize.width),
+      -1.f + 2.f * static_cast<F32>(m_mousePos.y) / static_cast<F32>(m_clientSize.height),
       0.0f,
       1.0f
     };
@@ -124,8 +124,8 @@ public:
   }
 
 private:
-  ca::Size<u32> m_clientSize{500, 500};
-  ca::Pos<i32> m_mousePos;
+  ca::Size<U32> m_clientSize{500, 500};
+  ca::Pos<I32> m_mousePos;
   ca::Program m_program;
 
   ca::Geometry m_object;

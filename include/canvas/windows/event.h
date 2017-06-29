@@ -45,19 +45,19 @@ struct KeyEvent : Event {
 };
 
 struct PositionEvent : Event {
-  Pos<i32> pos;
+  Pos<I32> pos;
 
-  PositionEvent(Type type, const Pos<i32>& pos) : Event(type), pos(pos) {}
+  PositionEvent(Type type, const Pos<I32>& pos) : Event(type), pos(pos) {}
 };
 
 struct MouseEvent : PositionEvent {
-  MouseEvent(Type type, const Pos<i32>& pos) : PositionEvent(type, pos) {}
+  MouseEvent(Type type, const Pos<I32>& pos) : PositionEvent(type, pos) {}
 };
 
 struct MouseWheelEvent : MouseEvent {
-  Pos<i32> wheelOffset;
+  Pos<I32> wheelOffset;
 
-  MouseWheelEvent(Type type, const Pos<i32>& pos, Pos<i32>& wheelOffset)
+  MouseWheelEvent(Type type, const Pos<I32>& pos, Pos<I32>& wheelOffset)
     : MouseEvent(type, pos), wheelOffset(wheelOffset) {}
 };
 

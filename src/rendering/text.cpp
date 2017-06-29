@@ -15,6 +15,7 @@
 #include "canvas/rendering/text.h"
 
 #include <algorithm>
+#include <cstring>
 
 #include "canvas/rendering/font.h"
 #include "canvas/rendering/program.h"
@@ -70,7 +71,7 @@ Text::Text() {
   ensureShaders();
 }
 
-Text::Text(Font* font, i32 textSize, const std::string& text)
+Text::Text(Font* font, I32 textSize, const std::string& text)
   : m_font(font), m_text(text), m_textSize(textSize) {
   ensureShaders();
 
@@ -89,7 +90,7 @@ void Text::setText(const std::string& text) {
   updateGeometry();
 }
 
-void Text::setTextSize(i32 textSize) {
+void Text::setTextSize(I32 textSize) {
   m_textSize = textSize;
   updateGeometry();
 }
@@ -155,27 +156,27 @@ void Text::updateGeometry() {
     m_geometry.compileAndUpload();
 
     // Update the bounds.
-    m_bounds = Rect<i32>{};
-    m_bounds.size.height = static_cast<i32>(std::round(
+    m_bounds = Rect<I32>{};
+    m_bounds.size.height = static_cast<I32>(std::round(
         m_font->getAscent(m_textSize) - m_font->getDescent(m_textSize)));
     return;
   }
 
-  f32 left = 0.f;
+  F32 left = 0.f;
 
   float bLeft = 0.f, bTop = 0.f, bRight = 0.f, bBottom = 0.f;
 
   // Build geometry for each character in the text.
-  for (usize i = 0; i < m_text.length(); ++i) {
+  for (USize i = 0; i < m_text.length(); ++i) {
     char32_t ch = m_text[i];
 
     // Get the glyph.
     const Font::Glyph& glyph = m_font->getOrInsertGlyph(m_textSize, ch);
 
-    const f32 newLeft = left + glyph.bounds.pos.x;
-    const f32 newTop = glyph.bounds.pos.y;
-    const f32 newRight = left + glyph.bounds.pos.x + glyph.bounds.size.width;
-    const f32 newBottom = glyph.bounds.pos.y + glyph.bounds.size.height;
+    const F32 newLeft = left + glyph.bounds.pos.x;
+    const F32 newTop = glyph.bounds.pos.y;
+    const F32 newRight = left + glyph.bounds.pos.x + glyph.bounds.size.width;
+    const F32 newBottom = glyph.bounds.pos.y + glyph.bounds.size.height;
 
     bLeft = std::min(bLeft, newLeft);
     bTop = std::min(bTop, newTop);
@@ -245,10 +246,10 @@ void Text::updateGeometry() {
     left += glyph.advance;
   }
 
-  m_bounds.pos.x = static_cast<i32>(std::floor(bLeft));
-  m_bounds.pos.y = static_cast<i32>(std::floor(bTop));
-  m_bounds.size.width = static_cast<i32>(std::ceil(bRight - bLeft));
-  m_bounds.size.height = static_cast<i32>(std::ceil(bBottom - bTop));
+  m_bounds.pos.x = static_cast<I32>(std::floor(bLeft));
+  m_bounds.pos.y = static_cast<I32>(std::floor(bTop));
+  m_bounds.size.width = static_cast<I32>(std::ceil(bRight - bLeft));
+  m_bounds.size.height = static_cast<I32>(std::ceil(bBottom - bTop));
 
   m_geometry.compileAndUpload();
 }

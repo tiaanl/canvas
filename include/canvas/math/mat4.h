@@ -32,7 +32,7 @@ struct Mat4 {
     col[3] = Vec4{0.f, 0.f, 0.f, 1.f};
   }
 
-  Mat4(f32 scale) {
+  Mat4(F32 scale) {
     col[0] = Vec4{scale, 0.f, 0.f, 0.f};
     col[1] = Vec4{0.f, scale, 0.f, 0.f};
     col[2] = Vec4{0.f, 0.f, scale, 0.f};
@@ -46,26 +46,26 @@ struct Mat4 {
     col[3] = col4;
   }
 
-  Mat4(f32 c11, f32 c12, f32 c13, f32 c14, f32 c21, f32 c22, f32 c23, f32 c24,
-       f32 c31, f32 c32, f32 c33, f32 c34, f32 c41, f32 c42, f32 c43, f32 c44) {
+  Mat4(F32 c11, F32 c12, F32 c13, F32 c14, F32 c21, F32 c22, F32 c23, F32 c24,
+       F32 c31, F32 c32, F32 c33, F32 c34, F32 c41, F32 c42, F32 c43, F32 c44) {
     col[0] = Vec4{c11, c12, c13, c14};
     col[1] = Vec4{c21, c22, c23, c24};
     col[2] = Vec4{c31, c32, c33, c34};
     col[3] = Vec4{c41, c42, c43, c44};
   }
 
-  Vec4& operator[](u32 index) {
+  Vec4& operator[](U32 index) {
     DCHECK(index <= 3);
     return col[index];
   }
 
-  const Vec4& operator[](u32 index) const {
+  const Vec4& operator[](U32 index) const {
     DCHECK(index <= 3);
     return col[index];
   }
 
-  f32* asArray() { return static_cast<f32*>(&col[0].x); }
-  const f32* asArray() const { return static_cast<const f32*>(&col[0].x); }
+  F32* asArray() { return static_cast<F32*>(&col[0].x); }
+  const F32* asArray() const { return static_cast<const F32*>(&col[0].x); }
 
   bool operator==(const Mat4& other) const {
     for (auto i = 0; i < 4; ++i) {
@@ -158,7 +158,7 @@ struct Mat4 {
            col[3] * vec[3];
   }
 
-  Mat4 operator*(f32 scalar) const {
+  Mat4 operator*(F32 scalar) const {
     Mat4 result;
     for (auto i = 0; i < 4; ++i) {
       result[i] = col[i] * scalar;
@@ -166,7 +166,7 @@ struct Mat4 {
     return result;
   }
 
-  Mat4 operator/(f32 scalar) const {
+  Mat4 operator/(F32 scalar) const {
     Mat4 result;
     for (auto i = 0; i < 4; ++i) {
       result[i] = col[i] / scalar;
@@ -174,7 +174,7 @@ struct Mat4 {
     return result;
   }
 
-  Mat4& operator/=(f32 scalar) {
+  Mat4& operator/=(F32 scalar) {
     for (auto i = 0; i < 4; ++i) {
       col[i] /= scalar;
     }
@@ -192,29 +192,29 @@ inline Mat4 transpose(const Mat4& mat) {
 }
 
 inline Mat4 inverse(const Mat4& m) {
-  f32 coef00 = m[2][2] * m[3][3] - m[3][2] * m[2][3];
-  f32 coef02 = m[1][2] * m[3][3] - m[3][2] * m[1][3];
-  f32 coef03 = m[1][2] * m[2][3] - m[2][2] * m[1][3];
+  F32 coef00 = m[2][2] * m[3][3] - m[3][2] * m[2][3];
+  F32 coef02 = m[1][2] * m[3][3] - m[3][2] * m[1][3];
+  F32 coef03 = m[1][2] * m[2][3] - m[2][2] * m[1][3];
 
-  f32 coef04 = m[2][1] * m[3][3] - m[3][1] * m[2][3];
-  f32 coef06 = m[1][1] * m[3][3] - m[3][1] * m[1][3];
-  f32 coef07 = m[1][1] * m[2][3] - m[2][1] * m[1][3];
+  F32 coef04 = m[2][1] * m[3][3] - m[3][1] * m[2][3];
+  F32 coef06 = m[1][1] * m[3][3] - m[3][1] * m[1][3];
+  F32 coef07 = m[1][1] * m[2][3] - m[2][1] * m[1][3];
 
-  f32 coef08 = m[2][1] * m[3][2] - m[3][1] * m[2][2];
-  f32 coef10 = m[1][1] * m[3][2] - m[3][1] * m[1][2];
-  f32 coef11 = m[1][1] * m[2][2] - m[2][1] * m[1][2];
+  F32 coef08 = m[2][1] * m[3][2] - m[3][1] * m[2][2];
+  F32 coef10 = m[1][1] * m[3][2] - m[3][1] * m[1][2];
+  F32 coef11 = m[1][1] * m[2][2] - m[2][1] * m[1][2];
 
-  f32 coef12 = m[2][0] * m[3][3] - m[3][0] * m[2][3];
-  f32 coef14 = m[1][0] * m[3][3] - m[3][0] * m[1][3];
-  f32 coef15 = m[1][0] * m[2][3] - m[2][0] * m[1][3];
+  F32 coef12 = m[2][0] * m[3][3] - m[3][0] * m[2][3];
+  F32 coef14 = m[1][0] * m[3][3] - m[3][0] * m[1][3];
+  F32 coef15 = m[1][0] * m[2][3] - m[2][0] * m[1][3];
 
-  f32 coef16 = m[2][0] * m[3][2] - m[3][0] * m[2][2];
-  f32 coef18 = m[1][0] * m[3][2] - m[3][0] * m[1][2];
-  f32 coef19 = m[1][0] * m[2][2] - m[2][0] * m[1][2];
+  F32 coef16 = m[2][0] * m[3][2] - m[3][0] * m[2][2];
+  F32 coef18 = m[1][0] * m[3][2] - m[3][0] * m[1][2];
+  F32 coef19 = m[1][0] * m[2][2] - m[2][0] * m[1][2];
 
-  f32 coef20 = m[2][0] * m[3][1] - m[3][0] * m[2][1];
-  f32 coef22 = m[1][0] * m[3][1] - m[3][0] * m[1][1];
-  f32 coef23 = m[1][0] * m[2][1] - m[2][0] * m[1][1];
+  F32 coef20 = m[2][0] * m[3][1] - m[3][0] * m[2][1];
+  F32 coef22 = m[1][0] * m[3][1] - m[3][0] * m[1][1];
+  F32 coef23 = m[1][0] * m[2][1] - m[2][0] * m[1][1];
 
   Vec4 fac0(coef00, coef00, coef02, coef03);
   Vec4 fac1(coef04, coef04, coef06, coef07);
@@ -241,9 +241,9 @@ inline Mat4 inverse(const Mat4& m) {
   Vec4 row0(inverse[0][0], inverse[1][0], inverse[2][0], inverse[3][0]);
 
   Vec4 dot0(m[0] * row0);
-  f32 dot1 = (dot0.x + dot0.y) + (dot0.z + dot0.w);
+  F32 dot1 = (dot0.x + dot0.y) + (dot0.z + dot0.w);
 
-  f32 oneOverDeterminant = 1.f / dot1;
+  F32 oneOverDeterminant = 1.f / dot1;
 
   return inverse * oneOverDeterminant;
 }

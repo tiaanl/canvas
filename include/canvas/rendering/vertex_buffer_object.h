@@ -35,7 +35,7 @@ public:
   ~VertexBufferObject();
 
   // Upload the given data to the GPU.
-  bool setData(const void* data, usize size);
+  bool setData(const void* data, USize size);
 
 private:
   // Create the name of the object.

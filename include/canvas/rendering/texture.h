@@ -33,16 +33,16 @@ public:
   ~Texture();
 
   // Get the size of the texture.
-  const Size<i32>& getSize() const { return m_size; }
+  const Size<I32>& getSize() const { return m_size; }
 
   // Create a blank texture.
-  bool create(const Size<i32>& size);
+  bool create(const Size<I32>& size);
 
   // Create the texture from Image data.
   bool createFromImage(const Image& image);
 
   // Update a portion of the texture on the GPU.
-  void update(const u8* pixels, const Rect<i32>& rect);
+  void update(const U8* pixels, const Rect<I32>& rect);
 
 private:
   // Create/recreate a new OpenGL name.
@@ -52,7 +52,7 @@ private:
   GLuint m_name{0};
 
   // The size of the texture.
-  Size<i32> m_size;
+  Size<I32> m_size;
 
   DISALLOW_COPY_AND_ASSIGN(Texture);
 };

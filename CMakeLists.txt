@@ -1,24 +1,23 @@
 cmake_minimum_required(VERSION 3.2)
 project("canvas")
 
-# General options
+# Options
 
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-
-if(NOT MSVC)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y")
-endif()
+option(CANVAS_BUILD_UNITTESTS "Build canvas unit tests?")
+option(CANVAS_BUILD_EXAMPLES "Build canvas examples?")
 
 # Dependencies
 
-option(CANVAS_BUILD_DEPENDENCIES "Build all dependencies with this library")
-if(CANVAS_BUILD_DEPENDENCIES)
-  include("cmake/nucleus.cmake")
-endif()
-
+include("cmake/nucleus.cmake")
 include("cmake/glfw.cmake")
 
 add_subdirectory("${canvas_SOURCE_DIR}/third_party/glad")
+
+# Compiler Settings
+
+include("${NUCLEUS_ROOT_DIR}/cmake/gcc.cmake")
+include("${NUCLEUS_ROOT_DIR}/cmake/msvc.cmake")
+include("${NUCLEUS_ROOT_DIR}/cmake/win32.cmake")
 
 # canvas
 
@@ -76,5 +75,10 @@ target_include_directories("canvas" PUBLIC "${canvas_SOURCE_DIR}/include")
 target_include_directories("canvas" PUBLIC "${canvas_SOURCE_DIR}/third_party/stb")
 set_property(TARGET "canvas" PROPERTY FOLDER "canvas")
 
-add_subdirectory("tests")
-add_subdirectory("examples")
+if(CANVAS_BUILD_UNITTESTS)
+  add_subdirectory("tests")
+endif()
+
+if(CANVAS_BUILD_EXAMPLES)
+  add_subdirectory("examples")
+endif()

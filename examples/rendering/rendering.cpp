@@ -77,7 +77,7 @@ public:
 
     // Create some geometry that we can render.
     m_geometry = ca::Geometry::createRectangle(
-        ca::Rect<f32>{-0.5f, -0.5f, 1.f, 1.f}, ca::Color{255, 0, 0, 127});
+        ca::Rect<F32>{-0.5f, -0.5f, 1.f, 1.f}, ca::Color{255, 0, 0, 127});
     m_geometry.compileAndUpload();
 
     // Set up the sprite.
@@ -86,7 +86,7 @@ public:
     return true;
   }
 
-  void onWindowResized(const ca::Size<u32>& size) override {
+  void onWindowResized(const ca::Size<U32>& size) override {
     m_projectionMatrix = ca::ortho(-static_cast<float>(size.width) / 2.f,
                                    static_cast<float>(size.width) / 2.f,
                                    static_cast<float>(size.height) / 2.f,

@@ -19,7 +19,7 @@
 namespace ca {
 
 // static
-Geometry Geometry::createRectangle(const Rect<f32>& rect, const Color& color) {
+Geometry Geometry::createRectangle(const Rect<F32>& rect, const Color& color) {
   Geometry result{TriangleFan};
 
   Vertex vertices[] = {
@@ -48,9 +48,9 @@ void Geometry::addVertex(const Vertex& vertex) {
   m_compiled = false;
 }
 
-void Geometry::addVertices(Vertex* vertices, usize count) {
+void Geometry::addVertices(Vertex* vertices, USize count) {
   m_vertices.reserve(m_vertices.size() + count);
-  for (usize i = 0; i < count; ++i) {
+  for (USize i = 0; i < count; ++i) {
     m_vertices.push_back(vertices[i]);
   }
 

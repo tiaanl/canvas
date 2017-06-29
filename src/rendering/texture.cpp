@@ -22,7 +22,7 @@ namespace ca {
 
 namespace {
 
-static i32 getMaxTextureSize() {
+static I32 getMaxTextureSize() {
   GLint size;
   GL_CHECK(glGetIntegerv(GL_MAX_TEXTURE_SIZE, &size));
   return size;
@@ -45,8 +45,8 @@ Texture::~Texture() {
   }
 }
 
-bool Texture::create(const Size<i32>& size) {
-  i32 maxTextureSize = getMaxTextureSize();
+bool Texture::create(const Size<I32>& size) {
+  I32 maxTextureSize = getMaxTextureSize();
   if (size.width == 0 || (size.width & (size.width - 1)) != 0 ||
       size.width > maxTextureSize || size.height == 0 ||
       (size.height & (size.height - 1)) != 0 || size.height > maxTextureSize) {
@@ -101,7 +101,7 @@ bool Texture::createFromImage(const Image& image) {
   return true;
 }
 
-void Texture::update(const u8* pixels, const Rect<i32>& rect) {
+void Texture::update(const U8* pixels, const Rect<I32>& rect) {
   DCHECK(rect.pos.x + rect.size.width < m_size.width);
   DCHECK(rect.pos.y + rect.size.height < m_size.height);
 

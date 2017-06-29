@@ -20,16 +20,16 @@
 namespace ca {
 
 struct Color {
-  u8 r;
-  u8 g;
-  u8 b;
-  u8 a;
+  U8 r;
+  U8 g;
+  U8 b;
+  U8 a;
 
   // Construct a color with default values.
   Color() : r{0}, g{0}, b{0}, a{255} {}
 
   // Construct a color without alpha component.
-  Color(u8 r, u8 g, u8 b, u8 a = 255) : r{r}, g{g}, b{b}, a{a} {}
+  Color(U8 r, U8 g, U8 b, U8 a = 255) : r{r}, g{g}, b{b}, a{a} {}
 };
 
 }  // namespace ca

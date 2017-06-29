@@ -31,7 +31,7 @@ public:
   ~Sprite();
 
   // Get the bounds of the sprite.
-  ca::Rect<f32> getBounds() const;
+  ca::Rect<F32> getBounds() const;
 
   void setTexture(Texture* texture);
 

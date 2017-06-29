@@ -43,7 +43,7 @@ bool Font::loadFromStream(nu::InputStream* stream) {
   return true;
 }
 
-const Font::Glyph& Font::getOrInsertGlyph(i32 characterSize,
+const Font::Glyph& Font::getOrInsertGlyph(I32 characterSize,
                                           char32_t codePoint) {
   Page* page = getPage(characterSize);
   DCHECK(page);
@@ -64,7 +64,7 @@ const Font::Glyph& Font::getOrInsertGlyph(i32 characterSize,
   }
 }
 
-i32 Font::getKerning(i32 characterSize, char32_t first, char32_t second) const {
+I32 Font::getKerning(I32 characterSize, char32_t first, char32_t second) const {
   if (first == 0 || second == 0) {
     return 0;
   }
@@ -72,17 +72,17 @@ i32 Font::getKerning(i32 characterSize, char32_t first, char32_t second) const {
   return stbtt_GetCodepointKernAdvance(&m_fontInfo, first, second);
 }
 
-f32 Font::getAscent(i32 characterSize) {
+F32 Font::getAscent(I32 characterSize) {
   Page* page = getPage(characterSize);
   return page->ascent;
 }
 
-f32 Font::getDescent(i32 characterSize) {
+F32 Font::getDescent(I32 characterSize) {
   Page* page = getPage(characterSize);
   return page->descent;
 }
 
-const Texture* Font::getTexture(i32 characterSize) const {
+const Texture* Font::getTexture(I32 characterSize) const {
   auto it = m_pages.find(characterSize);
   if (it != std::end(m_pages)) {
     return &it->second->texture;
@@ -90,25 +90,25 @@ const Texture* Font::getTexture(i32 characterSize) const {
   return nullptr;
 }
 
-Font::Page::Page(Font* font, i32 characterSize) {
+Font::Page::Page(Font* font, I32 characterSize) {
   // Calculate the scale for the characterSize.
   fontScale = stbtt_ScaleForPixelHeight(&font->m_fontInfo,
-                                        static_cast<f32>(characterSize));
+                                        static_cast<F32>(characterSize));
 
   int iAscent, iDescent;
   stbtt_GetFontVMetrics(&font->m_fontInfo, &iAscent, &iDescent, nullptr);
-  ascent = static_cast<f32>(iAscent) * fontScale;
-  descent = static_cast<f32>(iDescent) * fontScale;
+  ascent = static_cast<F32>(iAscent) * fontScale;
+  descent = static_cast<F32>(iDescent) * fontScale;
 
   // Make sure the texture is initialized by default.
   Image image;
-  image.create(Size<i32>{128, 128}, Color{0, 0, 0, 0});
+  image.create(Size<I32>{128, 128}, Color{0, 0, 0, 0});
 
   // Create the texture.
   texture.createFromImage(image);
 }
 
-Font::Page* Font::getPage(i32 characterSize) {
+Font::Page* Font::getPage(I32 characterSize) {
   Page* page = nullptr;
   auto pageIt = m_pages.find(characterSize);
   if (pageIt == std::end(m_pages)) {
@@ -126,16 +126,16 @@ Font::Glyph Font::loadGlyph(Page* page, char32_t codePoint) {
   Glyph result;
 
   // Get the advance of the glyph.
-  i32 advance;
+  I32 advance;
   stbtt_GetCodepointHMetrics(&m_fontInfo, codePoint, &advance, nullptr);
-  result.advance = static_cast<f32>(advance) * page->fontScale;
+  result.advance = static_cast<F32>(advance) * page->fontScale;
   
   // Get the vertical dimensions of the font.
   int ascent, descent, lineGap;
   stbtt_GetFontVMetrics(&m_fontInfo, &ascent, &descent, &lineGap);
 
   // Get the bounds of the glyph.
-  Rect<i32> glyphRect;
+  Rect<I32> glyphRect;
   stbtt_GetCodepointBitmapBox(&m_fontInfo, codePoint, page->fontScale,
                               page->fontScale, &glyphRect.pos.x,
                               &glyphRect.pos.y, &glyphRect.size.width,
@@ -144,19 +144,19 @@ Font::Glyph Font::loadGlyph(Page* page, char32_t codePoint) {
   glyphRect.size.height -= glyphRect.pos.y;
 
   // Find a place for the glyph in the texture.
-  Rect<i32> textureRectI = findGlyphRect(page, glyphRect.size);
+  Rect<I32> textureRectI = findGlyphRect(page, glyphRect.size);
 
-  const Size<f32> textureSize{
-      static_cast<f32>(page->texture.getSize().width),
-      static_cast<f32>(page->texture.getSize().height)};
+  const Size<F32> textureSize{
+      static_cast<F32>(page->texture.getSize().width),
+      static_cast<F32>(page->texture.getSize().height)};
   result.textureRect.pos.x =
-      static_cast<f32>(textureRectI.pos.x) / textureSize.width;
+      static_cast<F32>(textureRectI.pos.x) / textureSize.width;
   result.textureRect.pos.y =
-      static_cast<f32>(textureRectI.pos.y) / textureSize.height;
+      static_cast<F32>(textureRectI.pos.y) / textureSize.height;
   result.textureRect.size.width =
-      static_cast<f32>(textureRectI.size.width) / textureSize.width;
+      static_cast<F32>(textureRectI.size.width) / textureSize.width;
   result.textureRect.size.height =
-      static_cast<f32>(textureRectI.size.height) / textureSize.height;
+      static_cast<F32>(textureRectI.size.height) / textureSize.height;
 
   // Resize the pixel buffer so that we can fit the rendered glyph in it.
   m_pixelBuffer.resize(glyphRect.size.width * glyphRect.size.height);
@@ -169,9 +169,9 @@ Font::Glyph Font::loadGlyph(Page* page, char32_t codePoint) {
 
   Image image;
   image.create(glyphRect.size, {255, 255, 255, 255});
-  for (i32 y = 0; y < glyphRect.size.height; ++y) {
-    for (i32 x = 0; x < glyphRect.size.width; ++x) {
-      u8 color = m_pixelBuffer[y * glyphRect.size.width + x];
+  for (I32 y = 0; y < glyphRect.size.height; ++y) {
+    for (I32 x = 0; x < glyphRect.size.width; ++x) {
+      U8 color = m_pixelBuffer[y * glyphRect.size.width + x];
       image.setPixel({x, y}, Color(255, 255, 255, color));
     }
   }
@@ -182,20 +182,20 @@ Font::Glyph Font::loadGlyph(Page* page, char32_t codePoint) {
                            textureRectI.size.height, GL_RGBA, GL_UNSIGNED_BYTE,
                            image.getData().data()));
 
-  result.bounds.pos.x = static_cast<f32>(glyphRect.pos.x);
-  result.bounds.pos.y = static_cast<f32>(glyphRect.pos.y);
-  result.bounds.size.width = static_cast<f32>(glyphRect.size.width);
-  result.bounds.size.height = static_cast<f32>(glyphRect.size.height);
+  result.bounds.pos.x = static_cast<F32>(glyphRect.pos.x);
+  result.bounds.pos.y = static_cast<F32>(glyphRect.pos.y);
+  result.bounds.size.width = static_cast<F32>(glyphRect.size.width);
+  result.bounds.size.height = static_cast<F32>(glyphRect.size.height);
 
   return result;
 }
 
-Rect<i32> Font::findGlyphRect(Page* page, const Size<i32>& size) {
+Rect<I32> Font::findGlyphRect(Page* page, const Size<I32>& size) {
   // Find a row that will fit the glyph.
   Row* bestRow = nullptr;
-  f32 bestRatio = 0.f;
+  F32 bestRatio = 0.f;
   for (auto& row : page->rows) {
-    f32 ratio = static_cast<f32>(size.height) / row.height;
+    F32 ratio = static_cast<F32>(size.height) / row.height;
 
     // Ignore rows that are either too small or too high.
     if (ratio < 0.7f || ratio > 1.f) {
@@ -217,13 +217,13 @@ Rect<i32> Font::findGlyphRect(Page* page, const Size<i32>& size) {
   }
 
   if (!bestRow) {
-    i32 rowHeight = size.height + size.height / 10;
+    I32 rowHeight = size.height + size.height / 10;
 
-    Size<i32> textureSize{page->texture.getSize()};
+    Size<I32> textureSize{page->texture.getSize()};
     if ((page->nextRow + rowHeight >= textureSize.height) ||
         (size.width >= textureSize.width)) {
       NOTREACHED() << "Texture is too small!";
-      return Rect<i32>{};
+      return Rect<I32>{};
     }
 
     // We can now create the new row.
@@ -235,7 +235,7 @@ Rect<i32> Font::findGlyphRect(Page* page, const Size<i32>& size) {
   DCHECK(bestRow);
 
   // Find the glyph's rectangle on the selected row.
-  Rect<i32> rect{bestRow->width, bestRow->top, size.width, size.height};
+  Rect<I32> rect{bestRow->width, bestRow->top, size.width, size.height};
 
   // Update the row's width.
   bestRow->width += size.width;

@@ -14,6 +14,8 @@
 
 #include "canvas/rendering/sprite.h"
 
+#include <cstring>
+
 #include "nucleus/streams/wrapped_memory_input_stream.h"
 
 #include "canvas/rendering/shader.h"
@@ -66,15 +68,15 @@ Sprite::Sprite(Texture* texture) : m_texture{texture} {
 Sprite::~Sprite() {
 }
 
-ca::Rect<f32> Sprite::getBounds() const {
+ca::Rect<F32> Sprite::getBounds() const {
   if (!m_texture) {
-    return Rect<f32>{};
+    return Rect<F32>{};
   }
 
-  Size<i32> textureSize = m_texture->getSize();
-  const f32 width = static_cast<f32>(textureSize.width) / 2.f;
-  const f32 height = static_cast<f32>(textureSize.width) / 2.f;
-  return Rect<f32>{-width, -height, width * 2.f, height * 2.f};
+  Size<I32> textureSize = m_texture->getSize();
+  const F32 width = static_cast<F32>(textureSize.width) / 2.f;
+  const F32 height = static_cast<F32>(textureSize.width) / 2.f;
+  return Rect<F32>{-width, -height, width * 2.f, height * 2.f};
 }
 
 void Sprite::setTexture(Texture* texture) {
@@ -113,7 +115,7 @@ void Sprite::updateGeometry() {
   m_geometry.clear();
 
   const auto size = m_texture->getSize();
-  Rect<f32> rect{-static_cast<float>(size.width) / 2.f,
+  Rect<F32> rect{-static_cast<float>(size.width) / 2.f,
                  -static_cast<float>(size.height) / 2.f,
                  static_cast<float>(size.width),
                  static_cast<float>(size.height)};

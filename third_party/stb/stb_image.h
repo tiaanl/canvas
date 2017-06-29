@@ -2026,28 +2026,28 @@ static void stbi__idct_simd(stbi_uc *out, int out_stride, short data[64])
 
    // out = in << 12  (in 16-bit, out 32-bit)
    #define dct_widen(out, in) \
-      __m128i out##_l = _mm_srai_epi32(_mm_unpacklo_epi16(_mm_setzero_si128(), (in)), 4); \
-      __m128i out##_h = _mm_srai_epi32(_mm_unpackhi_epi16(_mm_setzero_si128(), (in)), 4)
+      __m128i out##_l = _mm_srai_epI32(_mm_unpacklo_epi16(_mm_setzero_si128(), (in)), 4); \
+      __m128i out##_h = _mm_srai_epI32(_mm_unpackhi_epi16(_mm_setzero_si128(), (in)), 4)
 
    // wide add
    #define dct_wadd(out, a, b) \
-      __m128i out##_l = _mm_add_epi32(a##_l, b##_l); \
-      __m128i out##_h = _mm_add_epi32(a##_h, b##_h)
+      __m128i out##_l = _mm_add_epI32(a##_l, b##_l); \
+      __m128i out##_h = _mm_add_epI32(a##_h, b##_h)
 
    // wide sub
    #define dct_wsub(out, a, b) \
-      __m128i out##_l = _mm_sub_epi32(a##_l, b##_l); \
-      __m128i out##_h = _mm_sub_epi32(a##_h, b##_h)
+      __m128i out##_l = _mm_sub_epI32(a##_l, b##_l); \
+      __m128i out##_h = _mm_sub_epI32(a##_h, b##_h)
 
    // butterfly a/b, add bias, then shift by "s" and pack
    #define dct_bfly32o(out0, out1, a,b,bias,s) \
       { \
-         __m128i abiased_l = _mm_add_epi32(a##_l, bias); \
-         __m128i abiased_h = _mm_add_epi32(a##_h, bias); \
+         __m128i abiased_l = _mm_add_epI32(a##_l, bias); \
+         __m128i abiased_h = _mm_add_epI32(a##_h, bias); \
          dct_wadd(sum, abiased, b); \
          dct_wsub(dif, abiased, b); \
-         out0 = _mm_packs_epi32(_mm_srai_epi32(sum_l, s), _mm_srai_epi32(sum_h, s)); \
-         out1 = _mm_packs_epi32(_mm_srai_epi32(dif_l, s), _mm_srai_epi32(dif_h, s)); \
+         out0 = _mm_packs_epI32(_mm_srai_epI32(sum_l, s), _mm_srai_epI32(sum_h, s)); \
+         out1 = _mm_packs_epI32(_mm_srai_epI32(dif_l, s), _mm_srai_epI32(dif_h, s)); \
       }
 
    // 8-bit interleave step (for transposes)
@@ -2100,8 +2100,8 @@ static void stbi__idct_simd(stbi_uc *out, int out_stride, short data[64])
    __m128i rot3_1 = dct_const(stbi__f2f(-0.390180644f), stbi__f2f(-0.390180644f) + stbi__f2f( 1.501321110f));
 
    // rounding biases in column/row passes, see stbi__idct_block for explanation.
-   __m128i bias_0 = _mm_set1_epi32(512);
-   __m128i bias_1 = _mm_set1_epi32(65536 + (128<<17));
+   __m128i bias_0 = _mm_set1_epI32(512);
+   __m128i bias_1 = _mm_set1_epI32(65536 + (128<<17));
 
    // load
    row0 = _mm_load_si128((const __m128i *) (data + 0*8));
@@ -2160,13 +2160,13 @@ static void stbi__idct_simd(stbi_uc *out, int out_stride, short data[64])
 
       // store
       _mm_storel_epi64((__m128i *) out, p0); out += out_stride;
-      _mm_storel_epi64((__m128i *) out, _mm_shuffle_epi32(p0, 0x4e)); out += out_stride;
+      _mm_storel_epi64((__m128i *) out, _mm_shuffle_epI32(p0, 0x4e)); out += out_stride;
       _mm_storel_epi64((__m128i *) out, p2); out += out_stride;
-      _mm_storel_epi64((__m128i *) out, _mm_shuffle_epi32(p2, 0x4e)); out += out_stride;
+      _mm_storel_epi64((__m128i *) out, _mm_shuffle_epI32(p2, 0x4e)); out += out_stride;
       _mm_storel_epi64((__m128i *) out, p1); out += out_stride;
-      _mm_storel_epi64((__m128i *) out, _mm_shuffle_epi32(p1, 0x4e)); out += out_stride;
+      _mm_storel_epi64((__m128i *) out, _mm_shuffle_epI32(p1, 0x4e)); out += out_stride;
       _mm_storel_epi64((__m128i *) out, p3); out += out_stride;
-      _mm_storel_epi64((__m128i *) out, _mm_shuffle_epi32(p3, 0x4e));
+      _mm_storel_epi64((__m128i *) out, _mm_shuffle_epI32(p3, 0x4e));
    }
 
 #undef dct_const
@@ -2339,9 +2339,9 @@ static void stbi__idct_simd(stbi_uc *out, int out_stride, short data[64])
       uint8x8_t p7 = vqrshrun_n_s16(row7, 1);
 
       // again, these can translate into one instruction, but often don't.
-#define dct_trn8_8(x, y) { uint8x8x2_t t = vtrn_u8(x, y); x = t.val[0]; y = t.val[1]; }
-#define dct_trn8_16(x, y) { uint16x4x2_t t = vtrn_u16(vreinterpret_u16_u8(x), vreinterpret_u16_u8(y)); x = vreinterpret_u8_u16(t.val[0]); y = vreinterpret_u8_u16(t.val[1]); }
-#define dct_trn8_32(x, y) { uint32x2x2_t t = vtrn_u32(vreinterpret_u32_u8(x), vreinterpret_u32_u8(y)); x = vreinterpret_u8_u32(t.val[0]); y = vreinterpret_u8_u32(t.val[1]); }
+#define dct_trn8_8(x, y) { uint8x8x2_t t = vtrn_U8(x, y); x = t.val[0]; y = t.val[1]; }
+#define dct_trn8_16(x, y) { uint16x4x2_t t = vtrn_u16(vreinterpret_u16_U8(x), vreinterpret_u16_U8(y)); x = vreinterpret_U8_u16(t.val[0]); y = vreinterpret_U8_u16(t.val[1]); }
+#define dct_trn8_32(x, y) { uint32x2x2_t t = vtrn_U32(vreinterpret_U32_U8(x), vreinterpret_U32_U8(y)); x = vreinterpret_U8_U32(t.val[0]); y = vreinterpret_U8_U32(t.val[1]); }
 
       // sadly can't use interleaved stores here since we only write
       // 8 bytes to each scan line!
@@ -2365,14 +2365,14 @@ static void stbi__idct_simd(stbi_uc *out, int out_stride, short data[64])
       dct_trn8_32(p3, p7);
 
       // store
-      vst1_u8(out, p0); out += out_stride;
-      vst1_u8(out, p1); out += out_stride;
-      vst1_u8(out, p2); out += out_stride;
-      vst1_u8(out, p3); out += out_stride;
-      vst1_u8(out, p4); out += out_stride;
-      vst1_u8(out, p5); out += out_stride;
-      vst1_u8(out, p6); out += out_stride;
-      vst1_u8(out, p7);
+      vst1_U8(out, p0); out += out_stride;
+      vst1_U8(out, p1); out += out_stride;
+      vst1_U8(out, p2); out += out_stride;
+      vst1_U8(out, p3); out += out_stride;
+      vst1_U8(out, p4); out += out_stride;
+      vst1_U8(out, p5); out += out_stride;
+      vst1_U8(out, p6); out += out_stride;
+      vst1_U8(out, p7);
 
 #undef dct_trn8_8
 #undef dct_trn8_16
@@ -2970,10 +2970,10 @@ static stbi_uc *stbi__resample_row_hv_2_simd(stbi_uc *out, stbi_uc *in_near, stb
 #elif defined(STBI_NEON)
       // load and perform the vertical filtering pass
       // this uses 3*x + y = 4*x + (y - x)
-      uint8x8_t farb  = vld1_u8(in_far + i);
-      uint8x8_t nearb = vld1_u8(in_near + i);
-      int16x8_t diff  = vreinterpretq_s16_u16(vsubl_u8(farb, nearb));
-      int16x8_t nears = vreinterpretq_s16_u16(vshll_n_u8(nearb, 2));
+      uint8x8_t farb  = vld1_U8(in_far + i);
+      uint8x8_t nearb = vld1_U8(in_near + i);
+      int16x8_t diff  = vreinterpretq_s16_u16(vsubl_U8(farb, nearb));
+      int16x8_t nears = vreinterpretq_s16_u16(vshll_n_U8(nearb, 2));
       int16x8_t curr  = vaddq_s16(nears, diff); // current row
 
       // horizontal filter works the same based on shifted vers of current
@@ -3000,7 +3000,7 @@ static stbi_uc *stbi__resample_row_hv_2_simd(stbi_uc *out, stbi_uc *in_near, stb
       uint8x8x2_t o;
       o.val[0] = vqrshrun_n_s16(even, 4);
       o.val[1] = vqrshrun_n_s16(odd,  4);
-      vst2_u8(out + i*2, o);
+      vst2_U8(out + i*2, o);
 #endif
 
       // "previous" value for next iter
@@ -3164,7 +3164,7 @@ static void stbi__YCbCr_to_RGB_simd(stbi_uc *out, stbi_uc const *y, stbi_uc cons
    // in this version, step=3 support would be easy to add. but is there demand?
    if (step == 4) {
       // this is a fairly straightforward implementation and not super-optimized.
-      uint8x8_t signflip = vdup_n_u8(0x80);
+      uint8x8_t signflip = vdup_n_U8(0x80);
       int16x8_t cr_const0 = vdupq_n_s16(   (short) ( 1.40200f*4096.0f+0.5f));
       int16x8_t cr_const1 = vdupq_n_s16( - (short) ( 0.71414f*4096.0f+0.5f));
       int16x8_t cb_const0 = vdupq_n_s16( - (short) ( 0.34414f*4096.0f+0.5f));
@@ -3172,14 +3172,14 @@ static void stbi__YCbCr_to_RGB_simd(stbi_uc *out, stbi_uc const *y, stbi_uc cons
 
       for (; i+7 < count; i += 8) {
          // load
-         uint8x8_t y_bytes  = vld1_u8(y + i);
-         uint8x8_t cr_bytes = vld1_u8(pcr + i);
-         uint8x8_t cb_bytes = vld1_u8(pcb + i);
-         int8x8_t cr_biased = vreinterpret_s8_u8(vsub_u8(cr_bytes, signflip));
-         int8x8_t cb_biased = vreinterpret_s8_u8(vsub_u8(cb_bytes, signflip));
+         uint8x8_t y_bytes  = vld1_U8(y + i);
+         uint8x8_t cr_bytes = vld1_U8(pcr + i);
+         uint8x8_t cb_bytes = vld1_U8(pcb + i);
+         int8x8_t cr_biased = vreinterpret_s8_U8(vsub_U8(cr_bytes, signflip));
+         int8x8_t cb_biased = vreinterpret_s8_U8(vsub_U8(cb_bytes, signflip));
 
          // expand to s16
-         int16x8_t yws = vreinterpretq_s16_u16(vshll_n_u8(y_bytes, 4));
+         int16x8_t yws = vreinterpretq_s16_u16(vshll_n_U8(y_bytes, 4));
          int16x8_t crw = vshll_n_s8(cr_biased, 7);
          int16x8_t cbw = vshll_n_s8(cb_biased, 7);
 
@@ -3197,10 +3197,10 @@ static void stbi__YCbCr_to_RGB_simd(stbi_uc *out, stbi_uc const *y, stbi_uc cons
          o.val[0] = vqrshrun_n_s16(rws, 4);
          o.val[1] = vqrshrun_n_s16(gws, 4);
          o.val[2] = vqrshrun_n_s16(bws, 4);
-         o.val[3] = vdup_n_u8(255);
+         o.val[3] = vdup_n_U8(255);
 
          // store, interleaving r/g/b/a
-         vst4_u8(out, o);
+         vst4_U8(out, o);
          out += 8*4;
       }
    }
