@@ -36,12 +36,10 @@ void Program::bind(Program* program) {
   }
 }
 
-Program::Program() {
-}
+Program::Program() {}
 
 Program::Program(Shader* vertexShader, Shader* fragmentShader)
-  : m_vertexShader(vertexShader), m_fragmentShader(fragmentShader) {
-}
+  : m_vertexShader(vertexShader), m_fragmentShader(fragmentShader) {}
 
 Program::~Program() {
   if (m_name) {
@@ -120,12 +118,13 @@ void Program::linkInternal() {
   GLint infoLength = 0;
   GL_CHECK(glGetProgramiv(m_name, GL_INFO_LOG_LENGTH, &infoLength));
 
-  std::vector<char> buffer;
-  GL_CHECK(glGetProgramInfoLog(m_name, infoLength, &infoLength,
-                               nu::vectorAsArray(&buffer, infoLength)));
-
-  if (infoLength) {
-    LOG(Error) << buffer.data();
+  if (infoLength > 0) {
+    std::vector<char> buffer;
+    GL_CHECK(glGetProgramInfoLog(m_name, infoLength, &infoLength,
+                                 nu::vectorAsArray(&buffer, infoLength)));
+    if (infoLength) {
+      LOG(Error) << buffer.data();
+    }
   }
 
   m_isLinked = true;

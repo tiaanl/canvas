@@ -21,8 +21,7 @@
 
 namespace ca {
 
-Shader::Shader(ShaderType type) : m_type(type) {
-}
+Shader::Shader(ShaderType type) : m_type(type) {}
 
 Shader::~Shader() {
   if (m_name) {
@@ -67,7 +66,7 @@ bool Shader::setSource(const std::vector<char>& data) {
   createInternal();
 
   // Set the source of the shader.
-  const GLchar* src = &data[0];
+  const GLchar* src = nu::vectorAsArray(&data);
   GL_CHECK(glShaderSource(m_name, 1, &src, 0));
   GL_CHECK(glCompileShader(m_name));
 

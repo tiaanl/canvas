@@ -19,7 +19,7 @@
 #include "canvas/rendering/geometry.h"
 #include "canvas/rendering/program.h"
 #include "canvas/rendering/shader.h"
-#include "canvas/rendering/sprite.h"
+#include "canvas/Primitives/Sprite.h"
 #include "canvas/rendering/texture.h"
 #include "canvas/utils/image.h"
 #include "nucleus/streams/file_input_stream.h"
@@ -34,7 +34,7 @@ public:
 
   bool onWindowCreated() override {
     nu::FilePath root{
-        FILE_PATH_LITERAL("C:\\Workspace\\canvas\\examples\\rendering")};
+        FILE_PATH_LITERAL("C:\\Code\\canvas\\examples\\rendering")};
 
     // Load vertex shader.
     nu::FileInputStream vertStream{
@@ -105,9 +105,9 @@ public:
     // viewMatrix = ca::rotate(viewMatrix, 20.f, ca::Vec3{0.f, 0.f, 1.f});
     // viewMatrix = ca::translate(viewMatrix, ca::Vec3{100.f, 0.f, 0.f});
 
-    viewMatrix *= ca::rotate(10.f, ca::Vec3{0.f, 0.f, 1.0f});
-    viewMatrix *= ca::scale(ca::Vec3{0.5f, 0.5f, 1.0f});
-    viewMatrix *= ca::translate(ca::Vec3{100.f, 10.f, 0.f});
+//    viewMatrix *= ca::rotate(10.f, ca::Vec3{0.f, 0.f, 1.0f});
+//    viewMatrix *= ca::scale(ca::Vec3{0.5f, 0.5f, 1.0f});
+//    viewMatrix *= ca::translate(ca::Vec3{100.f, 10.f, 0.f});
 
     ca::Mat4 mvp = m_projectionMatrix * viewMatrix;
 

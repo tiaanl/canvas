@@ -12,13 +12,13 @@
 // OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 // PERFORMANCE OF THIS SOFTWARE.
 
-#include "canvas/rendering/sprite.h"
+#include "canvas/Primitives/Sprite.h"
 
 #include <cstring>
 
-#include "nucleus/streams/wrapped_memory_input_stream.h"
-
 #include "canvas/rendering/shader.h"
+#include "canvas/utils/ScopedOpenGLEnable.h"
+#include "nucleus/streams/wrapped_memory_input_stream.h"
 
 namespace ca {
 
@@ -65,8 +65,7 @@ Sprite::Sprite(Texture* texture) : m_texture{texture} {
   }
 }
 
-Sprite::~Sprite() {
-}
+Sprite::~Sprite() {}
 
 ca::Rect<F32> Sprite::getBounds() const {
   if (!m_texture) {
@@ -97,11 +96,11 @@ void Sprite::render(Canvas* canvas, const Mat4& transform) const {
   Texture::bind(m_texture);
 
   // Enable blending.
-  glEnable(GL_BLEND);
+  ScopedOpenGLEnable enableBlending{GL_BLEND};
+  GL_CHECK(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+  GL_CHECK(glBlendEquation(GL_FUNC_ADD));
 
   m_geometry.render();
-
-  glDisable(GL_BLEND);
 }
 
 void Sprite::updateGeometry() {

@@ -12,7 +12,7 @@
 // OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 // PERFORMANCE OF THIS SOFTWARE.
 
-#include "canvas/rendering/text.h"
+#include "canvas/Primitives/Text.h"
 
 #include <algorithm>
 #include <cstring>
@@ -151,7 +151,7 @@ void Text::updateGeometry() {
   // Clear out the old geometry.
   m_geometry.clear();
 
-  // If there is not text to render, then that's it.
+  // If there is no text to render, then that's it.
   if (m_text.empty()) {
     m_geometry.compileAndUpload();
 
@@ -168,7 +168,7 @@ void Text::updateGeometry() {
 
   // Build geometry for each character in the text.
   for (USize i = 0; i < m_text.length(); ++i) {
-    char32_t ch = m_text[i];
+    ca::Font::Char ch = static_cast<ca::Font::Char>(m_text[i]);
 
     // Get the glyph.
     const Font::Glyph& glyph = m_font->getOrInsertGlyph(m_textSize, ch);
