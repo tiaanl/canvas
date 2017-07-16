@@ -7,10 +7,11 @@
 namespace ca {
 
 class MouseEventHandlerInterface {
-    virtual void onMouseMoved(const MouseEvent& evt) = 0;
-    virtual void onMousePressed(const MouseEvent& evt) = 0;
-    virtual void onMouseReleased(const MouseEvent& evt) = 0;
-    virtual void onMouseWheel(const MouseWheelEvent& evt) = 0;
+public:
+  virtual void onMouseMoved(const MouseEvent& evt) = 0;
+  virtual bool onMousePressed(const MouseEvent& evt) = 0;
+  virtual void onMouseReleased(const MouseEvent& evt) = 0;
+  virtual void onMouseWheel(const MouseWheelEvent& evt) = 0;
 };
 
 }  // namespace ca

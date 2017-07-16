@@ -1,11 +1,13 @@
 BasedOnStyle: Google
 
-AccessModifierOffset: -2
+AccessModifierOffset: -4
 AlignEscapedNewlinesLeft: false
 AllowAllParametersOfDeclarationOnNextLine: true
 AllowShortIfStatementsOnASingleLine: false
 AllowShortLoopsOnASingleLine: false
 AllowShortFunctionsOnASingleLine: Inline
+ColumnLimit: 120
 ConstructorInitializerAllOnOneLineOrOnePerLine: false
 ConstructorInitializerIndentWidth: 2
 DerivePointerAlignment: false
+IndentWidth: 4

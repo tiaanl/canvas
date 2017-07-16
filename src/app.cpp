@@ -18,17 +18,14 @@
 
 namespace ca {
 
-App::App(WindowDelegate* delegate)
-  : m_window(Window::create(delegate, delegate->getTitle())) {
-}
+App::App(WindowDelegate* delegate) : m_window(Window::create(delegate, delegate->getTitle())) {}
 
-App::~App() {
-}
+App::~App() {}
 
 void App::run() {
-  while (m_window->processEvents()) {
-    m_window->paint();
-  }
+    while (m_window->processEvents()) {
+        m_window->paint();
+    }
 }
 
 }  // namespace ca

@@ -22,6 +22,8 @@
 
 namespace ca {
 
+static constexpr F32 PI = 3.14159265f;
+
 inline Mat4 translate(const Vec3& vec) {
   Mat4 result;
   result[3] = Vec4{vec, 1.f};
@@ -102,6 +104,18 @@ inline Mat4 ortho(F32 left, F32 right, F32 bottom, F32 top) {
   result[3][1] = -(top + bottom) / (top - bottom);
 
   return result;
+}
+
+inline F32 degreesToRadians(F32 deg) {
+  return deg * PI / 180.f;
+}
+
+inline F32 radiansToDegrees(F32 radians) {
+  return radians * 180.f / PI;
+}
+
+inline F32 angleBetweenInRadians(const Vec2& origin, const Vec2& target) {
+  return std::atan2(target.x - origin.x, target.y - origin.y);
 }
 
 }  // namespace ca

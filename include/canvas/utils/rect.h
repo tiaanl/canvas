@@ -32,7 +32,7 @@ struct Rect {
   Rect(const Pos<T>& pos, const Size<T>& size) : pos(pos), size(size) {}
 
   // Return true if the position is contained within this rectangle.
-  bool contains(const Pos<T>& p) {
+  bool contains(const Pos<T>& p) const {
     return (p.x >= pos.x && p.x < pos.x + size.width) &&
            (p.y >= pos.y && p.y < pos.y + size.height);
   }

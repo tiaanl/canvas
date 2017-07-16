@@ -19,6 +19,8 @@ include("${NUCLEUS_ROOT_DIR}/cmake/gcc.cmake")
 include("${NUCLEUS_ROOT_DIR}/cmake/msvc.cmake")
 include("${NUCLEUS_ROOT_DIR}/cmake/win32.cmake")
 
+add_definitions("-DSTBI_NO_SIMD")
+
 # canvas
 
 set("canvas_INCLUDE_FILES"
@@ -51,6 +53,7 @@ set("canvas_INCLUDE_FILES"
         "include/canvas/windows/window.h"
         "include/canvas/windows/window_delegate.h"
         "include/canvas/windows/window_style.h"
+        "include/canvas/windows/KeyboardEventHandlerInterface.h"
         "include/canvas/windows/MouseEventHandlerInterface.h"
         )
 
