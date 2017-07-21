@@ -15,9 +15,10 @@
 #ifndef CANVAS_MATH_MAT4_H_
 #define CANVAS_MATH_MAT4_H_
 
-#include "nucleus/logging.h"
+#include <ostream>
 
 #include "canvas/math/vec4.h"
+#include "nucleus/logging.h"
 
 namespace ca {
 

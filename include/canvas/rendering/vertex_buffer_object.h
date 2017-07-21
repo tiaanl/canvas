@@ -24,31 +24,33 @@ namespace ca {
 
 class VertexBufferObject {
 public:
-  // Scoper to bind this object.
-  struct ScopedBind {
-    const VertexBufferObject& vbo;
-    ScopedBind(const VertexBufferObject& vbo) : vbo(vbo) { vbo.bind(); }
-    ~ScopedBind() { vbo.unbind(); }
-  };
+    // Scoper to bind this object.
+    struct ScopedBind {
+        const VertexBufferObject& vbo;
+        ScopedBind(const VertexBufferObject& vbo) : vbo(vbo) { vbo.bind(); }
+        ~ScopedBind() { vbo.unbind(); }
+    };
 
-  VertexBufferObject() = default;
-  ~VertexBufferObject();
+    VertexBufferObject() = default;
+    ~VertexBufferObject();
 
-  // Upload the given data to the GPU.
-  bool setData(const void* data, USize size);
+    GLuint getNativeHandle() const { return m_name; }
+
+    // Upload the given data to the GPU.
+    bool setData(const void* data, USize size);
 
 private:
-  // Create the name of the object.
-  bool createInternal();
+    // Create the name of the object.
+    bool createInternal();
 
-  // Bind the object.
-  void bind() const;
+    // Bind the object.
+    void bind() const;
 
-  // Unbind the object.
-  void unbind() const;
+    // Unbind the object.
+    void unbind() const;
 
-  // The name of the vertex buffer object.
-  GLuint m_name = 0;
+    // The name of the vertex buffer object.
+    GLuint m_name = 0;
 };
 
 }  // namespace ca

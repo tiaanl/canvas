@@ -285,10 +285,10 @@ Key getKeyFromGLFWKey(int key) {
 }  // namespace
 
 // static
-std::unique_ptr<Window> Window::create(WindowDelegate* delegate, const std::string& title) {
+nu::ScopedPtr<Window> Window::create(WindowDelegate* delegate, const std::string& title) {
     DCHECK(delegate) << "Can't create a window with no delegate.";
 
-    auto newWindow = std::unique_ptr<Window>(new Window(delegate));
+    nu::ScopedPtr<Window> newWindow(new Window(delegate));
 
     // Initialize GLFW.
     if (!glfwInit()) {
@@ -392,7 +392,7 @@ void Window::frameBufferSizeCallback(GLFWwindow* window, int width, int height) 
     // size changed.
     glViewport(0, 0, width, height);
 
-    Size<U32> windowSize(width, height);
+    Size<U32> windowSize(static_cast<U32>(width), static_cast<U32>(height));
     windowPtr->m_delegate->onWindowResized(windowSize);
 }
 

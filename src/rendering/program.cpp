@@ -19,21 +19,22 @@
 
 #include "canvas/rendering/shader.h"
 #include "canvas/utils/gl_check.h"
+#include "glm/gtc/type_ptr.hpp"
 
 namespace ca {
 
 // static
 void Program::bind(Program* program) {
-  if (program) {
-    // Make sure the program is linked.
-    if (!program->m_isLinked) {
-      program->linkInternal();
-    }
+    if (program) {
+        // Make sure the program is linked.
+        if (!program->m_isLinked) {
+            program->linkInternal();
+        }
 
-    GL_CHECK(glUseProgram(program->m_name));
-  } else {
-    GL_CHECK(glUseProgram(0));
-  }
+        GL_CHECK(glUseProgram(program->m_name));
+    } else {
+        GL_CHECK(glUseProgram(0));
+    }
 }
 
 Program::Program() {}
@@ -42,92 +43,97 @@ Program::Program(Shader* vertexShader, Shader* fragmentShader)
   : m_vertexShader(vertexShader), m_fragmentShader(fragmentShader) {}
 
 Program::~Program() {
-  if (m_name) {
-    GL_CHECK(glDeleteProgram(m_name));
-  }
+    if (m_name) {
+        GL_CHECK(glDeleteProgram(m_name));
+    }
 }
 
 void Program::setVertexShader(Shader* vertexShader) {
-  m_vertexShader = vertexShader;
-  m_isLinked = false;
+    m_vertexShader = vertexShader;
+    m_isLinked = false;
 }
 
 void Program::setFragmentShader(Shader* fragmentShader) {
-  m_fragmentShader = fragmentShader;
-  m_isLinked = false;
+    m_fragmentShader = fragmentShader;
+    m_isLinked = false;
 }
 
 void Program::link() {
-  linkInternal();
+    linkInternal();
 }
 
-#define BIND_AND_GET_LOCATION()                                                \
-  bind(this);                                                                  \
-  GLint location = glGetUniformLocation(m_name, name.c_str());                 \
-  if (location == -1 || glGetError() != GL_NO_ERROR) {                         \
-    LOG(Warning) << "Could not find uniform location. (" << name << ")";       \
-    return false;                                                              \
-  }
+#define BIND_AND_GET_LOCATION()                                                                                        \
+    bind(this);                                                                                                        \
+    GLint location = glGetUniformLocation(m_name, name.c_str());                                                       \
+    if (location == -1 || glGetError() != GL_NO_ERROR) {                                                               \
+        LOG(Warning) << "Could not find uniform location. (" << name << ")";                                           \
+        return false;                                                                                                  \
+    }
 
 bool Program::setUniform(std::string name, float f) {
-  BIND_AND_GET_LOCATION()
-  glUniform1f(location, f);
-  return glGetError() == GL_NO_ERROR;
+    BIND_AND_GET_LOCATION()
+    glUniform1f(location, f);
+    return glGetError() == GL_NO_ERROR;
 }
 
 bool Program::setUniform(std::string name, const Vec2& vec2) {
-  BIND_AND_GET_LOCATION()
-  glUniform2f(location, vec2.x, vec2.y);
-  return glGetError() == GL_NO_ERROR;
+    BIND_AND_GET_LOCATION()
+    glUniform2f(location, vec2.x, vec2.y);
+    return glGetError() == GL_NO_ERROR;
 }
 
 bool Program::setUniform(std::string name, const Vec3& vec3) {
-  BIND_AND_GET_LOCATION()
-  glUniform3f(location, vec3.x, vec3.y, vec3.z);
-  return glGetError() == GL_NO_ERROR;
+    BIND_AND_GET_LOCATION()
+    glUniform3f(location, vec3.x, vec3.y, vec3.z);
+    return glGetError() == GL_NO_ERROR;
 }
 
 bool Program::setUniform(std::string name, const Vec4& vec4) {
-  BIND_AND_GET_LOCATION()
-  glUniform4f(location, vec4.x, vec4.y, vec4.z, vec4.w);
-  return glGetError() == GL_NO_ERROR;
+    BIND_AND_GET_LOCATION()
+    glUniform4f(location, vec4.x, vec4.y, vec4.z, vec4.w);
+    return glGetError() == GL_NO_ERROR;
 }
 
 bool Program::setUniform(std::string name, const Mat4& mat4) {
-  BIND_AND_GET_LOCATION()
-  glUniformMatrix4fv(location, 1, GL_FALSE, &mat4[0].x);
-  return glGetError() == GL_NO_ERROR;
+    BIND_AND_GET_LOCATION()
+    glUniformMatrix4fv(location, 1, GL_FALSE, &mat4[0].x);
+    return glGetError() == GL_NO_ERROR;
+}
+
+bool Program::setUniform(std::string name, const glm::mat4x4& mat) {
+    BIND_AND_GET_LOCATION()
+    glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(mat));
+    return glGetError() == GL_NO_ERROR;
 }
 
 #undef BIND_AND_GET_LOCATION
 
 void Program::linkInternal() {
-  // Make sure the program is created.
-  if (!m_name) {
-    m_name = glCreateProgram();
-  }
-
-  // Attach the shaders.
-  GL_CHECK(glAttachShader(m_name, m_vertexShader->getNativeHandle()));
-  GL_CHECK(glAttachShader(m_name, m_fragmentShader->getNativeHandle()));
-
-  // Link the program.
-  GL_CHECK(glLinkProgram(m_name));
-
-  // Check if there were any information.
-  GLint infoLength = 0;
-  GL_CHECK(glGetProgramiv(m_name, GL_INFO_LOG_LENGTH, &infoLength));
-
-  if (infoLength > 0) {
-    std::vector<char> buffer;
-    GL_CHECK(glGetProgramInfoLog(m_name, infoLength, &infoLength,
-                                 nu::vectorAsArray(&buffer, infoLength)));
-    if (infoLength) {
-      LOG(Error) << buffer.data();
+    // Make sure the program is created.
+    if (!m_name) {
+        m_name = glCreateProgram();
     }
-  }
 
-  m_isLinked = true;
+    // Attach the shaders.
+    GL_CHECK(glAttachShader(m_name, m_vertexShader->getNativeHandle()));
+    GL_CHECK(glAttachShader(m_name, m_fragmentShader->getNativeHandle()));
+
+    // Link the program.
+    GL_CHECK(glLinkProgram(m_name));
+
+    // Check if there were any information.
+    GLint infoLength = 0;
+    GL_CHECK(glGetProgramiv(m_name, GL_INFO_LOG_LENGTH, &infoLength));
+
+    if (infoLength > 0) {
+        std::vector<char> buffer;
+        GL_CHECK(glGetProgramInfoLog(m_name, infoLength, &infoLength, nu::vectorAsArray(&buffer, infoLength)));
+        if (infoLength) {
+            LOG(Error) << buffer.data();
+        }
+    }
+
+    m_isLinked = true;
 }
 
 }  // namespace ca

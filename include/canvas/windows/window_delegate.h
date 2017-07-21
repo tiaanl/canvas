@@ -26,37 +26,36 @@ class Canvas;
 
 class WindowDelegate {
 public:
-  WindowDelegate() = default;
+    WindowDelegate() = default;
 
-  virtual ~WindowDelegate() {}
+    virtual ~WindowDelegate() {}
 
-  // Get the title of the window.
-  const std::string& getTitle() const { return m_title; }
+    // Get the title of the window.
+    const std::string& getTitle() const { return m_title; }
 
-  // Called right after the window was created.  Return false if the app
-  // creation failed.
-  virtual bool onWindowCreated();
+    // Called right after the window was created.  Return false if the app creation failed.
+    virtual bool onWindowCreated();
 
-  // Called when the size of the window changed.
-  virtual void onWindowResized(const Size<U32>& size);
+    // Called when the size of the window changed.
+    virtual void onWindowResized(const Size<U32>& size);
 
-  // Called when the window wants to paint to it's canvas.
-  virtual void onPaint(Canvas* canvas) = 0;
+    // Called when the window wants to paint to it's canvas.
+    virtual void onPaint(Canvas* canvas) = 0;
 
-  // Mouse events.
-  virtual void onMouseMoved(const MouseEvent& evt);
-  virtual void onMousePressed(const MouseEvent& evt);
-  virtual void onMouseReleased(const MouseEvent& evt);
-  virtual void onMouseWheel(const MouseWheelEvent& evt);
-  virtual void onKeyPressed(const KeyEvent& evt);
-  virtual void onKeyReleased(const KeyEvent& evt);
+    // Mouse events.
+    virtual void onMouseMoved(const MouseEvent& evt);
+    virtual void onMousePressed(const MouseEvent& evt);
+    virtual void onMouseReleased(const MouseEvent& evt);
+    virtual void onMouseWheel(const MouseWheelEvent& evt);
+    virtual void onKeyPressed(const KeyEvent& evt);
+    virtual void onKeyReleased(const KeyEvent& evt);
 
 protected:
-  // The title that appears in the window title bar.
-  std::string m_title;//{"Canvas Window"};
+    // The title that appears in the window title bar.
+    std::string m_title;
 
 private:
-  DISALLOW_COPY_AND_ASSIGN(WindowDelegate);
+    DISALLOW_COPY_AND_ASSIGN(WindowDelegate);
 };
 
 }  // namespace ca

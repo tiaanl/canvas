@@ -12,6 +12,7 @@ include("cmake/glfw.cmake")
 include("cmake/freetype2.cmake")
 
 add_subdirectory("${canvas_SOURCE_DIR}/third_party/glad")
+add_subdirectory("C:/Code/glm" "glm")
 
 # Compiler Settings
 
@@ -32,12 +33,17 @@ set("canvas_INCLUDE_FILES"
         "include/canvas/math/vec4.h"
         "include/canvas/opengl.h"
         "include/canvas/rendering/canvas.h"
+        "include/canvas/rendering/Command.h"
         "include/canvas/rendering/font.h"
         "include/canvas/rendering/geometry.h"
         "include/canvas/rendering/program.h"
         "include/canvas/rendering/shader.h"
         "include/canvas/Primitives/Sprite.h"
         "include/canvas/Primitives/Text.h"
+
+        "include/canvas/Resources/ResourceManager.h"
+        "include/canvas/Resources/TextureResource.h"
+
         "include/canvas/rendering/texture.h"
         "include/canvas/rendering/vertex.h"
         "include/canvas/rendering/vertex_buffer_object.h"
@@ -59,11 +65,17 @@ set("canvas_INCLUDE_FILES"
 
 set("canvas_SOURCE_FILES"
         "src/app.cpp"
+
         "src/rendering/canvas.cpp"
+        "src/rendering/Command.cpp"
         "src/rendering/font.cpp"
         "src/rendering/geometry.cpp"
         "src/rendering/program.cpp"
         "src/rendering/shader.cpp"
+
+        "src/Resources/ResourceManager.cpp"
+        "src/Resources/TextureResource.cpp"
+
         "src/Primitives/Sprite.cpp"
         "src/Primitives/Text.cpp"
         "src/rendering/texture.cpp"
@@ -75,7 +87,7 @@ set("canvas_SOURCE_FILES"
         )
 
 add_library("canvas" STATIC ${canvas_INCLUDE_FILES} ${canvas_SOURCE_FILES})
-target_link_libraries("canvas" "nucleus" "glfw" "glad" "freetype")
+target_link_libraries("canvas" "nucleus" "glfw" "glad" "freetype" "glm")
 target_include_directories("canvas" PUBLIC "${canvas_SOURCE_DIR}/include")
 target_include_directories("canvas" PUBLIC "${canvas_SOURCE_DIR}/third_party/stb")
 set_property(TARGET "canvas" PROPERTY FOLDER "canvas")

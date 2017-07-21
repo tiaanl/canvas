@@ -15,11 +15,9 @@
 #ifndef CANVAS_WINDOWS_WINDOW_H_
 #define CANVAS_WINDOWS_WINDOW_H_
 
-#include <memory>
-
-#include "nucleus/macros.h"
-
 #include "canvas/windows/window_delegate.h"
+#include "nucleus/Memory/ScopedPtr.h"
+#include "nucleus/macros.h"
 
 typedef struct GLFWwindow GLFWwindow;
 
@@ -28,7 +26,7 @@ namespace ca {
 class Window {
 public:
     // Factory function to create a window with the specified delegate.
-    static std::unique_ptr<Window> create(WindowDelegate* delegate, const std::string& title);
+    static nu::ScopedPtr<Window> create(WindowDelegate* delegate, const std::string& title);
 
     // Cleanup.
     ~Window();

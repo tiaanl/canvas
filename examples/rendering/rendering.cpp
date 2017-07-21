@@ -12,6 +12,7 @@
 // OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 // PERFORMANCE OF THIS SOFTWARE.
 
+#include "canvas/Primitives/Sprite.h"
 #include "canvas/app.h"
 #include "canvas/math/mat4.h"
 #include "canvas/math/transform.h"
@@ -19,97 +20,89 @@
 #include "canvas/rendering/geometry.h"
 #include "canvas/rendering/program.h"
 #include "canvas/rendering/shader.h"
-#include "canvas/Primitives/Sprite.h"
 #include "canvas/rendering/texture.h"
 #include "canvas/utils/image.h"
 #include "nucleus/streams/file_input_stream.h"
 
 class Rendering : public ca::WindowDelegate {
 public:
-  Rendering() { m_title = "Rendering"; }
+    Rendering() { m_title = "Rendering"; }
 
-  ~Rendering() override {}
+    ~Rendering() override {}
 
-  // Override: ca::WindowDelegate
+    // Override: ca::WindowDelegate
 
-  bool onWindowCreated() override {
-    nu::FilePath root{
-        FILE_PATH_LITERAL("C:\\Code\\canvas\\examples\\rendering")};
+    bool onWindowCreated() override {
+        nu::FilePath root{FILE_PATH_LITERAL("C:\\Code\\canvas\\examples\\rendering")};
 
-    // Load vertex shader.
-    nu::FileInputStream vertStream{
-        root.append(FILE_PATH_LITERAL("res"))
-            .append(FILE_PATH_LITERAL("shaders"))
-            .append(FILE_PATH_LITERAL("default.vert.glsl"))};
-    ca::Shader vertShader{ca::Shader::Vertex};
-    vertShader.loadFromStream(&vertStream);
-    m_program.setVertexShader(&vertShader);
+        // Load vertex shader.
+        nu::FileInputStream vertStream{root.append(FILE_PATH_LITERAL("res"))
+                                           .append(FILE_PATH_LITERAL("shaders"))
+                                           .append(FILE_PATH_LITERAL("default.vert.glsl"))};
+        ca::Shader vertShader{ca::Shader::Vertex};
+        vertShader.loadFromStream(&vertStream);
+        m_program.setVertexShader(&vertShader);
 
-    // Load fragment shader.
-    nu::FileInputStream fragStream{
-        root.append(FILE_PATH_LITERAL("res"))
-            .append(FILE_PATH_LITERAL("shaders"))
-            .append(FILE_PATH_LITERAL("default.frag.glsl"))};
-    ca::Shader fragShader{ca::Shader::Fragment};
-    fragShader.loadFromStream(&fragStream);
-    m_program.setFragmentShader(&fragShader);
+        // Load fragment shader.
+        nu::FileInputStream fragStream{root.append(FILE_PATH_LITERAL("res"))
+                                           .append(FILE_PATH_LITERAL("shaders"))
+                                           .append(FILE_PATH_LITERAL("default.frag.glsl"))};
+        ca::Shader fragShader{ca::Shader::Fragment};
+        fragShader.loadFromStream(&fragStream);
+        m_program.setFragmentShader(&fragShader);
 
-    // Make sure the program is linked.
-    m_program.link();
+        // Make sure the program is linked.
+        m_program.link();
 
-    // And use the program.
-    ca::Program::bind(&m_program);
+        // And use the program.
+        ca::Program::bind(&m_program);
 
-    // Load a texture in.
-    nu::FileInputStream imageStream{
-        root.append(FILE_PATH_LITERAL("res"))
-            .append(FILE_PATH_LITERAL("images"))
-            .append(FILE_PATH_LITERAL("canvas.jpg"))};
+        // Load a texture in.
+        nu::FileInputStream imageStream{root.append(FILE_PATH_LITERAL("res"))
+                                            .append(FILE_PATH_LITERAL("images"))
+                                            .append(FILE_PATH_LITERAL("canvas.jpg"))};
 
-    ca::Image image;
-    if (!image.loadFromStream(&imageStream)) {
-      return false;
+        ca::Image image;
+        if (!image.loadFromStream(&imageStream)) {
+            return false;
+        }
+
+        if (!m_texture.createFromImage(image)) {
+            return false;
+        }
+
+        // Create some geometry that we can render.
+        m_geometry = ca::Geometry::createRectangle(ca::Rect<F32>{-0.5f, -0.5f, 1.f, 1.f}, ca::Color{255, 0, 0, 127});
+        m_geometry.compileAndUpload();
+
+        // Set up the sprite.
+        m_sprite.setTexture(&m_texture);
+
+        return true;
     }
 
-    if (!m_texture.createFromImage(image)) {
-      return false;
+    void onWindowResized(const ca::Size<U32>& size) override {
+        m_projectionMatrix = ca::ortho(-static_cast<float>(size.width) / 2.f, static_cast<float>(size.width) / 2.f,
+                                       static_cast<float>(size.height) / 2.f, -static_cast<float>(size.height) / 2.f);
     }
 
-    // Create some geometry that we can render.
-    m_geometry = ca::Geometry::createRectangle(
-        ca::Rect<F32>{-0.5f, -0.5f, 1.f, 1.f}, ca::Color{255, 0, 0, 127});
-    m_geometry.compileAndUpload();
-
-    // Set up the sprite.
-    m_sprite.setTexture(&m_texture);
-
-    return true;
-  }
-
-  void onWindowResized(const ca::Size<U32>& size) override {
-    m_projectionMatrix = ca::ortho(-static_cast<float>(size.width) / 2.f,
-                                   static_cast<float>(size.width) / 2.f,
-                                   static_cast<float>(size.height) / 2.f,
-                                   -static_cast<float>(size.height) / 2.f);
-  }
-
-  void onPaint(ca::Canvas* canvas) override {
-    canvas->clear(ca::Color{31, 62, 93, 255});
+    void onPaint(ca::Canvas* canvas) override {
+        canvas->clear(ca::Color{31, 62, 93, 255});
 
 #if 0
     ca::Program::bind(&m_program);
 #endif  // 0
 
-    ca::Mat4 viewMatrix;
-    // viewMatrix = ca::scale(viewMatrix, ca::Vec3{0.5f, 0.5f, 1.f});
-    // viewMatrix = ca::rotate(viewMatrix, 20.f, ca::Vec3{0.f, 0.f, 1.f});
-    // viewMatrix = ca::translate(viewMatrix, ca::Vec3{100.f, 0.f, 0.f});
+        ca::Mat4 viewMatrix;
+        // viewMatrix = ca::scale(viewMatrix, ca::Vec3{0.5f, 0.5f, 1.f});
+        // viewMatrix = ca::rotate(viewMatrix, 20.f, ca::Vec3{0.f, 0.f, 1.f});
+        // viewMatrix = ca::translate(viewMatrix, ca::Vec3{100.f, 0.f, 0.f});
 
-//    viewMatrix *= ca::rotate(10.f, ca::Vec3{0.f, 0.f, 1.0f});
-//    viewMatrix *= ca::scale(ca::Vec3{0.5f, 0.5f, 1.0f});
-//    viewMatrix *= ca::translate(ca::Vec3{100.f, 10.f, 0.f});
+        //    viewMatrix *= ca::rotate(10.f, ca::Vec3{0.f, 0.f, 1.0f});
+        //    viewMatrix *= ca::scale(ca::Vec3{0.5f, 0.5f, 1.0f});
+        //    viewMatrix *= ca::translate(ca::Vec3{100.f, 10.f, 0.f});
 
-    ca::Mat4 mvp = m_projectionMatrix * viewMatrix;
+        ca::Mat4 mvp = m_projectionMatrix * viewMatrix;
 
 #if 0
     DCHECK(m_program.setUniform("uni_mvp", mvp));
@@ -118,19 +111,19 @@ public:
     m_geometry.render();
 #endif  // 0
 
-    m_sprite.render(canvas, mvp);
-  }
+        m_sprite.render(canvas, mvp);
+    }
 
 private:
-  ca::Mat4 m_projectionMatrix;
+    ca::Mat4 m_projectionMatrix;
 
-  ca::Program m_program;
-  ca::Texture m_texture;
-  ca::Geometry m_geometry;
+    ca::Program m_program;
+    ca::Texture m_texture;
+    ca::Geometry m_geometry;
 
-  ca::Sprite m_sprite;
+    ca::Sprite m_sprite;
 
-  DISALLOW_COPY_AND_ASSIGN(Rendering);
+    DISALLOW_COPY_AND_ASSIGN(Rendering);
 };
 
 CANVAS_APP(Rendering)

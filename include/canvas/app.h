@@ -15,8 +15,7 @@
 #ifndef CANVAS_APP_H_
 #define CANVAS_APP_H_
 
-#include <memory>
-
+#include "nucleus/Memory/ScopedPtr.h"
 #include "nucleus/config.h"
 #include "nucleus/macros.h"
 #include "nucleus/win/windows_mixin.h"
@@ -29,20 +28,20 @@ class Window;
 
 class App {
 public:
-  // Construct a new app with the specified delegate that will control the app.
-  App(WindowDelegate* delegate);
+    // Construct a new app with the specified delegate that will control the app.
+    App(WindowDelegate* delegate);
 
-  // Destruct the app.
-  ~App();
+    // Destruct the app.
+    ~App();
 
-  // Run the application and only return once all the windows are closed.
-  void run();
+    // Run the application and only return once all the windows are closed.
+    void run();
 
 private:
-  // The single window we are managing.
-  std::unique_ptr<Window> m_window;
+    // The single window we are managing.
+    nu::ScopedPtr<Window> m_window;
 
-  DISALLOW_COPY_AND_ASSIGN(App);
+    DISALLOW_COPY_AND_ASSIGN(App);
 };
 
 }  // namespace ca
@@ -53,11 +52,11 @@ private:
 #define MAIN_HEADER int main(int argc, char* argv[])
 #endif
 
-#define CANVAS_APP(DelegateType)                                               \
-  MAIN_HEADER {                                                                \
-    ca::App app{new DelegateType};                                             \
-    app.run();                                                                 \
-    return 0;                                                                  \
-  }
+#define CANVAS_APP(DelegateType)                                                                                       \
+    MAIN_HEADER {                                                                                                      \
+        ca::App app{new DelegateType};                                                                                 \
+        app.run();                                                                                                     \
+        return 0;                                                                                                      \
+    }
 
 #endif  // CANVAS_APP_H_

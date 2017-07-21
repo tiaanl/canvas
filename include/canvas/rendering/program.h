@@ -19,11 +19,12 @@
 
 #include "nucleus/macros.h"
 
+#include "canvas/math/mat4.h"
 #include "canvas/math/vec2.h"
 #include "canvas/math/vec3.h"
 #include "canvas/math/vec4.h"
-#include "canvas/math/mat4.h"
 #include "canvas/opengl.h"
+#include "glm/glm.hpp"
 
 namespace ca {
 
@@ -31,46 +32,53 @@ class Shader;
 
 class Program {
 public:
-  // Bind the specified program.  Can pass nullptr to clear the program binding.
-  static void bind(Program* program);
+    // Bind the specified program.  Can pass nullptr to clear the program binding.
+    static void bind(Program* program);
 
-  Program();
-  Program(Shader* vertexShader, Shader* fragmentShader);
-  ~Program();
+    Program();
+    Program(Shader* vertexShader, Shader* fragmentShader);
+    ~Program();
 
-  // Get/set the vertex shader.
-  Shader* getVertexShader() const { return m_vertexShader; }
-  void setVertexShader(Shader* vertexShader);
+    // Return the OpenGL resource name for the shader program.
+    GLuint getNativeHandle() const { return m_name; }
 
-  // Get/set the fragment shader.
-  Shader* getFragmentShader() const { return m_fragmentShader; }
-  void setFragmentShader(Shader* fragmentShader);
+    // Get/set the vertex shader.
+    Shader* getVertexShader() const { return m_vertexShader; }
+    void setVertexShader(Shader* vertexShader);
 
-  // Link the program.
-  void link();
+    // Get/set the fragment shader.
+    Shader* getFragmentShader() const { return m_fragmentShader; }
+    void setFragmentShader(Shader* fragmentShader);
 
-  // Set uniforms inside the program.
-  bool setUniform(std::string name, float f);
-  bool setUniform(std::string name, const Vec2& vec2);
-  bool setUniform(std::string name, const Vec3& vec3);
-  bool setUniform(std::string name, const Vec4& vec4);
-  bool setUniform(std::string name, const Mat4& mat4);
+    // Returns true if the program is linked.
+    bool isLinked() const { return m_isLinked; }
+
+    // Link the program.
+    void link();
+
+    // Set uniforms inside the program.
+    bool setUniform(std::string name, float f);
+    bool setUniform(std::string name, const Vec2& vec2);
+    bool setUniform(std::string name, const Vec3& vec3);
+    bool setUniform(std::string name, const Vec4& vec4);
+    bool setUniform(std::string name, const Mat4& mat4);
+    bool setUniform(std::string name, const glm::mat4x4& mat4);
 
 private:
-  // Link the program.
-  void linkInternal();
+    // Link the program.
+    void linkInternal();
 
-  // The native handle to the program.
-  GLuint m_name{0};
+    // The native handle to the program.
+    GLuint m_name{0};
 
-  // The shaders we'll use.
-  Shader* m_vertexShader{nullptr};
-  Shader* m_fragmentShader{nullptr};
-  
-  // Flag to keep track of whether the program is linked.
-  bool m_isLinked{false};
+    // The shaders we'll use.
+    Shader* m_vertexShader{nullptr};
+    Shader* m_fragmentShader{nullptr};
 
-  DISALLOW_COPY_AND_ASSIGN(Program);
+    // Flag to keep track of whether the program is linked.
+    bool m_isLinked{false};
+
+    DISALLOW_COPY_AND_ASSIGN(Program);
 };
 
 }  // namespace ca
