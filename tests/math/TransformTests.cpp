@@ -2,8 +2,8 @@
 #include "canvas/math/transform.h"
 #include "gtest/gtest.h"
 
-#include "glm/ext.hpp"
-#include "glm/glm.hpp"
+//#include "glm/ext.hpp"
+//#include "glm/glm.hpp"
 
 TEST(TransformTests, Ortho) {
     F32 left = 0.f;
@@ -27,6 +27,7 @@ TEST(TransformTests, Ortho) {
     EXPECT_EQ(expected, ortho);
 }
 
+#if 0
 TEST(TransformTests, Sanity) {
     glm::mat4x4 o = glm::ortho(0.f, 1600.f, 900.f, 0.f);
     auto point = o * glm::vec4(10.f, 20.f, 0.f, 0.f);
@@ -40,3 +41,4 @@ TEST(TransformTests, Sanity) {
 
     LOG(Info) << p;
 }
+#endif  // 0

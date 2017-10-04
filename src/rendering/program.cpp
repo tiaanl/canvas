@@ -14,12 +14,9 @@
 
 #include "canvas/rendering/program.h"
 
-#include "nucleus/logging.h"
 #include "nucleus/utils/stl.h"
-
 #include "canvas/rendering/shader.h"
 #include "canvas/utils/gl_check.h"
-#include "glm/gtc/type_ptr.hpp"
 
 namespace ca {
 
@@ -97,12 +94,6 @@ bool Program::setUniform(std::string name, const Vec4& vec4) {
 bool Program::setUniform(std::string name, const Mat4& mat4) {
     BIND_AND_GET_LOCATION()
     glUniformMatrix4fv(location, 1, GL_FALSE, &mat4[0].x);
-    return glGetError() == GL_NO_ERROR;
-}
-
-bool Program::setUniform(std::string name, const glm::mat4x4& mat) {
-    BIND_AND_GET_LOCATION()
-    glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(mat));
     return glGetError() == GL_NO_ERROR;
 }
 

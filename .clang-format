@@ -1,6 +1,6 @@
 BasedOnStyle: Google
 
-AccessModifierOffset: -4
+AccessModifierOffset: -2
 AlignEscapedNewlinesLeft: false
 AllowAllParametersOfDeclarationOnNextLine: true
 AllowShortIfStatementsOnASingleLine: false
@@ -10,4 +10,4 @@ ColumnLimit: 120
 ConstructorInitializerAllOnOneLineOrOnePerLine: false
 ConstructorInitializerIndentWidth: 2
 DerivePointerAlignment: false
-IndentWidth: 4
+IndentWidth: 2
