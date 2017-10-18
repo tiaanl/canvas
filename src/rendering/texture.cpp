@@ -1,16 +1,3 @@
-// Copyright (c) 2015, Tiaan Louw
-//
-// Permission to use, copy, modify, and/or distribute this software for any
-// purpose with or without fee is hereby granted, provided that the above
-// copyright notice and this permission notice appear in all copies.
-//
-// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
-// REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
-// AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
-// INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
-// LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
-// OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
-// PERFORMANCE OF THIS SOFTWARE.
 
 #include "canvas/rendering/texture.h"
 
@@ -47,11 +34,9 @@ Texture::~Texture() {
 
 bool Texture::create(const Size<I32>& size) {
   I32 maxTextureSize = getMaxTextureSize();
-  if (size.width == 0 || (size.width & (size.width - 1)) != 0 ||
-      size.width > maxTextureSize || size.height == 0 ||
+  if (size.width == 0 || (size.width & (size.width - 1)) != 0 || size.width > maxTextureSize || size.height == 0 ||
       (size.height & (size.height - 1)) != 0 || size.height > maxTextureSize) {
-    LOG(Error) << "Can't create texture with invalid size. (" << size.width
-               << ", " << size.height << ")";
+    LOG(Error) << "Can't create texture with invalid size. (" << size.width << ", " << size.height << ")";
     return false;
   }
 
@@ -65,14 +50,11 @@ bool Texture::create(const Size<I32>& size) {
 
   // Initialize the texture.
   GL_CHECK(glBindTexture(GL_TEXTURE_2D, m_name));
-  GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_size.width, m_size.height,
-                        0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr));
+  GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_size.width, m_size.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr));
 
   const bool smooth = false;
-  GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-                           smooth ? GL_LINEAR : GL_NEAREST));
-  GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-                           smooth ? GL_LINEAR : GL_NEAREST));
+  GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, smooth ? GL_LINEAR : GL_NEAREST));
+  GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, smooth ? GL_LINEAR : GL_NEAREST));
 
   return true;
 }
@@ -85,15 +67,13 @@ bool Texture::createFromImage(const Image& image) {
   GL_CHECK(glBindTexture(GL_TEXTURE_2D, m_name));
 
   // Upload the image data.
-  GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_size.width, m_size.height,
-                        0, GL_RGBA, GL_UNSIGNED_BYTE, image.getData().data()));
+  GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_size.width, m_size.height, 0, GL_RGBA, GL_UNSIGNED_BYTE,
+                        image.getData().data()));
 
   // Set the texture clamping.
   const bool smooth = false;
-  GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-                           smooth ? GL_LINEAR : GL_NEAREST));
-  GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-                           smooth ? GL_LINEAR : GL_NEAREST));
+  GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, smooth ? GL_LINEAR : GL_NEAREST));
+  GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, smooth ? GL_LINEAR : GL_NEAREST));
 
   // Unbind the texture we were working on.
   GL_CHECK(glBindTexture(GL_TEXTURE_2D, 0));
@@ -113,8 +93,7 @@ void Texture::update(const U8* pixels, const Rect<I32>& rect) {
   // TODO: Make sure there is a GL context available.
 
   bind(this);
-  GL_CHECK(glTexSubImage2D(GL_TEXTURE_2D, 0, rect.pos.x, rect.pos.y,
-                           rect.size.width, rect.size.height, GL_RGBA,
+  GL_CHECK(glTexSubImage2D(GL_TEXTURE_2D, 0, rect.pos.x, rect.pos.y, rect.size.width, rect.size.height, GL_RGBA,
                            GL_UNSIGNED_BYTE, pixels));
 }
 

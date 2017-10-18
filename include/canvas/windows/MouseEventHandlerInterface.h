@@ -1,6 +1,6 @@
 
-#ifndef CANVAS_WINDOWS_MOUSEVENTHANDLER_H_
-#define CANVAS_WINDOWS_MOUSEVENTHANDLER_H_
+#ifndef CANVAS_WINDOWS_MOUSE_EVENT_HANDLER_H_
+#define CANVAS_WINDOWS_MOUSE_EVENT_HANDLER_H_
 
 #include "canvas/windows/event.h"
 
@@ -16,4 +16,4 @@ public:
 
 }  // namespace ca
 
-#endif  // CANVAS_WINDOWS_MOUSEVENTHANDLER_H_
+#endif  // CANVAS_WINDOWS_MOUSE_EVENT_HANDLER_H_

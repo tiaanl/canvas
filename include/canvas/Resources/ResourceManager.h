@@ -11,18 +11,18 @@ namespace ca {
 
 class ResourceManager {
 public:
-    ResourceManager();
-    ~ResourceManager();
+  ResourceManager();
+  ~ResourceManager();
 
-    const nu::FilePath& getRootPath() const { return m_rootPath; }
-    void setRootPath(const nu::FilePath& rootPath);
+  const nu::FilePath& getRootPath() const { return m_rootPath; }
+  void setRootPath(const nu::FilePath& rootPath);
 
-    nu::ScopedRefPtr<TextureResource> getTexture(const std::string& name);
+  nu::ScopedRefPtr<TextureResource> getTexture(const std::string& name);
 
 private:
-    nu::FilePath m_rootPath;
+  nu::FilePath m_rootPath;
 
-    std::unordered_map<std::string, nu::ScopedRefPtr<TextureResource>> m_textures;
+  std::unordered_map<std::string, nu::ScopedRefPtr<TextureResource>> m_textures;
 };
 
 }  // namespace ca

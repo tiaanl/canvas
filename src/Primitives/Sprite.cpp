@@ -1,16 +1,3 @@
-// Copyright (c) 2015, Tiaan Louw
-//
-// Permission to use, copy, modify, and/or distribute this software for any
-// purpose with or without fee is hereby granted, provided that the above
-// copyright notice and this permission notice appear in all copies.
-//
-// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
-// REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
-// AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
-// INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
-// LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
-// OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
-// PERFORMANCE OF THIS SOFTWARE.
 
 #include "canvas/Primitives/Sprite.h"
 
@@ -59,83 +46,83 @@ const char* kFragmentShader =
 Program* Sprite::s_shaderProgram = nullptr;
 
 Sprite::Sprite(Texture* texture) : m_texture{texture} {
-    // If we have a texture, rebuild the geometry.
-    if (texture) {
-        updateGeometry();
-    }
+  // If we have a texture, rebuild the geometry.
+  if (texture) {
+    updateGeometry();
+  }
 }
 
 Sprite::~Sprite() {}
 
 ca::Rect<F32> Sprite::getBounds() const {
-    if (!m_texture) {
-        return Rect<F32>{};
-    }
+  if (!m_texture) {
+    return Rect<F32>{};
+  }
 
-    Size<I32> textureSize = m_texture->getSize();
-    const F32 width = static_cast<F32>(textureSize.width) / 2.f;
-    const F32 height = static_cast<F32>(textureSize.width) / 2.f;
-    return Rect<F32>{-width, -height, width * 2.f, height * 2.f};
+  Size<I32> textureSize = m_texture->getSize();
+  const F32 width = static_cast<F32>(textureSize.width) / 2.f;
+  const F32 height = static_cast<F32>(textureSize.width) / 2.f;
+  return Rect<F32>{-width, -height, width * 2.f, height * 2.f};
 }
 
 void Sprite::setTexture(Texture* texture) {
-    m_texture = texture;
-    updateGeometry();
+  m_texture = texture;
+  updateGeometry();
 }
 
 void Sprite::render(Canvas* canvas, const Mat4& transform) const {
-    if (!m_texture) {
-        return;
-    }
+  if (!m_texture) {
+    return;
+  }
 
-    // Make sure the shader program is created and bind it.
-    ensureShaderProgram();
-    Program::bind(s_shaderProgram);
-    DCHECK(s_shaderProgram->setUniform("uni_mvp", transform));
+  // Make sure the shader program is created and bind it.
+  ensureShaderProgram();
+  Program::bind(s_shaderProgram);
+  DCHECK(s_shaderProgram->setUniform("uni_mvp", transform));
 
-    Texture::bind(m_texture);
+  Texture::bind(m_texture);
 
-    // Enable blending.
-    ScopedOpenGLEnable enableBlending{GL_BLEND};
-    GL_CHECK(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-    GL_CHECK(glBlendEquation(GL_FUNC_ADD));
+  // Enable blending.
+  ScopedOpenGLEnable enableBlending{GL_BLEND};
+  GL_CHECK(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+  GL_CHECK(glBlendEquation(GL_FUNC_ADD));
 
-    m_geometry.render(canvas);
+  m_geometry.render(canvas);
 }
 
 void Sprite::updateGeometry() {
-    if (!m_texture) {
-        return;
-    }
+  if (!m_texture) {
+    return;
+  }
 
-    ensureShaderProgram();
+  ensureShaderProgram();
 
-    // Clear out the old geometry.
-    m_geometry.clear();
+  // Clear out the old geometry.
+  m_geometry.clear();
 
-    const auto size = m_texture->getSize();
-    Rect<F32> rect{-static_cast<float>(size.width) / 2.f, -static_cast<float>(size.height) / 2.f,
-                   static_cast<float>(size.width), static_cast<float>(size.height)};
+  const auto size = m_texture->getSize();
+  Rect<F32> rect{-static_cast<float>(size.width) / 2.f, -static_cast<float>(size.height) / 2.f,
+                 static_cast<float>(size.width), static_cast<float>(size.height)};
 
-    m_geometry = Geometry::createRectangle(rect, Color{255, 255, 255, 255});
+  m_geometry = Geometry::createRectangle(rect, Color{255, 255, 255, 255});
 
-    m_geometry.compileAndUpload();
+  m_geometry.compileAndUpload();
 }
 
 // static
 void Sprite::ensureShaderProgram() {
-    if (!s_shaderProgram) {
-        nu::WrappedMemoryInputStream vertexStream{kVertexShader, std::strlen(kVertexShader)};
-        Shader vertexShader{Shader::Vertex};
-        vertexShader.loadFromStream(&vertexStream);
+  if (!s_shaderProgram) {
+    nu::WrappedMemoryInputStream vertexStream{kVertexShader, std::strlen(kVertexShader)};
+    Shader vertexShader{Shader::Vertex};
+    vertexShader.loadFromStream(&vertexStream);
 
-        nu::WrappedMemoryInputStream fragmentStream{kFragmentShader, std::strlen(kFragmentShader)};
-        Shader fragmentShader{Shader::Fragment};
-        fragmentShader.loadFromStream(&fragmentStream);
+    nu::WrappedMemoryInputStream fragmentStream{kFragmentShader, std::strlen(kFragmentShader)};
+    Shader fragmentShader{Shader::Fragment};
+    fragmentShader.loadFromStream(&fragmentStream);
 
-        s_shaderProgram = new Program{&vertexShader, &fragmentShader};
-        s_shaderProgram->link();
-    }
+    s_shaderProgram = new Program{&vertexShader, &fragmentShader};
+    s_shaderProgram->link();
+  }
 }
 
 }  // namespace ca

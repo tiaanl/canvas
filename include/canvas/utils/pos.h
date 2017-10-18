@@ -1,16 +1,3 @@
-// Copyright (c) 2015, Tiaan Louw
-//
-// Permission to use, copy, modify, and/or distribute this software for any
-// purpose with or without fee is hereby granted, provided that the above
-// copyright notice and this permission notice appear in all copies.
-//
-// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
-// REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
-// AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
-// INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
-// LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
-// OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
-// PERFORMANCE OF THIS SOFTWARE.
 
 #ifndef CANVAS_UTILS_POS_H_
 #define CANVAS_UTILS_POS_H_
@@ -21,51 +8,60 @@ namespace ca {
 
 template <typename T>
 struct Pos {
-    T x{0};
-    T y{0};
+  T x{0};
+  T y{0};
 
-    Pos() {}
+  Pos() {}
 
-    Pos(T x, T y) : x(x), y(y) {}
+  Pos(T x, T y) : x(x), y(y) {}
 
-    bool operator==(const Pos& other) const { return x == other.x && y == other.y; }
+  bool operator==(const Pos& other) const { return x == other.x && y == other.y; }
+  bool operator!=(const Pos& other) const { return x != other.x || y != other.y; }
 
-    bool operator!=(const Pos& other) const { return x != other.x || y != other.y; }
+  Pos operator+(const Pos& other) { return Pos{x + other.x, y + other.y}; }
+  Pos operator-(const Pos& other) { return Pos{x - other.x, y - other.y}; }
 
-    Pos operator-(const Pos& other) { return Pos{x - other.x, y - other.y}; }
+  void operator+=(const Pos& other) {
+    x += other.x;
+    y += other.y;
+  }
+  void operator-=(const Pos& other) {
+    x -= other.x;
+    y -= other.y;
+  }
 };
 
 template <typename T>
 Pos<T> operator-(const Pos<T>& left) {
-    return Pos<T>{-left.x, -left.y};
+  return Pos<T>{-left.x, -left.y};
 }
 
 template <typename T>
 Pos<T> operator+(const Pos<T>& left, const Pos<T>& right) {
-    return Pos<T>{left.x + right.x, left.y + right.y};
+  return Pos<T>{left.x + right.x, left.y + right.y};
 }
 
 template <typename T>
 Pos<T> operator-(const Pos<T>& left, const Pos<T>& right) {
-    return Pos<T>{left.x - right.x, left.y - right.y};
+  return Pos<T>{left.x - right.x, left.y - right.y};
 }
 
 template <typename T>
 Pos<T> operator*(const Pos<T>& left, const Pos<T>& right) {
-    return Pos<T>{left.x * right.x, left.y * right.y};
+  return Pos<T>{left.x * right.x, left.y * right.y};
 }
 
 template <typename T>
 Pos<T> operator*(const Pos<T>& left, T right) {
-    return Pos<T>{left.x * right, left.y * right};
+  return Pos<T>{left.x * right, left.y * right};
 }
 
 }  // namespace ca
 
 template <typename T>
 inline std::ostream& operator<<(std::ostream& os, const ca::Pos<T>& pos) {
-    os << "(" << pos.x << ", " << pos.y << ")";
-    return os;
+  os << "(" << pos.x << ", " << pos.y << ")";
+  return os;
 }
 
 #endif  // CANVAS_UTILS_POS_H_

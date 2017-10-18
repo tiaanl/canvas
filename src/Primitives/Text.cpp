@@ -1,16 +1,3 @@
-// Copyright (c) 2015, Tiaan Louw
-//
-// Permission to use, copy, modify, and/or distribute this software for any
-// purpose with or without fee is hereby granted, provided that the above
-// copyright notice and this permission notice appear in all copies.
-//
-// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
-// REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
-// AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
-// INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
-// LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
-// OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
-// PERFORMANCE OF THIS SOFTWARE.
 
 #include "canvas/Primitives/Text.h"
 
@@ -68,120 +55,119 @@ static Program* gs_textProgram;
 }  // namespace
 
 Text::Text() {
-    ensureShaders();
+  ensureShaders();
 }
 
 Text::Text(Font* font, I32 textSize, const std::string& text) : m_font(font), m_text(text), m_textSize(textSize) {
-    ensureShaders();
+  ensureShaders();
 
-    if (m_font) {
-        updateGeometry();
-    }
+  if (m_font) {
+    updateGeometry();
+  }
 }
 
 void Text::setFont(Font* font) {
-    m_font = font;
-    updateGeometry();
+  m_font = font;
+  updateGeometry();
 }
 
 void Text::setText(const std::string& text) {
-    m_text = text;
-    updateGeometry();
+  m_text = text;
+  updateGeometry();
 }
 
 void Text::setTextSize(I32 textSize) {
-    m_textSize = textSize;
-    updateGeometry();
+  m_textSize = textSize;
+  updateGeometry();
 }
 
 void Text::render(Canvas* canvas, const Mat4& transform) const {
-    if (!m_font) {
-        return;
-    }
+  if (!m_font) {
+    return;
+  }
 
-    const ca::Texture* texture = m_font->getTexture(m_textSize);
-    if (!texture) {
-        return;
-    }
+  const ca::Texture* texture = m_font->getTexture(m_textSize);
+  if (!texture) {
+    return;
+  }
 
-    // Bind the font's texture.
-    Texture::bind(texture);
+  // Bind the font's texture.
+  Texture::bind(texture);
 
-    // Bind the program.
-    Program::bind(gs_textProgram);
-    gs_textProgram->setUniform("uni_mvp", transform);
+  // Bind the program.
+  Program::bind(gs_textProgram);
+  gs_textProgram->setUniform("uni_mvp", transform);
 
-    // Enable blending.
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glBlendEquation(GL_FUNC_ADD);
+  // Enable blending.
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glBlendEquation(GL_FUNC_ADD);
 
-    // Render the text geometry.
-    m_geometry.render(canvas);
+  // Render the text geometry.
+  m_geometry.render(canvas);
 
-    // Disable blending when we're done.
-    glDisable(GL_BLEND);
+  // Disable blending when we're done.
+  glDisable(GL_BLEND);
 }
 
 void Text::ensureShaders() {
-    if (gs_textVertexShader && gs_textFragmentShader && gs_textProgram) {
-        return;
-    }
+  if (gs_textVertexShader && gs_textFragmentShader && gs_textProgram) {
+    return;
+  }
 
-    nu::WrappedMemoryInputStream vertexStream{kTextVertexShader, std::strlen(kTextVertexShader)};
-    gs_textVertexShader = new Shader{Shader::Vertex};
-    gs_textVertexShader->loadFromStream(&vertexStream);
+  nu::WrappedMemoryInputStream vertexStream{kTextVertexShader, std::strlen(kTextVertexShader)};
+  gs_textVertexShader = new Shader{Shader::Vertex};
+  gs_textVertexShader->loadFromStream(&vertexStream);
 
-    nu::WrappedMemoryInputStream fragmentStream{kTextFragmentShader, std::strlen(kTextFragmentShader)};
-    gs_textFragmentShader = new Shader{Shader::Fragment};
-    gs_textFragmentShader->loadFromStream(&fragmentStream);
+  nu::WrappedMemoryInputStream fragmentStream{kTextFragmentShader, std::strlen(kTextFragmentShader)};
+  gs_textFragmentShader = new Shader{Shader::Fragment};
+  gs_textFragmentShader->loadFromStream(&fragmentStream);
 
-    gs_textProgram = new Program{gs_textVertexShader, gs_textFragmentShader};
-    gs_textProgram->link();
+  gs_textProgram = new Program{gs_textVertexShader, gs_textFragmentShader};
+  gs_textProgram->link();
 }
 
 void Text::updateGeometry() {
-    if (!m_font) {
-        return;
-    }
+  if (!m_font) {
+    return;
+  }
 
-    // Clear out the old geometry.
-    m_geometry.clear();
+  // Clear out the old geometry.
+  m_geometry.clear();
 
-    // If there is no text to render, then that's it.
-    if (m_text.empty()) {
-        m_geometry.compileAndUpload();
+  // If there is no text to render, then that's it.
+  if (m_text.empty()) {
+    m_geometry.compileAndUpload();
 
-        // Update the bounds.
-        m_bounds = Rect<I32>{};
-        m_bounds.size.height =
-            static_cast<I32>(std::round(m_font->getAscent(m_textSize) - m_font->getDescent(m_textSize)));
-        return;
-    }
+    // Update the bounds.
+    m_bounds = Rect<I32>{};
+    m_bounds.size.height = static_cast<I32>(std::round(m_font->getAscent(m_textSize) - m_font->getDescent(m_textSize)));
+    return;
+  }
 
-    F32 left = 0.f;
+  F32 left = 0.f;
 
-    float bLeft = 0.f, bTop = 0.f, bRight = 0.f, bBottom = 0.f;
+  float bLeft = 0.f, bTop = 0.f, bRight = 0.f, bBottom = 0.f;
 
-    // Build geometry for each character in the text.
-    for (USize i = 0; i < m_text.length(); ++i) {
-        ca::Font::Char ch = static_cast<ca::Font::Char>(m_text[i]);
+  // Build geometry for each character in the text.
+  for (USize i = 0; i < m_text.length(); ++i) {
+    ca::Font::Char ch = static_cast<ca::Font::Char>(m_text[i]);
 
-        // Get the glyph.
-        const Font::Glyph& glyph = m_font->getOrInsertGlyph(m_textSize, ch);
+    // Get the glyph.
+    const Font::Glyph& glyph = m_font->getOrInsertGlyph(m_textSize, ch);
 
-        const F32 newLeft = left + glyph.bounds.pos.x;
-        const F32 newTop = glyph.bounds.pos.y;
-        const F32 newRight = left + glyph.bounds.pos.x + glyph.bounds.size.width;
-        const F32 newBottom = glyph.bounds.pos.y + glyph.bounds.size.height;
+    const F32 newLeft = left + glyph.bounds.pos.x;
+    const F32 newTop = glyph.bounds.pos.y;
+    const F32 newRight = left + glyph.bounds.pos.x + glyph.bounds.size.width;
+    const F32 newBottom = glyph.bounds.pos.y + glyph.bounds.size.height;
 
-        bLeft = std::min(bLeft, newLeft);
-        bTop = std::min(bTop, newTop);
-        bRight = std::max(bRight, newRight);
-        bBottom = std::max(bBottom, newBottom);
+    bLeft = std::min(bLeft, newLeft);
+    bTop = std::min(bTop, newTop);
+    bRight = std::max(bRight, newRight);
+    bBottom = std::max(bBottom, newBottom);
 
-        // Add vertices for one block.
-        // clang-format off
+    // Add vertices for one block.
+    // clang-format off
 
     // 0
     m_geometry.addVertex(
@@ -238,17 +224,17 @@ void Text::updateGeometry() {
         Color{255, 255, 255, 255}
       }
     );
-        // clang-format on
+    // clang-format on
 
-        left += glyph.advance;
-    }
+    left += glyph.advance;
+  }
 
-    m_bounds.pos.x = static_cast<I32>(std::floor(bLeft));
-    m_bounds.pos.y = static_cast<I32>(std::floor(bTop));
-    m_bounds.size.width = static_cast<I32>(std::ceil(bRight - bLeft));
-    m_bounds.size.height = static_cast<I32>(std::ceil(bBottom - bTop));
+  m_bounds.pos.x = static_cast<I32>(std::floor(bLeft));
+  m_bounds.pos.y = static_cast<I32>(std::floor(bTop));
+  m_bounds.size.width = static_cast<I32>(std::ceil(bRight - bLeft));
+  m_bounds.size.height = static_cast<I32>(std::ceil(bBottom - bTop));
 
-    m_geometry.compileAndUpload();
+  m_geometry.compileAndUpload();
 }
 
 }  // namespace ca

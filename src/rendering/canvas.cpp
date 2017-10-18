@@ -1,16 +1,3 @@
-// Copyright (c) 2015, Tiaan Louw
-//
-// Permission to use, copy, modify, and/or distribute this software for any
-// purpose with or without fee is hereby granted, provided that the above
-// copyright notice and this permission notice appear in all copies.
-//
-// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
-// REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
-// AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
-// INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
-// LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
-// OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
-// PERFORMANCE OF THIS SOFTWARE.
 
 #include "canvas/rendering/canvas.h"
 
@@ -22,40 +9,40 @@
 namespace ca {
 
 Canvas::Canvas(Window* window) : m_window(window) {
-    // When the canvas is created, we set the window's context to active.
-    m_window->activateContext();
+  // When the canvas is created, we set the window's context to active.
+  m_window->activateContext();
 }
 
 Canvas::~Canvas() {}
 
 ca::Size<I32> Canvas::getSize() const {
-    DCHECK(m_window);
-    return m_window->getClientSize();
+  DCHECK(m_window);
+  return m_window->getClientSize();
 }
 
 void Canvas::clear(const Color& color) {
-    glClearColor(static_cast<float>(color.r) / 255, static_cast<float>(color.g) / 255,
-                 static_cast<float>(color.b) / 255, static_cast<float>(color.a) / 255);
-    glClear(GL_COLOR_BUFFER_BIT);
+  glClearColor(static_cast<float>(color.r) / 255, static_cast<float>(color.g) / 255, static_cast<float>(color.b) / 255,
+               static_cast<float>(color.a) / 255);
+  glClear(GL_COLOR_BUFFER_BIT);
 }
 
 Command* Canvas::render(GLuint program, GLuint vertexArray, GLenum primitiveType, GLint first, GLint count) {
-    // Create the command.
-    Command command(program, vertexArray, primitiveType, first, count);
+  // Create the command.
+  Command command(program, vertexArray, primitiveType, first, count);
 
-    // Add the command to the end of the list.
-    m_commands.push_back(command);
+  // Add the command to the end of the list.
+  m_commands.push_back(command);
 
-    // Return the command we just added.
-    return &m_commands.back();
+  // Return the command we just added.
+  return &m_commands.back();
 }
 
 void Canvas::render() {
-    for (Command& command : m_commands) {
-        command.execute();
-    }
+  for (Command& command : m_commands) {
+    command.execute();
+  }
 
-    m_commands.clear();
+  m_commands.clear();
 }
 
 }  // namespace ca

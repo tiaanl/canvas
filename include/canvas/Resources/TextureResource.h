@@ -11,15 +11,15 @@ namespace ca {
 
 class TextureResource : public nu::RefCountedThreadSafe<TextureResource> {
 public:
-    TextureResource();
+  TextureResource();
 
-    const nu::ScopedPtr<Texture>& getTexture() const { return m_texture; }
+  const nu::ScopedPtr<Texture>& getTexture() const { return m_texture; }
 
 private:
-    friend nu::RefCountedThreadSafe<TextureResource>;
-    ~TextureResource();
+  friend nu::RefCountedThreadSafe<TextureResource>;
+  ~TextureResource();
 
-    nu::ScopedPtr<Texture> m_texture;
+  nu::ScopedPtr<Texture> m_texture;
 };
 
 }  // namespace ca

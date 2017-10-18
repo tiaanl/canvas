@@ -1,16 +1,3 @@
-// Copyright (c) 2015, Tiaan Louw
-//
-// Permission to use, copy, modify, and/or distribute this software for any
-// purpose with or without fee is hereby granted, provided that the above
-// copyright notice and this permission notice appear in all copies.
-//
-// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
-// REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
-// AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
-// INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
-// LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
-// OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
-// PERFORMANCE OF THIS SOFTWARE.
 
 #include "canvas/rendering/font.h"
 
@@ -21,8 +8,8 @@
 #include "nucleus/types.h"
 #include "nucleus/utils/stl.h"
 
-#include "canvas/utils/rect.h"
 #include "canvas/utils/gl_check.h"
+#include "canvas/utils/rect.h"
 
 #define STB_TRUETYPE_IMPLEMENTATION
 #include "stb_truetype.h"
@@ -43,8 +30,7 @@ bool Font::loadFromStream(nu::InputStream* stream) {
   return true;
 }
 
-const Font::Glyph& Font::getOrInsertGlyph(I32 characterSize,
-                                          char32_t codePoint) {
+const Font::Glyph& Font::getOrInsertGlyph(I32 characterSize, char32_t codePoint) {
   Page* page = getPage(characterSize);
   DCHECK(page);
 
@@ -92,8 +78,7 @@ const Texture* Font::getTexture(I32 characterSize) const {
 
 Font::Page::Page(Font* font, I32 characterSize) {
   // Calculate the scale for the characterSize.
-  fontScale = stbtt_ScaleForPixelHeight(&font->m_fontInfo,
-                                        static_cast<F32>(characterSize));
+  fontScale = stbtt_ScaleForPixelHeight(&font->m_fontInfo, static_cast<F32>(characterSize));
 
   int iAscent, iDescent;
   stbtt_GetFontVMetrics(&font->m_fontInfo, &iAscent, &iDescent, nullptr);
@@ -113,8 +98,7 @@ Font::Page* Font::getPage(I32 characterSize) {
   auto pageIt = m_pages.find(characterSize);
   if (pageIt == std::end(m_pages)) {
     // If the page doesn't exist yet, create a new page.
-    auto result = m_pages.emplace(characterSize,
-                                  std::make_unique<Page>(this, characterSize));
+    auto result = m_pages.emplace(characterSize, std::make_unique<Page>(this, characterSize));
     page = result.first->second.get();
   } else {
     page = pageIt->second.get();
@@ -129,43 +113,34 @@ Font::Glyph Font::loadGlyph(Page* page, char32_t codePoint) {
   I32 advance;
   stbtt_GetCodepointHMetrics(&m_fontInfo, codePoint, &advance, nullptr);
   result.advance = static_cast<F32>(advance) * page->fontScale;
-  
+
   // Get the vertical dimensions of the font.
   int ascent, descent, lineGap;
   stbtt_GetFontVMetrics(&m_fontInfo, &ascent, &descent, &lineGap);
 
   // Get the bounds of the glyph.
   Rect<I32> glyphRect;
-  stbtt_GetCodepointBitmapBox(&m_fontInfo, codePoint, page->fontScale,
-                              page->fontScale, &glyphRect.pos.x,
-                              &glyphRect.pos.y, &glyphRect.size.width,
-                              &glyphRect.size.height);
+  stbtt_GetCodepointBitmapBox(&m_fontInfo, codePoint, page->fontScale, page->fontScale, &glyphRect.pos.x,
+                              &glyphRect.pos.y, &glyphRect.size.width, &glyphRect.size.height);
   glyphRect.size.width -= glyphRect.pos.x;
   glyphRect.size.height -= glyphRect.pos.y;
 
   // Find a place for the glyph in the texture.
   Rect<I32> textureRectI = findGlyphRect(page, glyphRect.size);
 
-  const Size<F32> textureSize{
-      static_cast<F32>(page->texture.getSize().width),
-      static_cast<F32>(page->texture.getSize().height)};
-  result.textureRect.pos.x =
-      static_cast<F32>(textureRectI.pos.x) / textureSize.width;
-  result.textureRect.pos.y =
-      static_cast<F32>(textureRectI.pos.y) / textureSize.height;
-  result.textureRect.size.width =
-      static_cast<F32>(textureRectI.size.width) / textureSize.width;
-  result.textureRect.size.height =
-      static_cast<F32>(textureRectI.size.height) / textureSize.height;
+  const Size<F32> textureSize{static_cast<F32>(page->texture.getSize().width),
+                              static_cast<F32>(page->texture.getSize().height)};
+  result.textureRect.pos.x = static_cast<F32>(textureRectI.pos.x) / textureSize.width;
+  result.textureRect.pos.y = static_cast<F32>(textureRectI.pos.y) / textureSize.height;
+  result.textureRect.size.width = static_cast<F32>(textureRectI.size.width) / textureSize.width;
+  result.textureRect.size.height = static_cast<F32>(textureRectI.size.height) / textureSize.height;
 
   // Resize the pixel buffer so that we can fit the rendered glyph in it.
   m_pixelBuffer.resize(glyphRect.size.width * glyphRect.size.height);
 
   // Render the character to the temp buffer.
-  stbtt_MakeCodepointBitmap(&m_fontInfo, nu::vectorAsArray(&m_pixelBuffer),
-                            glyphRect.size.width, glyphRect.size.height,
-                            glyphRect.size.width, page->fontScale,
-                            page->fontScale, codePoint);
+  stbtt_MakeCodepointBitmap(&m_fontInfo, nu::vectorAsArray(&m_pixelBuffer), glyphRect.size.width, glyphRect.size.height,
+                            glyphRect.size.width, page->fontScale, page->fontScale, codePoint);
 
   Image image;
   image.create(glyphRect.size, {255, 255, 255, 255});
@@ -177,10 +152,8 @@ Font::Glyph Font::loadGlyph(Page* page, char32_t codePoint) {
   }
 
   Texture::bind(&page->texture);
-  GL_CHECK(glTexSubImage2D(GL_TEXTURE_2D, 0, textureRectI.pos.x,
-                           textureRectI.pos.y, textureRectI.size.width,
-                           textureRectI.size.height, GL_RGBA, GL_UNSIGNED_BYTE,
-                           image.getData().data()));
+  GL_CHECK(glTexSubImage2D(GL_TEXTURE_2D, 0, textureRectI.pos.x, textureRectI.pos.y, textureRectI.size.width,
+                           textureRectI.size.height, GL_RGBA, GL_UNSIGNED_BYTE, image.getData().data()));
 
   result.bounds.pos.x = static_cast<F32>(glyphRect.pos.x);
   result.bounds.pos.y = static_cast<F32>(glyphRect.pos.y);
@@ -220,8 +193,7 @@ Rect<I32> Font::findGlyphRect(Page* page, const Size<I32>& size) {
     I32 rowHeight = size.height + size.height / 10;
 
     Size<I32> textureSize{page->texture.getSize()};
-    if ((page->nextRow + rowHeight >= textureSize.height) ||
-        (size.width >= textureSize.width)) {
+    if ((page->nextRow + rowHeight >= textureSize.height) || (size.width >= textureSize.width)) {
       NOTREACHED() << "Texture is too small!";
       return Rect<I32>{};
     }
