@@ -1,31 +1,39 @@
 
 #include "canvas/utils/image.h"
 
-#include <cstring>
-
 #include "nucleus/logging.h"
 #include "nucleus/utils/stl.h"
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include "png.h"
 
 namespace ca {
 
 namespace {
 
-static int stbCallbackRead(void* user, char* data, int size) {
-  nu::InputStream* stream = static_cast<nu::InputStream*>(user);
-  return static_cast<int>(stream->read(data, size));
+void readDataFromInputStream(png_structp png, png_bytep outBytes, png_size_t byteCountToRead) {
+  png_voidp ioPtr = png_get_io_ptr(png);
+  if (ioPtr == NULL) {
+    LOG(Error) << "Could not read from stream. Invalid pointer.";
+    return;
+  }
+
+  nu::InputStream* inputStream = static_cast<nu::InputStream*>(ioPtr);
+  const size_t bytesRead = inputStream->read(outBytes, byteCountToRead);
+
+  if (bytesRead != byteCountToRead) {
+    LOG(Error) << "Could not read from stream. End of stream.";
+  }
 }
 
-static void stbCallbackSkip(void* user, int size) {
-  nu::InputStream* stream = static_cast<nu::InputStream*>(user);
-  stream->setPosition(stream->getPosition() + size);
-}
+void parseRGBA(const Size<I32> size, U8* outPtr, const png_structp& png, const png_infop& info) {
+  const U32 width = size.width;
+  const U32 height = size.height;
 
-static int stbCallbackEof(void* user) {
-  nu::InputStream* stream = static_cast<nu::InputStream*>(user);
-  return stream->isExhausted();
+  const png_size_t bytesPerRow = png_get_rowbytes(png, info);
+
+  for (U32 rowIdx = 0; rowIdx < height; ++rowIdx) {
+    png_read_row(png, static_cast<png_bytep>(outPtr + rowIdx * bytesPerRow), NULL);
+  }
 }
 
 }  // namespace
@@ -57,31 +65,65 @@ void Image::create(const Size<I32>& size, const Color& col) {
 bool Image::loadFromStream(nu::InputStream* stream) {
   DCHECK(stream);
 
-  // Set up the STB callbacks.
-  stbi_io_callbacks callbacks;
-  callbacks.read = &stbCallbackRead;
-  callbacks.skip = &stbCallbackSkip;
-  callbacks.eof = &stbCallbackEof;
+  enum { kPngSignatureLength = 8 };
+  U8 pngSignature[kPngSignatureLength];
 
-  // Load the image and get a pointer to the pixels in memory.
-  int width, height, channels;
-  stbi_uc* ptr = stbi_load_from_callbacks(&callbacks, stream, &width, &height, &channels, STBI_rgb_alpha);
-  DCHECK(channels == 3 || channels == 4) << "Unsupported image format.";
-
-  if (ptr && width && height) {
-    // Set the properties on the image.
-    m_size.width = width;
-    m_size.height = height;
-
-    // Copy the pixels to the pixel buffer.
-    m_data.resize(width * height * 4);
-    std::memcpy(nu::vectorAsArray(&m_data), ptr, m_data.size());
-
-    stbi_image_free(ptr);
-  } else {
-    LOG(Error) << "Could not load image from stream. (" << stbi_failure_reason() << ")";
+  if (stream->read(pngSignature, kPngSignatureLength) != kPngSignatureLength) {
     return false;
   }
+
+  if (!png_check_sig(pngSignature, kPngSignatureLength)) {
+    return false;
+  }
+
+  png_structp png = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+  if (!png) {
+    return false;
+  }
+
+  png_infop info = png_create_info_struct(png);
+  if (!info) {
+    png_destroy_read_struct(&png, NULL, NULL);
+    return false;
+  }
+
+  png_set_read_fn(png, stream, readDataFromInputStream);
+
+  png_set_sig_bytes(png, kPngSignatureLength);
+
+  png_read_info(png, info);
+
+  png_uint_32 width = 0;
+  png_uint_32 height = 0;
+  int bitDepth = 0;
+  int colorType = -1;
+  png_uint_32 retval = png_get_IHDR(png, info, &width, &height, &bitDepth, &colorType, NULL, NULL, NULL);
+
+  if (retval != 1) {
+    return false;
+  }
+
+  // Prepare the data storage.
+  m_size = Size<I32>(width, height);
+
+  switch (colorType) {
+#if 0
+    case PNG_COLOR_TYPE_RGB:
+      parseRGB(outImage, png, info);
+      break;
+#endif  // 0
+
+    case PNG_COLOR_TYPE_RGB_ALPHA:
+      parseRGBA(m_size, nu::vectorAsArray(&m_data, m_size.width * m_size.height * 4), png, info);
+      break;
+
+    default:
+      NOTREACHED() << "Invalid PNG ColorType enum value given.";
+      png_destroy_read_struct(&png, &info, NULL);
+      return false;
+  }
+
+  png_destroy_read_struct(&png, &info, NULL);
 
   return true;
 }

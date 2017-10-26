@@ -47,7 +47,7 @@ public:
     // Load a texture in.
     nu::FileInputStream imageStream{root.append(FILE_PATH_LITERAL("res"))
                                         .append(FILE_PATH_LITERAL("images"))
-                                        .append(FILE_PATH_LITERAL("canvas.jpg"))};
+                                        .append(FILE_PATH_LITERAL("canvas.png"))};
 
     ca::Image image;
     if (!image.loadFromStream(&imageStream)) {

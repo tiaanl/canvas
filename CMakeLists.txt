@@ -11,6 +11,8 @@ include("cmake/nucleus.cmake")
 include("cmake/glfw.cmake")
 include("cmake/freetype2.cmake")
 include("cmake/glad.cmake")
+include("cmake/zlib.cmake")
+include("cmake/libpng.cmake")
 
 # Compiler Settings
 
@@ -85,7 +87,7 @@ set("canvas_SOURCE_FILES"
         )
 
 add_library("canvas" STATIC ${canvas_INCLUDE_FILES} ${canvas_SOURCE_FILES})
-target_link_libraries("canvas" "nucleus" "glfw" "glad" "freetype")
+target_link_libraries("canvas" "nucleus" "glfw" "glad" "freetype" "png_static" "zlibstatic")
 target_include_directories("canvas" PUBLIC "${canvas_SOURCE_DIR}/include")
 target_include_directories("canvas" PUBLIC "${canvas_SOURCE_DIR}/third_party/stb")
 set_property(TARGET "canvas" PROPERTY FOLDER "canvas")
