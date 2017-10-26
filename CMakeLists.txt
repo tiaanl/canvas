@@ -10,8 +10,7 @@ option(CANVAS_BUILD_EXAMPLES "Build canvas examples?")
 include("cmake/nucleus.cmake")
 include("cmake/glfw.cmake")
 include("cmake/freetype2.cmake")
-
-add_subdirectory("${canvas_SOURCE_DIR}/third_party/glad")
+include("cmake/glad.cmake")
 
 # Compiler Settings
 

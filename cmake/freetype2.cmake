@@ -5,5 +5,5 @@ if(NOT FREETYPE2_ROOT_DIR)
 endif()
 
 add_subdirectory("${FREETYPE2_ROOT_DIR}" "freetype2")
-# target_include_directories("freetype2" PUBLIC "${FREETYPE2_ROOT_DIR}/include")
-# set_property(TARGET "freetype2" PROPERTY FOLDER "freetype2")
+set_property(TARGET "freetype" PROPERTY FOLDER "third_party")
+set_property(TARGET "dist" PROPERTY FOLDER "third_party")
