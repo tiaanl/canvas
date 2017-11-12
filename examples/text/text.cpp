@@ -3,6 +3,7 @@
 #include "canvas/app.h"
 #include "canvas/math/transform.h"
 #include "canvas/rendering/canvas.h"
+#include "canvas/rendering/font.h"
 #include "canvas/rendering/program.h"
 #include "canvas/rendering/shader.h"
 #include "nucleus/streams/file_input_stream.h"

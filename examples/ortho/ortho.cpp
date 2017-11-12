@@ -91,12 +91,12 @@ public:
     ca::Mat4 inv = ca::inverse(finalMatrix);
     ca::Vec4 mousePosInWorld = inv * adjustedMousePos;
 
-    m_object.render();
+    m_object.render(canvas);
 
     ca::Mat4 mouseModelMatrix = ca::translate(mousePosInWorld.x, -mousePosInWorld.y, 0.0f);
     m_program.setUniform("uni_viewMatrix", mouseModelMatrix);
 
-    m_mouse.render();
+    m_mouse.render(canvas);
 
     ca::Program::bind(nullptr);
   }
