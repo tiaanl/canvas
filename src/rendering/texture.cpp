@@ -43,10 +43,7 @@ bool Texture::create(const Size<I32>& size) {
   // Store the size.
   m_size = size;
 
-  // Create the texture name if it doesn't exist already.
-  if (m_name == 0) {
-    GL_CHECK(glGenTextures(1, &m_name));
-  }
+  createNewName();
 
   // Initialize the texture.
   GL_CHECK(glBindTexture(GL_TEXTURE_2D, m_name));
