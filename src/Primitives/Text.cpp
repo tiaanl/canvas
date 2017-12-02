@@ -132,8 +132,6 @@ void Text::updateGeometry() {
     return;
   }
 
-  LOG(Info) << "Updating text geometry";
-
   // Clear out the old geometry.
   m_geometry.clear();
 
@@ -160,10 +158,10 @@ void Text::updateGeometry() {
     // Get the glyph.
     const Font::Glyph& glyph = m_font->getOrInsertGlyph(ch, m_textSize, false);
 
-    F32 left = glyph.bounds.pos.x;
-    F32 top = glyph.bounds.pos.y;
-    F32 right = glyph.bounds.pos.x + glyph.bounds.size.width;
-    F32 bottom = glyph.bounds.pos.y + glyph.bounds.size.height;
+    F32 left = static_cast<F32>(glyph.bounds.pos.x);
+    F32 top = static_cast<F32>(glyph.bounds.pos.y);
+    F32 right = static_cast<F32>(glyph.bounds.pos.x + glyph.bounds.size.width);
+    F32 bottom = static_cast<F32>(glyph.bounds.pos.y + glyph.bounds.size.height);
 
     F32 u1 = glyph.textureRect.pos.x;
     F32 v1 = glyph.textureRect.pos.y;

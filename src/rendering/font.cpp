@@ -20,28 +20,8 @@
 
 namespace ca {
 
-namespace {
-
-// Freetype2 callback.
-unsigned long readFromStream(FT_Stream stream, unsigned long offset, unsigned char* buffer, unsigned long count) {
-  nu::InputStream* inputStream = static_cast<nu::InputStream*>(stream->descriptor.pointer);
-  if (inputStream->setPosition(offset)) {
-    if (count > 0) {
-      return static_cast<U32>(inputStream->read(buffer, count));
-    } else {
-      return 0;
-    }
-  }
-
-  return count > 0 ? 0 : 1;
-}
-
-// Freetype2 callback.
-void closeStream(FT_Stream) {}
-
-}  // namespace
-
-Font::Font() : m_library(nullptr), m_face(nullptr), m_streamRec(nullptr), m_stroker(nullptr) {}
+Font::Font(nu::Allocator* allocator)
+  : m_allocator(allocator), m_library(nullptr), m_face(nullptr), m_fontData(allocator) {}
 
 Font::~Font() {
   cleanup();
@@ -57,29 +37,23 @@ bool Font::loadFromStream(nu::InputStream* stream) {
   }
   m_library = library;
 
-  // Prepare a wrapper for our stream.
-  FT_StreamRec* rec = new FT_StreamRec;
-  rec->base = nullptr;
-  rec->size = static_cast<unsigned long>(stream->getBytesRemaining());
-  rec->pos = 0;
-  rec->descriptor.pointer = stream;
-  rec->read = &readFromStream;
-  rec->close = &closeStream;
-
-  // Setup the FreeType callbacks that will read our stream.
-  FT_Open_Args args;
-  args.flags = FT_OPEN_STREAM;
-  args.stream = rec;
-  args.driver = 0;
+  // Load the entire stream into out m_fontData buffer.
+  nu::InputStream::SizeType bytesRemaining = stream->getBytesRemaining();
+  m_fontData.resize(bytesRemaining);
+  stream->read(&m_fontData.get(0), bytesRemaining);
 
   // Load the new font face from the stream.
   FT_Face face;
-
-  FT_Error err = FT_Open_Face(static_cast<FT_Library>(m_library), &args, 0, &face);
+  FT_Error err = FT_New_Memory_Face(static_cast<FT_Library>(m_library), static_cast<const FT_Byte*>(&m_fontData.get(0)),
+                                    static_cast<FT_Long>(bytesRemaining), 0, &face);
   if (err != FT_Err_Ok) {
     switch (err) {
       case FT_Err_Unknown_File_Format:
         LOG(Error) << "Invalid font file format.";
+        return false;
+
+      case FT_Err_Invalid_Argument:
+        LOG(Error) << "Invalid argument when loading font face.";
         return false;
 
       default:
@@ -101,8 +75,6 @@ bool Font::loadFromStream(nu::InputStream* stream) {
 }  // namespace ca
 
 const Font::Glyph& Font::getOrInsertGlyph(U32 codePoint, U32 characterSize, bool bold) const {
-  LOG(Info) << "getOrInsertGlyph(" << codePoint << ", " << characterSize << ", " << bold << ")";
-
   // Get the page corresponding to the character size.
   GlyphTable& glyphs = m_pages[characterSize].glyphs;
 
@@ -202,16 +174,8 @@ Font::Page::Page() : nextRow(3) {
 }
 
 void Font::cleanup() {
-  if (m_stroker) {
-    FT_Stroker_Done(static_cast<FT_Stroker>(m_stroker));
-  }
-
   if (m_face) {
     FT_Done_Face(static_cast<FT_Face>(m_face));
-  }
-
-  if (m_streamRec) {
-    delete static_cast<FT_StreamRec*>(m_streamRec);
   }
 
   if (m_library) {
@@ -220,15 +184,11 @@ void Font::cleanup() {
 
   m_library = nullptr;
   m_face = nullptr;
-  m_stroker = nullptr;
-  m_streamRec = nullptr;
   m_pages.clear();
   m_pixelBuffer.clear();
 }
 
 Font::Glyph Font::loadGlyph(U32 codePoint, U32 characterSize, bool bold) const {
-  LOG(Info) << "loadGlyph(" << (char)codePoint << ", " << characterSize << ", " << (bold ? "true" : "false") << ")";
-
   Glyph result;
 
   FT_Library library = static_cast<FT_Library>(m_library);
@@ -282,7 +242,7 @@ Font::Glyph Font::loadGlyph(U32 codePoint, U32 characterSize, bool bold) const {
   // neighbours.
   const I32 padding = 1;
 
-  F32 ascent = static_cast<F32>(face->size->metrics.ascender + face->size->metrics.descender);
+  I32 ascent = face->size->metrics.ascender + face->size->metrics.descender;
 
   if (width > 0 && height > 0) {
     // Get the glyph page corresponding to the character size.
@@ -307,8 +267,8 @@ Font::Glyph Font::loadGlyph(U32 codePoint, U32 characterSize, bool bold) const {
     result.textureRect.size.height = static_cast<F32>(glyphRect.size.height) / static_cast<F32>(textureSize.height);
 
     // Compute the glyph's bounding box.
-    result.bounds.pos.x = static_cast<F32>(face->glyph->metrics.horiBearingX / (1 << 6));
-    result.bounds.pos.y = static_cast<F32>((ascent - face->glyph->metrics.horiBearingY) / (1 << 6));
+    result.bounds.pos.x = face->glyph->metrics.horiBearingX / (1 << 6);
+    result.bounds.pos.y = (ascent - face->glyph->metrics.horiBearingY) / (1 << 6);
     result.bounds.size.width = face->glyph->metrics.width / (1 << 6);
     result.bounds.size.height = face->glyph->metrics.height / (1 << 6);
 
@@ -358,7 +318,7 @@ Rect<I32> Font::findGlyphRect(Page& page, const Size<I32>& size) const {
     }
 
     // Check if there is enough horizontal space left in the row.
-    if (size.width > page.texture.getSize().width - row.width) {
+    if (size.width > (page.texture.getSize().width - row.width)) {
       continue;
     }
 

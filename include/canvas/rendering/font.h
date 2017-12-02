@@ -5,12 +5,11 @@
 #include <memory>
 #include <unordered_map>
 
-#include "nucleus/macros.h"
-#include "nucleus/types.h"
-
 #include "canvas/rendering/texture.h"
 #include "canvas/utils/rect.h"
-#include "stb_truetype.h"
+#include "nucleus/Containers/DynamicArray.h"
+#include "nucleus/macros.h"
+#include "nucleus/types.h"
 
 namespace ca {
 
@@ -21,11 +20,11 @@ public:
 
   struct Glyph {
     F32 advance{0.f};
-    Rect<F32> bounds;
+    Rect<I32> bounds;
     Rect<F32> textureRect;
   };
 
-  Font();
+  Font(nu::Allocator* allocator = nu::getDefaultAllocator());
   ~Font();
 
   // Load a font from the given stream.
@@ -46,15 +45,15 @@ public:
 private:
   struct Row {
     // Current width of the row.
-    U32 width;
+    I32 width;
 
     // Y position of the row in the texture.
-    U32 top;
+    I32 top;
 
     // Height of the row.
-    U32 height;
+    I32 height;
 
-    Row(U32 top, U32 height) : width(0), top(top), height(height) {}
+    Row(I32 top, I32 height) : width(0), top(top), height(height) {}
   };
 
   using GlyphTable = std::unordered_map<U64, Glyph>;
@@ -67,7 +66,7 @@ private:
     Texture texture;
 
     // Y position of the next new row in the texture.
-    U32 nextRow;
+    I32 nextRow;
 
     // List containing the position of all the existing rows.
     std::vector<Row> rows;
@@ -89,23 +88,22 @@ private:
 
   using PageTable = std::unordered_map<U32, Page>;
 
+  nu::Allocator* m_allocator;
+
   // Pointer to the internal library.
   void* m_library;
 
   // Pointer to the internal font face.
   void* m_face;
 
-  // Pointer to the internal stream record.
-  void* m_streamRec;
-
-  // Pointer to the stroker.
-  void* m_stroker;
-
   // Table containing the glyph pages by character size.
   mutable PageTable m_pages;
 
   // Pixel buffer holding a glyph's pixels before being written to the texture.
   mutable std::vector<U8> m_pixelBuffer;
+
+  // Buffer that holds the entire font, for loading glyphs.
+  nu::DynamicArray<U8> m_fontData;
 
   DISALLOW_COPY_AND_ASSIGN(Font);
 };
