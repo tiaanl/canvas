@@ -2,10 +2,9 @@
 #ifndef CANVAS_RENDERING_COMMAND_H_
 #define CANVAS_RENDERING_COMMAND_H_
 
-#include <vector>
-
 #include "canvas/math/mat4.h"
 #include "canvas/opengl.h"
+#include "nucleus/Containers/DynamicArray.h"
 #include "nucleus/types.h"
 
 namespace ca {
@@ -36,7 +35,7 @@ private:
     void* data;
   };
 
-  std::vector<UniformData> m_uniformData;
+  nu::DynamicArray<UniformData> m_uniformData;
 };
 
 }  // namespace ca

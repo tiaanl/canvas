@@ -1,10 +1,9 @@
 
 #include "canvas/rendering/shader.h"
 
-#include "nucleus/logging.h"
-#include "nucleus/utils/stl.h"
-
 #include "canvas/utils/gl_check.h"
+#include "nucleus/Containers/DynamicArray.h"
+#include "nucleus/logging.h"
 
 #include "nucleus/MemoryDebug.h"
 
@@ -19,7 +18,7 @@ Shader::~Shader() {
 }
 
 bool Shader::loadFromStream(nu::InputStream* stream) {
-  std::vector<char> data;
+  nu::DynamicArray<I8> data;
 
   const auto streamLength = stream->getLength();
   if (!streamLength) {
@@ -28,13 +27,14 @@ bool Shader::loadFromStream(nu::InputStream* stream) {
   }
 
   // Read the entire stream into the data buffer.
-  auto bytesRead = stream->read(nu::vectorAsArray(&data, streamLength + 1), streamLength);
+  data.resize(streamLength + 1);
+  auto bytesRead = stream->read(data.getData(), streamLength);
 
   // Make sure we terminate the string buffer.
-  data[bytesRead] = '\0';
+  data.get(bytesRead) = '\0';
 
   // Set the source data and return the success status.
-  return setSource(data);
+  return setSource(data.getData());
 }
 
 bool Shader::createInternal() {
@@ -48,12 +48,12 @@ bool Shader::createInternal() {
   return true;
 }
 
-bool Shader::setSource(const std::vector<char>& data) {
+bool Shader::setSource(const I8* data) {
   // Make sure the shader is created.
   createInternal();
 
   // Set the source of the shader.
-  const GLchar* src = nu::vectorAsArray(&data);
+  const GLchar* src = reinterpret_cast<const GLchar*>(data);
   GL_CHECK(glShaderSource(m_name, 1, &src, 0));
   GL_CHECK(glCompileShader(m_name));
 
@@ -64,10 +64,11 @@ bool Shader::setSource(const std::vector<char>& data) {
     GLint logSize = 0;
     GL_CHECK(glGetShaderiv(m_name, GL_INFO_LOG_LENGTH, &logSize));
 
-    std::vector<GLchar> log(logSize);
-    GL_CHECK(glGetShaderInfoLog(m_name, logSize, &logSize, &log[0]));
+    nu::DynamicArray<GLchar> log;
+    log.resize(logSize);
+    GL_CHECK(glGetShaderInfoLog(m_name, logSize, &logSize, log.getData()));
 
-    LOG(Error) << log.data();
+    LOG(Error) << log.getData();
 
     return false;
   }

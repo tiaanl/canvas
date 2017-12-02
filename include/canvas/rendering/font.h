@@ -69,7 +69,7 @@ private:
     I32 nextRow;
 
     // List containing the position of all the existing rows.
-    std::vector<Row> rows;
+    nu::DynamicArray<Row> rows;
 
     Page();
   };
@@ -100,7 +100,7 @@ private:
   mutable PageTable m_pages;
 
   // Pixel buffer holding a glyph's pixels before being written to the texture.
-  mutable std::vector<U8> m_pixelBuffer;
+  mutable nu::DynamicArray<U8> m_pixelBuffer;
 
   // Buffer that holds the entire font, for loading glyphs.
   nu::DynamicArray<U8> m_fontData;

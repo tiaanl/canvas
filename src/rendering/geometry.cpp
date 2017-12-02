@@ -32,15 +32,15 @@ Geometry::~Geometry() {
 }
 
 void Geometry::addVertex(const Vertex& vertex) {
-  m_vertices.push_back(vertex);
+  m_vertices.pushBack(vertex);
 
   m_compiled = false;
 }
 
 void Geometry::addVertices(Vertex* vertices, USize count) {
-  m_vertices.reserve(m_vertices.size() + count);
+  m_vertices.reserve(m_vertices.getSize() + count);
   for (USize i = 0; i < count; ++i) {
-    m_vertices.push_back(vertices[i]);
+    m_vertices.pushBack(vertices[i]);
   }
 
   m_compiled = false;
@@ -60,7 +60,7 @@ void Geometry::compileAndUpload() {
   // Bind the vertex array object.
   GL_CHECK(glBindVertexArray(m_vertexArrayObject));
 
-  m_vbo.setData(m_vertices.data(), m_vertices.size() * sizeof(Vertex));
+  m_vbo.setData(m_vertices.getData(), m_vertices.getSize() * sizeof(Vertex));
 
   GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, m_vbo.getNativeHandle()));
 
@@ -80,7 +80,7 @@ void Geometry::compileAndUpload() {
 }
 
 void Geometry::render(Canvas* canvas) const {
-  if (!m_vertices.empty() && !m_compiled) {
+  if (!m_vertices.isEmpty() && !m_compiled) {
     NOTREACHED() << "You have to compile the geometry before you use it.";
     return;
   }
@@ -107,7 +107,7 @@ void Geometry::render(Canvas* canvas) const {
 // Draw the vertices with the specified primitive type.
 #if 1
   GL_CHECK(glBindVertexArray(m_vertexArrayObject));
-  GL_CHECK(glDrawArrays(prim, 0, static_cast<GLint>(m_vertices.size())));
+  GL_CHECK(glDrawArrays(prim, 0, static_cast<GLint>(m_vertices.getSize())));
 #else
   canvas->render(0, m_vertexArrayObject, prim, 0, static_cast<GLint>(m_vertices.size()));
 #endif  // 0

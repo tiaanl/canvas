@@ -2,7 +2,6 @@
 #include "canvas/utils/image.h"
 
 #include "nucleus/logging.h"
-#include "nucleus/utils/stl.h"
 
 #include "png.h"
 
@@ -49,8 +48,8 @@ void Image::create(const Size<I32>& size, const Color& col) {
     m_data.resize(size.width * size.height * 4);
 
     // Fill the image with the specified color.
-    U8* data = nu::vectorAsArray(&m_data);
-    U8* end = data + m_data.size();
+    U8* data = m_data.getData();
+    U8* end = data + m_data.getSize();
     while (data < end) {
       *data++ = col.r;
       *data++ = col.g;
@@ -116,7 +115,8 @@ bool Image::loadFromStream(nu::InputStream* stream) {
 #endif  // 0
 
     case PNG_COLOR_TYPE_RGB_ALPHA:
-      parseRGBA(m_size, nu::vectorAsArray(&m_data, m_size.width * m_size.height * 4), png, info);
+      m_data.resize(m_size.width * m_size.height * 4);
+      parseRGBA(m_size, m_data.getData(), png, info);
       break;
 
     default:
@@ -131,7 +131,7 @@ bool Image::loadFromStream(nu::InputStream* stream) {
 }
 
 void Image::setPixel(const Pos<I32>& pos, const Color& color) {
-  U8* ptr = &m_data[pos.y * (m_size.width * 4) + (pos.x * 4)];
+  U8* ptr = &m_data.get(pos.y * (m_size.width * 4) + (pos.x * 4));
   *ptr++ = color.r;
   *ptr++ = color.g;
   *ptr++ = color.b;

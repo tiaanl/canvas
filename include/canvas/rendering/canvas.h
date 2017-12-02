@@ -6,6 +6,7 @@
 #include "canvas/rendering/Command.h"
 #include "canvas/utils/color.h"
 #include "canvas/utils/size.h"
+#include "nucleus/Containers/DynamicArray.h"
 #include "nucleus/macros.h"
 
 namespace ca {
@@ -31,7 +32,8 @@ private:
   // The window we will paint to.
   Window* m_window;
 
-  std::vector<Command> m_commands;
+  // All the commands we want to render out.
+  nu::DynamicArray<Command> m_commands;
 
   DISALLOW_COPY_AND_ASSIGN(Canvas);
 };

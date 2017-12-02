@@ -3,7 +3,7 @@
 
 #include "canvas/rendering/shader.h"
 #include "canvas/utils/gl_check.h"
-#include "nucleus/utils/stl.h"
+#include "nucleus/Containers/DynamicArray.h"
 
 #include "nucleus/MemoryDebug.h"
 
@@ -106,10 +106,11 @@ void Program::linkInternal() {
   GL_CHECK(glGetProgramiv(m_name, GL_INFO_LOG_LENGTH, &infoLength));
 
   if (infoLength > 0) {
-    std::vector<char> buffer;
-    GL_CHECK(glGetProgramInfoLog(m_name, infoLength, &infoLength, nu::vectorAsArray(&buffer, infoLength)));
+    nu::DynamicArray<I8> buffer;
+    buffer.resize(infoLength);
+    GL_CHECK(glGetProgramInfoLog(m_name, infoLength, &infoLength, (GLchar*)buffer.getData()));
     if (infoLength) {
-      LOG(Error) << buffer.data();
+      LOG(Error) << buffer.getData();
     }
   }
 

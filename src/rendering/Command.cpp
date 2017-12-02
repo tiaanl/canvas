@@ -12,19 +12,11 @@ Command::Command(GLuint program, GLuint vertexArray, GLenum primitiveType, GLint
   : m_program(program), m_vertexArray(vertexArray), m_primitiveType(primitiveType), m_first(first), m_count(count) {}
 
 void Command::addUniform(const std::string& name, const Vec4& value) {
-  UniformData data;
-  data.type = UniformData::Uniform4f;
-  data.name = name;
-  data.data = (void*)&value.x;
-  m_uniformData.push_back(data);
+  m_uniformData.emplaceBack(UniformData::Uniform4f, name, (void*)(&value.x));
 }
 
 void Command::addUniform(const std::string& name, const Mat4& mat) {
-  UniformData data;
-  data.type = UniformData::UniformMatrix4x4;
-  data.name = name;
-  data.data = (void*)mat.asArray();
-  m_uniformData.push_back(data);
+  m_uniformData.emplaceBack(UniformData::UniformMatrix4x4, name, (void*)mat.asArray());
 }
 
 void Command::execute() {

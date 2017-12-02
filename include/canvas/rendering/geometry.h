@@ -2,8 +2,6 @@
 #ifndef CANVAS_RENDERING_GEOMETRY_H_
 #define CANVAS_RENDERING_GEOMETRY_H_
 
-#include <vector>
-
 #include "canvas/rendering/canvas.h"
 #include "canvas/rendering/vertex.h"
 #include "canvas/rendering/vertex_buffer_object.h"
@@ -47,7 +45,7 @@ private:
   PrimitiveType m_primitiveType;
 
   // All the vertices we contain.
-  std::vector<Vertex> m_vertices;
+  nu::DynamicArray<Vertex> m_vertices;
 
   // The vertex array we're using.
   GLuint m_vertexArrayObject{0};

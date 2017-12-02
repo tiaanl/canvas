@@ -1,15 +1,11 @@
 
 #include "canvas/rendering/font.h"
 
-#include <vector>
-
+#include "canvas/utils/gl_check.h"
+#include "canvas/utils/rect.h"
 #include "nucleus/logging.h"
 #include "nucleus/streams/file_input_stream.h"
 #include "nucleus/types.h"
-#include "nucleus/utils/stl.h"
-
-#include "canvas/utils/gl_check.h"
-#include "canvas/utils/rect.h"
 
 #include "ft2build.h"
 #include FT_FREETYPE_H
@@ -283,7 +279,7 @@ Font::Glyph Font::loadGlyph(U32 codePoint, U32 characterSize, bool bold) const {
         for (I32 x = 0; x < width; ++x) {
           // The color channels remain white, just fill the alpha channel.
           std::size_t index = (x + y * width) * 4 + 3;
-          m_pixelBuffer[index] = ((pixels[x / 8]) & (1 << (7 - (x % 8)))) ? 255 : 0;
+          m_pixelBuffer.get(index) = ((pixels[x / 8]) & (1 << (7 - (x % 8)))) ? 255 : 0;
         }
         pixels += bitmap.pitch;
       }
@@ -293,13 +289,13 @@ Font::Glyph Font::loadGlyph(U32 codePoint, U32 characterSize, bool bold) const {
         for (I32 x = 0; x < width; ++x) {
           // The color channels remain white, just fill  the alpha channel.
           std::size_t index = (x + y * width) * 4 + 3;
-          m_pixelBuffer[index] = pixels[x];
+          m_pixelBuffer.get(index) = pixels[x];
         }
         pixels += bitmap.pitch;
       }
     }
 
-    page.texture.update(&m_pixelBuffer[0], glyphRect);
+    page.texture.update(&m_pixelBuffer.get(0), glyphRect);
   }
 
   FT_Done_Glyph(glyphDesc);
@@ -343,9 +339,9 @@ Rect<I32> Font::findGlyphRect(Page& page, const Size<I32>& size) const {
     }
 
     // We can now create the new row.
-    page.rows.emplace_back(page.nextRow, rowHeight);
+    page.rows.emplaceBack(page.nextRow, rowHeight);
     page.nextRow += rowHeight;
-    bestRow = &page.rows.back();
+    bestRow = &page.rows.last();
   }
 
   DCHECK(bestRow);

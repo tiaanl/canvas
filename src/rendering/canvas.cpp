@@ -29,14 +29,11 @@ void Canvas::clear(const Color& color) {
 }
 
 Command* Canvas::render(GLuint program, GLuint vertexArray, GLenum primitiveType, GLint first, GLint count) {
-  // Create the command.
-  Command command(program, vertexArray, primitiveType, first, count);
-
-  // Add the command to the end of the list.
-  m_commands.push_back(command);
+  // Add a new command.
+  m_commands.emplaceBack(program, vertexArray, primitiveType, first, count);
 
   // Return the command we just added.
-  return &m_commands.back();
+  return &m_commands.last();
 }
 
 void Canvas::render() {

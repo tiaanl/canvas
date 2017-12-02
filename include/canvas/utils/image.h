@@ -2,21 +2,19 @@
 #ifndef CANVAS_UTILS_IMAGE_H_
 #define CANVAS_UTILS_IMAGE_H_
 
-#include <vector>
-
-#include "nucleus/macros.h"
-#include "nucleus/streams/input_stream.h"
-#include "nucleus/types.h"
-
 #include "canvas/utils/color.h"
 #include "canvas/utils/pos.h"
 #include "canvas/utils/size.h"
+#include "nucleus/Containers/DynamicArray.h"
+#include "nucleus/macros.h"
+#include "nucleus/streams/input_stream.h"
+#include "nucleus/types.h"
 
 namespace ca {
 
 class Image {
 public:
-  using DataType = std::vector<U8>;
+  using DataType = nu::DynamicArray<U8>;
 
   Image() = default;
   ~Image() = default;

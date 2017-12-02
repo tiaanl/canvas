@@ -67,7 +67,7 @@ bool Texture::createFromImage(const Image& image) {
 
   // Upload the image data.
   GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_size.width, m_size.height, 0, GL_RGBA, GL_UNSIGNED_BYTE,
-                        image.getData().data()));
+                        image.getData().getData()));
 
   // Set the texture clamping.
   const bool smooth = false;

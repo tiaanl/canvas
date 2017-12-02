@@ -2,8 +2,6 @@
 #ifndef CANVAS_RENDERING_SHADER_H_
 #define CANVAS_RENDERING_SHADER_H_
 
-#include <vector>
-
 #include "nucleus/macros.h"
 #include "nucleus/streams/input_stream.h"
 
@@ -32,7 +30,7 @@ private:
   bool createInternal();
 
   // Set the source of the shader.
-  bool setSource(const std::vector<char>& data);
+  bool setSource(const I8* data);
 
   // The type of this shader.
   ShaderType m_type;
