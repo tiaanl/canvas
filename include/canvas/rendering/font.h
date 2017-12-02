@@ -32,7 +32,7 @@ public:
   bool loadFromStream(nu::InputStream* stream);
 
   // Get the glyph data corresponding to the given code point.
-  const Glyph& getOrInsertGlyph(U32 codePoint, U32 characterSize, bool bold, F32 outlineThickness) const;
+  const Glyph& getOrInsertGlyph(U32 codePoint, U32 characterSize, bool bold) const;
 
   // Get the amount of kerning between the first and second characters.
   F32 getKerning(U32 characterSize, Char first, Char second) const;
@@ -79,7 +79,7 @@ private:
   void cleanup();
 
   // Load a new glyph and store it in the cache.
-  Glyph loadGlyph(U32 codePoint, U32 characterSize, bool bold, F32 outlineThickness) const;
+  Glyph loadGlyph(U32 codePoint, U32 characterSize, bool bold) const;
 
   // Find a suitable rectangle within the texture for a glyph.
   Rect<I32> findGlyphRect(Page& page, const Size<I32>& size) const;

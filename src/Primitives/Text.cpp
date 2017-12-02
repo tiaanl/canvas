@@ -150,14 +150,15 @@ void Text::updateGeometry() {
   Pos<F32> currentPos{0.f, 0.f};
   Color white{255, 255, 255, 255};
 
-  F32 lineSpacing = m_font->getLineSpacing(m_textSize);
+  // Reset the position of the bounds.
+  m_bounds = ca::Rect<I32>{};
 
   // Build geometry for each character in the text.
   for (USize i = 0; i < m_text.length(); ++i) {
     ca::Font::Char ch = static_cast<ca::Font::Char>(m_text[i]);
 
     // Get the glyph.
-    const Font::Glyph& glyph = m_font->getOrInsertGlyph(ch, m_textSize, false, 0);
+    const Font::Glyph& glyph = m_font->getOrInsertGlyph(ch, m_textSize, false);
 
     F32 left = glyph.bounds.pos.x;
     F32 top = glyph.bounds.pos.y;
@@ -182,6 +183,10 @@ void Text::updateGeometry() {
     m_geometry.addVertex(Vertex{bottomRight, Vec2{u2, v2}, white});
 
     currentPos.x += glyph.advance;
+
+    // Increase the bounds.
+    m_bounds.size.width += static_cast<I32>(std::ceil(glyph.advance));
+    m_bounds.size.height = std::max(m_bounds.size.height, static_cast<I32>(std::ceil(bottom)));
   }
 
   m_geometry.compileAndUpload();

@@ -100,22 +100,20 @@ bool Font::loadFromStream(nu::InputStream* stream) {
   return true;
 }  // namespace ca
 
-const Font::Glyph& Font::getOrInsertGlyph(U32 codePoint, U32 characterSize, bool bold, F32 outlineThickness) const {
-  LOG(Info) << "getOrInsertGlyph(" << codePoint << ", " << characterSize << ", " << bold << ", " << outlineThickness
-            << ")";
+const Font::Glyph& Font::getOrInsertGlyph(U32 codePoint, U32 characterSize, bool bold) const {
+  LOG(Info) << "getOrInsertGlyph(" << codePoint << ", " << characterSize << ", " << bold << ")";
 
   // Get the page corresponding to the character size.
   GlyphTable& glyphs = m_pages[characterSize].glyphs;
 
   // Build the key by combining the code point, bold flag and outline thickness.
-  U64 key = (static_cast<U64>(*reinterpret_cast<U32*>(&outlineThickness)) << 32) |
-            (static_cast<U64>(bold ? 1 : 0) << 31) | static_cast<U64>(codePoint);
+  U64 key = (static_cast<U64>(bold ? 1 : 0) << 31) | static_cast<U64>(codePoint);
 
   GlyphTable::const_iterator it = glyphs.find(key);
   if (it != glyphs.end()) {
     return it->second;
   } else {
-    Glyph glyph = loadGlyph(codePoint, characterSize, bold, outlineThickness);
+    Glyph glyph = loadGlyph(codePoint, characterSize, bold);
     return glyphs.insert(std::make_pair(key, glyph)).first->second;
   }
 }
@@ -228,7 +226,9 @@ void Font::cleanup() {
   m_pixelBuffer.clear();
 }
 
-Font::Glyph Font::loadGlyph(U32 codePoint, U32 characterSize, bool bold, F32 outlineThickness) const {
+Font::Glyph Font::loadGlyph(U32 codePoint, U32 characterSize, bool bold) const {
+  LOG(Info) << "loadGlyph(" << (char)codePoint << ", " << characterSize << ", " << (bold ? "true" : "false") << ")";
+
   Glyph result;
 
   FT_Library library = static_cast<FT_Library>(m_library);
@@ -248,21 +248,13 @@ Font::Glyph Font::loadGlyph(U32 codePoint, U32 characterSize, bool bold, F32 out
     return result;
   }
 
-  // Apply the bold and outline modifiers.
+  // Apply the bold modifiers.
   FT_Pos weight = 1 << 6;
   bool outline = glyphDesc->format == FT_GLYPH_FORMAT_OUTLINE;
   if (outline) {
     if (bold) {
       FT_OutlineGlyph outlineGlyph = reinterpret_cast<FT_OutlineGlyph>(glyphDesc);
       FT_Outline_Embolden(&outlineGlyph->outline, weight);
-    }
-
-    if (outlineThickness != 0) {
-      FT_Stroker stroker = static_cast<FT_Stroker>(m_stroker);
-
-      FT_Stroker_Set(stroker, static_cast<FT_Fixed>(outlineThickness * static_cast<F32>(1 << 6)),
-                     FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
-      FT_Glyph_Stroke(&glyphDesc, stroker, false);
     }
   }
 
@@ -274,10 +266,6 @@ Font::Glyph Font::loadGlyph(U32 codePoint, U32 characterSize, bool bold, F32 out
   if (!outline) {
     if (bold) {
       FT_Bitmap_Embolden(library, &bitmap, weight, weight);
-    }
-
-    if (outlineThickness != 0) {
-      LOG(Error) << "Could not outline glyph";
     }
   }
 
@@ -294,7 +282,7 @@ Font::Glyph Font::loadGlyph(U32 codePoint, U32 characterSize, bool bold, F32 out
   // neighbours.
   const I32 padding = 1;
 
-  F32 ascent = static_cast<F32>(face->size->metrics.ascender);
+  F32 ascent = static_cast<F32>(face->size->metrics.ascender + face->size->metrics.descender);
 
   if (width > 0 && height > 0) {
     // Get the glyph page corresponding to the character size.
@@ -321,8 +309,8 @@ Font::Glyph Font::loadGlyph(U32 codePoint, U32 characterSize, bool bold, F32 out
     // Compute the glyph's bounding box.
     result.bounds.pos.x = static_cast<F32>(face->glyph->metrics.horiBearingX / (1 << 6));
     result.bounds.pos.y = static_cast<F32>((ascent - face->glyph->metrics.horiBearingY) / (1 << 6));
-    result.bounds.size.width = face->glyph->metrics.width / (1 << 6) + outlineThickness * 2;
-    result.bounds.size.height = face->glyph->metrics.height / (1 << 6) + outlineThickness * 2;
+    result.bounds.size.width = face->glyph->metrics.width / (1 << 6);
+    result.bounds.size.height = face->glyph->metrics.height / (1 << 6);
 
     // Extract the glyph's pixels from the bitmap.
     m_pixelBuffer.resize(width * height * 4, 255);
