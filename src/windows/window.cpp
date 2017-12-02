@@ -12,6 +12,8 @@
 
 #include "GLFW/glfw3.h"
 
+#include "nucleus/MemoryDebug.h"
+
 namespace ca {
 
 namespace {

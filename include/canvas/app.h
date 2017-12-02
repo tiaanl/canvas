@@ -41,8 +41,12 @@ private:
 
 #define CANVAS_APP(DelegateType)                                                                                       \
   MAIN_HEADER {                                                                                                        \
-    ca::App app{new DelegateType};                                                                                     \
-    app.run();                                                                                                         \
+    {                                                                                                                  \
+      nu::ScopedPtr<DelegateType> d = nu::MakeScopedPtr<DelegateType>();                                               \
+      ca::App app{d.get()};                                                                                            \
+      app.run();                                                                                                       \
+    }                                                                                                                  \
+    _CrtDumpMemoryLeaks();                                                                                             \
     return 0;                                                                                                          \
   }
 

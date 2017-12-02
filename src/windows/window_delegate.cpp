@@ -1,6 +1,8 @@
 
 #include "canvas/windows/window_delegate.h"
 
+#include "nucleus/MemoryDebug.h"
+
 namespace ca {
 
 bool WindowDelegate::onWindowCreated() {

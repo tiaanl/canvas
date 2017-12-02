@@ -6,6 +6,8 @@
 
 #include "canvas/utils/gl_check.h"
 
+#include "nucleus/MemoryDebug.h"
+
 namespace ca {
 
 Shader::Shader(ShaderType type) : m_type(type) {}

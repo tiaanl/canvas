@@ -3,6 +3,8 @@
 
 #include "nucleus/macros.h"
 
+#include "nucleus/MemoryDebug.h"
+
 namespace ca {
 
 // static

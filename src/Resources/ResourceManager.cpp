@@ -2,6 +2,8 @@
 #include "canvas/Resources/ResourceManager.h"
 #include "nucleus/logging.h"
 
+#include "nucleus/MemoryDebug.h"
+
 namespace ca {
 
 ResourceManager::ResourceManager() {}

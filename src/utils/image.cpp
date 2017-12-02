@@ -6,6 +6,8 @@
 
 #include "png.h"
 
+#include "nucleus/MemoryDebug.h"
+
 namespace ca {
 
 namespace {

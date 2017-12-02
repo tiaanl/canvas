@@ -3,6 +3,8 @@
 
 #include "canvas/windows/window.h"
 
+#include "nucleus/MemoryDebug.h"
+
 namespace ca {
 
 App::App(WindowDelegate* delegate) : m_window(Window::create(delegate, delegate->getTitle())) {}

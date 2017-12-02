@@ -2,6 +2,8 @@
 #include "canvas/rendering/Command.h"
 #include "canvas/utils/gl_check.h"
 
+#include "nucleus/MemoryDebug.h"
+
 namespace ca {
 
 Command::Command() {}

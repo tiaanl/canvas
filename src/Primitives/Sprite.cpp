@@ -7,6 +7,8 @@
 #include "canvas/utils/ScopedOpenGLEnable.h"
 #include "nucleus/streams/wrapped_memory_input_stream.h"
 
+#include "nucleus/MemoryDebug.h"
+
 namespace ca {
 
 namespace {

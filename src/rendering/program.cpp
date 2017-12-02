@@ -5,6 +5,8 @@
 #include "canvas/utils/gl_check.h"
 #include "nucleus/utils/stl.h"
 
+#include "nucleus/MemoryDebug.h"
+
 namespace ca {
 
 // static

@@ -3,6 +3,8 @@
 
 #include "nucleus/logging.h"
 
+#include "nucleus/MemoryDebug.h"
+
 namespace ca {
 
 VertexBufferObject::~VertexBufferObject() {

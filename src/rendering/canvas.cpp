@@ -6,6 +6,8 @@
 #include "canvas/windows/window.h"
 #include "nucleus/logging.h"
 
+#include "nucleus/MemoryDebug.h"
+
 namespace ca {
 
 Canvas::Canvas(Window* window) : m_window(window) {

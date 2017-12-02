@@ -18,6 +18,8 @@
 #include FT_OUTLINE_H
 #include FT_STROKER_H
 
+#include "nucleus/MemoryDebug.h"
+
 namespace ca {
 
 Font::Font(nu::Allocator* allocator)

@@ -5,6 +5,8 @@
 
 #include "canvas/opengl.h"
 
+#include "nucleus/MemoryDebug.h"
+
 namespace ca {
 
 void glCheck() {
@@ -31,8 +33,8 @@ void glCheck() {
     }
 
 #if OS(WIN) && COMPILER(MSVC)
-    // Break into the debugger.
-    __debugbreak();
+      // Break into the debugger.
+      //__debugbreak();
 #endif
   }
 }
