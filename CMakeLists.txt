@@ -18,8 +18,6 @@ include("${NUCLEUS_ROOT_DIR}/cmake/gcc.cmake")
 include("${NUCLEUS_ROOT_DIR}/cmake/msvc.cmake")
 include("${NUCLEUS_ROOT_DIR}/cmake/win32.cmake")
 
-add_definitions("-DSTBI_NO_SIMD")
-
 add_subdirectory(third_party "third_party")
 
 # canvas
@@ -87,13 +85,12 @@ set(canvas_SOURCE_FILES
 )
 
 add_library(canvas STATIC ${canvas_HEADER_FILES} ${canvas_SOURCE_FILES})
-target_link_libraries("canvas" "nucleus" "glfw" "glad" "freetype" "libpng")
-target_include_directories("canvas" PUBLIC "${canvas_SOURCE_DIR}/include")
-target_include_directories("canvas" PUBLIC "${canvas_SOURCE_DIR}/third_party/stb")
+target_link_libraries(canvas nucleus glfw glad freetype png_static zlibstatic)
+target_include_directories(canvas PUBLIC "${canvas_SOURCE_DIR}/include")
 set_property(TARGET canvas PROPERTY FOLDER canvas)
 
 add_subdirectory(tests "canvas_tests")
 
 if (CANVAS_BUILD_EXAMPLES)
     add_subdirectory("examples")
-endif ()
+endif()
