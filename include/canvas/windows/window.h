@@ -16,7 +16,7 @@ public:
   static nu::ScopedPtr<Window> create(WindowDelegate* delegate, const std::string& title);
 
   // Cleanup.
-  ~Window();
+    ~Window();
 
   // Get the client size of the window.
   ca::Size<I32> getClientSize() const;
@@ -33,7 +33,7 @@ public:
 
 private:
   // Construct a new window with the specified delegate.
-  Window(WindowDelegate* delegate);
+  explicit Window(WindowDelegate* delegate);
 
   // Callbacks
   static void frameBufferSizeCallback(GLFWwindow* window, int width, int height);

@@ -300,6 +300,17 @@ nu::ScopedPtr<Window> Window::create(WindowDelegate* delegate, const std::string
     return nullptr;
   }
 
+  // Center the window on the screen.
+  GLFWmonitor* currentMonitor = glfwGetPrimaryMonitor();
+  if (currentMonitor) {
+    const GLFWvidmode* videoMode = glfwGetVideoMode(currentMonitor);
+    int currentWidth, currentHeight;
+    glfwGetWindowSize(newWindow->m_window, &currentWidth, &currentHeight);
+
+    glfwSetWindowPos(newWindow->m_window, (videoMode->width - currentWidth) / 2,
+                     (videoMode->height - currentHeight) / 2);
+  }
+
   // Set up the callbacks for the window.
   glfwSetWindowUserPointer(newWindow->m_window, newWindow.get());
   glfwSetFramebufferSizeCallback(newWindow->m_window, frameBufferSizeCallback);

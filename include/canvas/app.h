@@ -2,12 +2,11 @@
 #ifndef CANVAS_APP_H_
 #define CANVAS_APP_H_
 
+#include "canvas/windows/window_delegate.h"
 #include "nucleus/Memory/ScopedPtr.h"
 #include "nucleus/config.h"
 #include "nucleus/macros.h"
 #include "nucleus/win/windows_mixin.h"
-
-#include "canvas/windows/window_delegate.h"
 
 namespace ca {
 
@@ -16,7 +15,7 @@ class Window;
 class App {
 public:
   // Construct a new app with the specified delegate that will control the app.
-  App(WindowDelegate* delegate);
+  explicit App(WindowDelegate* delegate);
 
   // Destruct the app.
   ~App();
@@ -39,6 +38,12 @@ private:
 #define MAIN_HEADER int main(int argc, char* argv[])
 #endif
 
+#if COMPILER(MSVC)
+#define MEMORY_DUMP _CrtDumpMemoryLeaks();
+#else
+#define MEMORY_DUMP
+#endif
+
 #define CANVAS_APP(DelegateType)                                                                                       \
   MAIN_HEADER {                                                                                                        \
     {                                                                                                                  \
@@ -46,7 +51,7 @@ private:
       ca::App app{d.get()};                                                                                            \
       app.run();                                                                                                       \
     }                                                                                                                  \
-    _CrtDumpMemoryLeaks();                                                                                             \
+    MEMORY_DUMP                                                                                                        \
     return 0;                                                                                                          \
   }
 
