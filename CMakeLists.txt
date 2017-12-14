@@ -1,4 +1,9 @@
 cmake_minimum_required(VERSION 3.2)
+
+if(TARGET canvas)
+    return()
+endif()
+
 project("canvas")
 
 # Options
@@ -50,7 +55,7 @@ set(canvas_HEADER_FILES
     "include/canvas/windows/window_style.h"
     "include/canvas/windows/KeyboardEventHandlerInterface.h"
     "include/canvas/windows/MouseEventHandlerInterface.h"
-)
+    )
 
 set(canvas_SOURCE_FILES
     "src/app.cpp"
@@ -73,7 +78,7 @@ set(canvas_SOURCE_FILES
     "src/utils/image.cpp"
     "src/windows/window.cpp"
     "src/windows/window_delegate.cpp"
-)
+    )
 
 add_library(canvas STATIC ${canvas_HEADER_FILES} ${canvas_SOURCE_FILES})
 target_link_libraries(canvas nucleus glfw glad freetype libpng zlib)
@@ -82,6 +87,6 @@ set_property(TARGET canvas PROPERTY FOLDER canvas)
 
 add_subdirectory(tests "canvas_tests")
 
-if (CANVAS_BUILD_EXAMPLES)
+if(CANVAS_BUILD_EXAMPLES)
     add_subdirectory("examples")
 endif()
