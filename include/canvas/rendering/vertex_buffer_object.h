@@ -2,7 +2,7 @@
 #ifndef CANVAS_RENDERING_VERTEX_BUFFER_OBJECT_H_
 #define CANVAS_RENDERING_VERTEX_BUFFER_OBJECT_H_
 
-#include "nucleus/macros.h"
+#include "nucleus/Macros.h"
 
 #include "canvas/opengl.h"
 #include "canvas/utils/gl_check.h"

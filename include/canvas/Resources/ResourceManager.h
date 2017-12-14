@@ -5,7 +5,7 @@
 #include <unordered_map>
 
 #include "canvas/Resources/TextureResource.h"
-#include "nucleus/files/file_path.h"
+#include "nucleus/Files/FilePath.h"
 
 namespace ca {
 

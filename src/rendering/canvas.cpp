@@ -1,10 +1,8 @@
 
 #include "canvas/rendering/canvas.h"
 
-#include "canvas/opengl.h"
 #include "canvas/utils/gl_check.h"
 #include "canvas/windows/window.h"
-#include "nucleus/logging.h"
 
 #include "nucleus/MemoryDebug.h"
 

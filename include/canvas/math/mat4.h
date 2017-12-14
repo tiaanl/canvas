@@ -4,8 +4,8 @@
 
 #include <ostream>
 
+#include "nucleus/Logging.h"
 #include "canvas/math/vec4.h"
-#include "nucleus/logging.h"
 
 namespace ca {
 

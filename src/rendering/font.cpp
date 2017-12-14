@@ -3,9 +3,9 @@
 
 #include "canvas/utils/gl_check.h"
 #include "canvas/utils/rect.h"
-#include "nucleus/logging.h"
-#include "nucleus/streams/file_input_stream.h"
-#include "nucleus/types.h"
+#include "nucleus/Logging.h"
+#include "nucleus/Streams/FileInputStream.h"
+#include "nucleus/Types.h"
 
 #include "ft2build.h"
 #include FT_FREETYPE_H

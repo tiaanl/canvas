@@ -2,7 +2,7 @@
 #ifndef CANVAS_UTILS_COLOR_H_
 #define CANVAS_UTILS_COLOR_H_
 
-#include "nucleus/types.h"
+#include "nucleus/Types.h"
 
 namespace ca {
 

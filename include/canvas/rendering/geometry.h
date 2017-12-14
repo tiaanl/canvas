@@ -7,7 +7,7 @@
 #include "canvas/rendering/vertex_buffer_object.h"
 #include "canvas/utils/color.h"
 #include "canvas/utils/rect.h"
-#include "nucleus/macros.h"
+#include "nucleus/Macros.h"
 
 namespace ca {
 

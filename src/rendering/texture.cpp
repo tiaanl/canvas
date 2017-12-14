@@ -1,8 +1,7 @@
 
 #include "canvas/rendering/texture.h"
 
-#include "nucleus/logging.h"
-
+#include "nucleus/Logging.h"
 #include "canvas/utils/gl_check.h"
 
 #include "nucleus/MemoryDebug.h"

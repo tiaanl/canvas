@@ -5,8 +5,8 @@
 #include <cmath>
 #include <ostream>
 
-#include "nucleus/logging.h"
-#include "nucleus/types.h"
+#include "nucleus/Logging.h"
+#include "nucleus/Types.h"
 
 #include "canvas/math/vec2.h"
 #include "canvas/math/vec3.h"

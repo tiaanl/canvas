@@ -8,8 +8,8 @@
 #include "canvas/rendering/texture.h"
 #include "canvas/utils/rect.h"
 #include "nucleus/Containers/DynamicArray.h"
-#include "nucleus/macros.h"
-#include "nucleus/types.h"
+#include "nucleus/Macros.h"
+#include "nucleus/Types.h"
 
 namespace ca {
 

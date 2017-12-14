@@ -2,8 +2,8 @@
 #ifndef CANVAS_RENDERING_SHADER_H_
 #define CANVAS_RENDERING_SHADER_H_
 
-#include "nucleus/macros.h"
-#include "nucleus/streams/input_stream.h"
+#include "nucleus/Macros.h"
+#include "nucleus/Streams/InputStream.h"
 
 #include "canvas/opengl.h"
 

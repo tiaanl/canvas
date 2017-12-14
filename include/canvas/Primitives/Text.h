@@ -6,7 +6,7 @@
 
 #include "canvas/math/mat4.h"
 #include "canvas/rendering/geometry.h"
-#include "nucleus/macros.h"
+#include "nucleus/Macros.h"
 
 namespace ca {
 

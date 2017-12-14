@@ -4,7 +4,7 @@
 
 #include "canvas/windows/window_delegate.h"
 #include "nucleus/Memory/ScopedPtr.h"
-#include "nucleus/macros.h"
+#include "nucleus/Macros.h"
 
 typedef struct GLFWwindow GLFWwindow;
 

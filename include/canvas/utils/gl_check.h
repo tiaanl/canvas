@@ -2,7 +2,7 @@
 #ifndef CANVAS_UTILS_GL_CHECK_H_
 #define CANVAS_UTILS_GL_CHECK_H_
 
-#include "nucleus/config.h"
+#include "nucleus/Config.h"
 
 #if BUILD(DEBUG)
 #define GL_CHECK(Op)                                                                                                   \

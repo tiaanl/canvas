@@ -3,10 +3,10 @@
 #define CANVAS_APP_H_
 
 #include "canvas/windows/window_delegate.h"
+#include "nucleus/Config.h"
+#include "nucleus/Macros.h"
 #include "nucleus/Memory/ScopedPtr.h"
-#include "nucleus/config.h"
-#include "nucleus/macros.h"
-#include "nucleus/win/windows_mixin.h"
+#include "nucleus/Win/WindowsMixin.h"
 
 namespace ca {
 
@@ -47,7 +47,7 @@ private:
 #define CANVAS_APP(DelegateType)                                                                                       \
   MAIN_HEADER {                                                                                                        \
     {                                                                                                                  \
-      nu::ScopedPtr<DelegateType> d = nu::MakeScopedPtr<DelegateType>();                                               \
+      nu::ScopedPtr<DelegateType> d = nu::makeScopedPtr<DelegateType>();                                               \
       ca::App app{d.get()};                                                                                            \
       app.run();                                                                                                       \
     }                                                                                                                  \

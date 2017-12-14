@@ -4,8 +4,8 @@
 
 #include <cmath>
 
-#include "nucleus/logging.h"
-#include "nucleus/types.h"
+#include "nucleus/Logging.h"
+#include "nucleus/Types.h"
 
 namespace ca {
 

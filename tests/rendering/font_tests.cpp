@@ -1,6 +1,6 @@
 
 #include "gtest/gtest.h"
-#include "nucleus/streams/file_input_stream.h"
+#include "nucleus/Streams/FileInputStream.h"
 
 #include "canvas/rendering/font.h"
 

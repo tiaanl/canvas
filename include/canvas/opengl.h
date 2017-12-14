@@ -2,10 +2,10 @@
 #ifndef CANVAS_OPENGL_H_
 #define CANVAS_OPENGL_H_
 
-#include "nucleus/config.h"
+#include "nucleus/Config.h"
 
 #if OS(WIN)
-#include "nucleus/win/windows_mixin.h"
+#include "nucleus/Win/WindowsMixin.h"
 #endif
 
 #include <glad/glad.h>

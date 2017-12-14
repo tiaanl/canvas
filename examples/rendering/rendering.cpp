@@ -9,7 +9,7 @@
 #include "canvas/rendering/shader.h"
 #include "canvas/rendering/texture.h"
 #include "canvas/utils/image.h"
-#include "nucleus/streams/file_input_stream.h"
+#include "nucleus/Streams/FileInputStream.h"
 
 class Rendering : public ca::WindowDelegate {
 public:

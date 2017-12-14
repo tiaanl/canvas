@@ -2,7 +2,7 @@
 #ifndef CANVAS_WINDOWS_WINDOW_DELEGATE_H_
 #define CANVAS_WINDOWS_WINDOW_DELEGATE_H_
 
-#include "nucleus/macros.h"
+#include "nucleus/Macros.h"
 
 #include "canvas/utils/size.h"
 #include "canvas/windows/event.h"

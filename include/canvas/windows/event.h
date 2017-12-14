@@ -2,7 +2,7 @@
 #ifndef CANVAS_WINDOWS_EVENT_H_
 #define CANVAS_WINDOWS_EVENT_H_
 
-#include "nucleus/types.h"
+#include "nucleus/Types.h"
 
 #include "canvas/utils/pos.h"
 #include "canvas/windows/keyboard.h"

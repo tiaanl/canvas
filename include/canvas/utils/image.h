@@ -6,9 +6,9 @@
 #include "canvas/utils/pos.h"
 #include "canvas/utils/size.h"
 #include "nucleus/Containers/DynamicArray.h"
-#include "nucleus/macros.h"
-#include "nucleus/streams/input_stream.h"
-#include "nucleus/types.h"
+#include "nucleus/Macros.h"
+#include "nucleus/Streams/InputStream.h"
+#include "nucleus/Types.h"
 
 namespace ca {
 

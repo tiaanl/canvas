@@ -1,7 +1,7 @@
 
 #include "canvas/utils/image.h"
 
-#include "nucleus/logging.h"
+#include "nucleus/Logging.h"
 
 #include "png.h"
 

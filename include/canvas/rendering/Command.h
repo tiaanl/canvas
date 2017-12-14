@@ -5,7 +5,7 @@
 #include "canvas/math/mat4.h"
 #include "canvas/opengl.h"
 #include "nucleus/Containers/DynamicArray.h"
-#include "nucleus/types.h"
+#include "nucleus/Types.h"
 
 namespace ca {
 

@@ -2,8 +2,8 @@
 #ifndef CANVAS_RENDERING_TEXTURE_H_
 #define CANVAS_RENDERING_TEXTURE_H_
 
-#include "nucleus/macros.h"
-#include "nucleus/types.h"
+#include "nucleus/Macros.h"
+#include "nucleus/Types.h"
 
 #include "canvas/opengl.h"
 #include "canvas/utils/image.h"

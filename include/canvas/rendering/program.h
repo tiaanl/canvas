@@ -4,7 +4,7 @@
 
 #include <string>
 
-#include "nucleus/macros.h"
+#include "nucleus/Macros.h"
 
 #include "canvas/math/mat4.h"
 #include "canvas/math/vec2.h"

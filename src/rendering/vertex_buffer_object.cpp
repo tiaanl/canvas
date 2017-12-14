@@ -1,7 +1,7 @@
 
 #include "canvas/rendering/vertex_buffer_object.h"
 
-#include "nucleus/logging.h"
+#include "nucleus/Logging.h"
 
 #include "nucleus/MemoryDebug.h"
 
