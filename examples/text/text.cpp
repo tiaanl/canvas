@@ -1,10 +1,10 @@
 
 #include "canvas/Primitives/Text.h"
-#include "canvas/app.h"
-#include "canvas/math/transform.h"
-#include "canvas/rendering/font.h"
-#include "canvas/rendering/program.h"
-#include "canvas/rendering/shader.h"
+#include "canvas/App.h"
+#include "canvas/Math/Transform.h"
+#include "canvas/Rendering/Font.h"
+#include "canvas/Rendering/Program.h"
+#include "canvas/Rendering/Shader.h"
 #include "nucleus/Streams/FileInputStream.h"
 
 class Rendering : public ca::WindowDelegate {

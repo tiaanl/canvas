@@ -1,11 +1,11 @@
 
 set(canvas_TEST_FILES
-    "math/mat4_tests.cpp"
-    "math/TransformTests.cpp"
-    "math/vec2_tests.cpp"
-    "math/vec3_tests.cpp"
-    "math/vec4_tests.cpp"
-    "rendering/font_tests.cpp"
+    "Math/Mat4Tests.cpp"
+    "Math/TransformTests.cpp"
+    "Math/Vec2Tests.cpp"
+    "Math/Vec3Tests.cpp"
+    "Math/Vec4Tests.cpp"
+    "Rendering/FontTests.cpp"
 )
 
 add_executable(canvas_tests ${canvas_TEST_FILES})

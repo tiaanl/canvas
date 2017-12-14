@@ -3,8 +3,8 @@
 
 #include <cstring>
 
-#include "canvas/rendering/shader.h"
-#include "canvas/utils/ScopedOpenGLEnable.h"
+#include "canvas/Rendering/Shader.h"
+#include "canvas/Utils/ScopedOpenGLEnable.h"
 #include "nucleus/Streams/WrappedMemoryInputStream.h"
 
 #include "nucleus/MemoryDebug.h"

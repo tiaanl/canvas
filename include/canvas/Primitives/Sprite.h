@@ -3,11 +3,11 @@
 #define CANVAS_RENDERING_SPRITE_H_
 
 #include "nucleus/Macros.h"
-#include "canvas/math/mat4.h"
-#include "canvas/rendering/canvas.h"
-#include "canvas/rendering/geometry.h"
-#include "canvas/rendering/program.h"
-#include "canvas/rendering/texture.h"
+#include "canvas/Math/Mat4.h"
+#include "canvas/Rendering/Canvas.h"
+#include "canvas/Rendering/Geometry.h"
+#include "canvas/Rendering/Program.h"
+#include "canvas/Rendering/Texture.h"
 
 namespace ca {
 

@@ -4,8 +4,8 @@
 
 #include <string>
 
-#include "canvas/math/mat4.h"
-#include "canvas/rendering/geometry.h"
+#include "canvas/Math/Mat4.h"
+#include "canvas/Rendering/Geometry.h"
 #include "nucleus/Macros.h"
 
 namespace ca {

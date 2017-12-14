@@ -1,6 +1,6 @@
 
-#include "canvas/app.h"
-#include "canvas/rendering/canvas.h"
+#include "canvas/App.h"
+#include "canvas/Rendering/Canvas.h"
 
 class MinimalWindow : public ca::WindowDelegate {
 public:

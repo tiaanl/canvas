@@ -1,10 +1,10 @@
 
-#include "canvas/app.h"
-#include "canvas/math/transform.h"
-#include "canvas/rendering/canvas.h"
-#include "canvas/rendering/geometry.h"
-#include "canvas/rendering/program.h"
-#include "canvas/rendering/shader.h"
+#include "canvas/App.h"
+#include "canvas/Math/Transform.h"
+#include "canvas/Rendering/Canvas.h"
+#include "canvas/Rendering/Geometry.h"
+#include "canvas/Rendering/Program.h"
+#include "canvas/Rendering/Shader.h"
 #include "nucleus/Streams/WrappedMemoryInputStream.h"
 
 #include <cstring>

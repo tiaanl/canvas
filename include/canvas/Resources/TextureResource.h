@@ -2,7 +2,7 @@
 #ifndef CANVAS_RESOURCES_TEXTURE_RESOURCE_H_
 #define CANVAS_RESOURCES_TEXTURE_RESOURCE_H_
 
-#include "canvas/rendering/texture.h"
+#include "canvas/Rendering/Texture.h"
 #include "nucleus/Memory/RefCounted.h"
 #include "nucleus/Memory/ScopedPtr.h"
 #include "nucleus/Memory/ScopedRefPtr.h"

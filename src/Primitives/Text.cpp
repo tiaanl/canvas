@@ -4,9 +4,9 @@
 #include <algorithm>
 #include <cstring>
 
-#include "canvas/rendering/font.h"
-#include "canvas/rendering/program.h"
-#include "canvas/rendering/shader.h"
+#include "canvas/Rendering/Font.h"
+#include "canvas/Rendering/Program.h"
+#include "canvas/Rendering/Shader.h"
 #include "nucleus/Streams/WrappedMemoryInputStream.h"
 
 #include "nucleus/MemoryDebug.h"

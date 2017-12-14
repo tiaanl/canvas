@@ -1,14 +1,14 @@
 
 #include "canvas/Primitives/Sprite.h"
-#include "canvas/app.h"
-#include "canvas/math/mat4.h"
-#include "canvas/math/transform.h"
-#include "canvas/rendering/canvas.h"
-#include "canvas/rendering/geometry.h"
-#include "canvas/rendering/program.h"
-#include "canvas/rendering/shader.h"
-#include "canvas/rendering/texture.h"
-#include "canvas/utils/image.h"
+#include "canvas/App.h"
+#include "canvas/Math/Mat4.h"
+#include "canvas/Math/Transform.h"
+#include "canvas/Rendering/Canvas.h"
+#include "canvas/Rendering/Geometry.h"
+#include "canvas/Rendering/Program.h"
+#include "canvas/Rendering/Shader.h"
+#include "canvas/Rendering/Texture.h"
+#include "canvas/Utils/Image.h"
 #include "nucleus/Streams/FileInputStream.h"
 
 class Rendering : public ca::WindowDelegate {
