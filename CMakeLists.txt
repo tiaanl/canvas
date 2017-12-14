@@ -4,18 +4,11 @@ project("canvas")
 # Options
 
 option(CANVAS_BUILD_EXAMPLES "Build canvas examples?")
+set(CMAKE_CXX_STANDARD 14)
 
 # Dependencies
 
 include("cmake/nucleus.cmake")
-include("cmake/glad.cmake")
-
-# Compiler Settings
-
-include("${NUCLEUS_ROOT_DIR}/cmake/gcc.cmake")
-include("${NUCLEUS_ROOT_DIR}/cmake/msvc.cmake")
-include("${NUCLEUS_ROOT_DIR}/cmake/win32.cmake")
-
 add_subdirectory(third_party "third_party")
 
 # canvas

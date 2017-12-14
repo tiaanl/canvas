@@ -18,7 +18,7 @@ namespace {
 // The shaders used by text rendering.
 
 const char* kTextVertexShader =
-    "#version 420\n"
+    "#version 410\n"
     "\n"
     "layout(location = 0) in vec3 vert_position;\n"
     "layout(location = 1) in vec2 vert_texCoord;\n"
@@ -36,7 +36,7 @@ const char* kTextVertexShader =
     "}\n";
 
 const char* kTextFragmentShader =
-    "#version 420\n"
+    "#version 410\n"
     "\n"
     "in vec2 frag_texCoord;\n"
     "in vec4 frag_color;\n"

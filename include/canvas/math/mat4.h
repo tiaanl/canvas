@@ -198,6 +198,7 @@ inline Mat4 transpose(const Mat4& mat) {
       result[i][j] = mat.col[j][i];
     }
   }
+  return result;
 }
 
 inline Mat4 inverse(const Mat4& m) {

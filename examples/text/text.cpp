@@ -2,7 +2,6 @@
 #include "canvas/Primitives/Text.h"
 #include "canvas/app.h"
 #include "canvas/math/transform.h"
-#include "canvas/rendering/canvas.h"
 #include "canvas/rendering/font.h"
 #include "canvas/rendering/program.h"
 #include "canvas/rendering/shader.h"
@@ -12,12 +11,16 @@ class Rendering : public ca::WindowDelegate {
 public:
   Rendering() { m_title = "Text"; }
 
-  ~Rendering() override {}
+  ~Rendering() override = default;
 
   // Override: ca::WindowDelegate
 
   bool onWindowCreated() override {
+#if OS(WIN)
     nu::FileInputStream fontStream{nu::FilePath{FILE_PATH_LITERAL("C:\\Windows\\Fonts\\arial.ttf")}};
+#elif OS(MACOSX)
+    nu::FileInputStream fontStream{nu::FilePath{FILE_PATH_LITERAL("/Library/Fonts/Arial.ttf")}};
+#endif
 
     m_font.loadFromStream(&fontStream);
 

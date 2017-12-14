@@ -10,7 +10,7 @@
 #include <cstring>
 
 const char kVertexShader[] =
-    "#version 420\n"
+    "#version 410\n"
     "\n"
     "layout(location=0) in vec3 vert_position;\n"
     "\n"
@@ -23,7 +23,7 @@ const char kVertexShader[] =
     "}\n";
 
 const char kFragmentShader[] =
-    "#version 420\n"
+    "#version 410\n"
     "\n"
     "in vec3 vert_position;\n"
     "\n"

@@ -271,6 +271,10 @@ Key getKeyFromGLFWKey(int key) {
   };
 }
 
+static void glfwErrorCallback(int error, const char* description) {
+  LOG(Error) << "GLFW Error (" << error << ") " << description;
+}
+
 }  // namespace
 
 // static
@@ -284,13 +288,15 @@ nu::ScopedPtr<Window> Window::create(WindowDelegate* delegate, const std::string
     return nullptr;
   }
 
+  glfwSetErrorCallback(glfwErrorCallback);
+
   const Size<U32> clientSize{1600, 900};
 
   // Set up our hints.
-  // glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-  // glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-  // glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-  // glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
   // Create the window.
   newWindow->m_window =

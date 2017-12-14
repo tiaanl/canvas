@@ -14,7 +14,7 @@ namespace ca {
 namespace {
 
 const char* kVertexShader =
-    "#version 420\n"
+    "#version 410\n"
     "\n"
     "layout(location = 0) in vec3 vert_position;\n"
     "layout(location = 1) in vec2 vert_texCoord;\n"
@@ -30,7 +30,7 @@ const char* kVertexShader =
     "}\n";
 
 const char* kFragmentShader =
-    "#version 420\n"
+    "#version 410\n"
     "\n"
     "in vec2 frag_texCoord;\n"
     "\n"
