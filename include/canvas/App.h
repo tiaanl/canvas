@@ -5,6 +5,7 @@
 #include "canvas/Windows/WindowDelegate.h"
 #include "nucleus/Config.h"
 #include "nucleus/Macros.h"
+#include "nucleus/Memory/Allocated.h"
 #include "nucleus/Memory/ScopedPtr.h"
 #include "nucleus/Win/WindowsMixin.h"
 
@@ -25,7 +26,7 @@ public:
 
 private:
   // The single window we are managing.
-  nu::ScopedPtr<Window> m_window;
+  nu::Allocated<Window> m_window;
 
   DISALLOW_COPY_AND_ASSIGN(App);
 };

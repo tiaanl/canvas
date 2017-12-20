@@ -3,8 +3,10 @@
 #define CANVAS_WINDOWS_WINDOW_H_
 
 #include "WindowDelegate.h"
-#include "nucleus/Memory/ScopedPtr.h"
+#include "nucleus/Allocators/Allocator.h"
 #include "nucleus/Macros.h"
+#include "nucleus/Memory/Allocated.h"
+#include "nucleus/Memory/ScopedPtr.h"
 
 typedef struct GLFWwindow GLFWwindow;
 
@@ -13,10 +15,10 @@ namespace ca {
 class Window {
 public:
   // Factory function to create a window with the specified delegate.
-  static nu::ScopedPtr<Window> create(WindowDelegate* delegate, const std::string& title);
+  static nu::Allocated<Window> create(nu::Allocator* allocator, WindowDelegate* delegate, const std::string& title);
 
   // Cleanup.
-    ~Window();
+  ~Window();
 
   // Get the client size of the window.
   ca::Size<I32> getClientSize() const;
@@ -32,6 +34,8 @@ public:
   void paint();
 
 private:
+  friend class nu::Allocator;
+
   // Construct a new window with the specified delegate.
   explicit Window(WindowDelegate* delegate);
 

@@ -276,14 +276,15 @@ static void glfwErrorCallback(int error, const char* description) {
 }  // namespace
 
 // static
-nu::ScopedPtr<Window> Window::create(WindowDelegate* delegate, const std::string& title) {
+nu::Allocated<Window> Window::create(nu::Allocator* allocator, WindowDelegate* delegate, const std::string& title) {
   DCHECK(delegate) << "Can't create a window with no delegate.";
 
-  nu::ScopedPtr<Window> newWindow(new Window(delegate));
+  nu::Allocated<Window> newWindow = allocator->construct<Window>(delegate);
 
   // Initialize GLFW.
   if (!glfwInit()) {
-    return nullptr;
+    LOG(Error) << "Could not initialize glfw.";
+    return nu::Allocated<Window>{allocator};
   }
 
   glfwSetErrorCallback(glfwErrorCallback);
@@ -301,7 +302,7 @@ nu::ScopedPtr<Window> Window::create(WindowDelegate* delegate, const std::string
       glfwCreateWindow(clientSize.width, clientSize.height, delegate->getTitle().c_str(), nullptr, nullptr);
   if (!newWindow->m_window) {
     LOG(Error) << "Could not create window.";
-    return nullptr;
+    return nu::Allocated<Window>{allocator};
   }
 
   // Center the window on the screen.
