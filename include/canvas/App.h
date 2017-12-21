@@ -35,7 +35,7 @@ private:
 #if OS(WIN)
 #define MAIN_HEADER int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #else
-#define MAIN_HEADER int main(int argc, char* argv[])
+#define MAIN_HEADER int main(int, char*[])
 #endif
 
 #if COMPILER(MSVC)

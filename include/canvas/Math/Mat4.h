@@ -157,13 +157,6 @@ struct Mat4 {
   }
 
   Vec4 operator*(const Vec4& vec) const {
-    Vec4 col0 = col[0] * vec[0];
-    Vec4 col1 = col[1] * vec[1];
-    Vec4 col2 = col[2] * vec[2];
-    Vec4 col3 = col[3] * vec[3];
-
-    Vec4 result = col0 + col1 + col2 + col3;
-
     return col[0] * vec[0] + col[1] * vec[1] + col[2] * vec[2] + col[3] * vec[3];
   }
 
