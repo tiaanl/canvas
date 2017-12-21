@@ -279,7 +279,7 @@ static void glfwErrorCallback(int error, const char* description) {
 nu::Allocated<Window> Window::create(nu::Allocator* allocator, WindowDelegate* delegate, const std::string& title) {
   DCHECK(delegate) << "Can't create a window with no delegate.";
 
-  nu::Allocated<Window> newWindow = allocator->construct<Window>(delegate);
+  nu::Allocated<Window> newWindow = nu::allocate<Window>(allocator, delegate);
 
   // Initialize GLFW.
   if (!glfwInit()) {

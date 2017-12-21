@@ -17,6 +17,9 @@ public:
   // Factory function to create a window with the specified delegate.
   static nu::Allocated<Window> create(nu::Allocator* allocator, WindowDelegate* delegate, const std::string& title);
 
+  // Construct a new window with the specified delegate.  Use the static factory function `create` in stead.
+  explicit Window(WindowDelegate* delegate);
+
   // Cleanup.
   ~Window();
 
@@ -34,11 +37,6 @@ public:
   void paint();
 
 private:
-  friend class nu::Allocator;
-
-  // Construct a new window with the specified delegate.
-  explicit Window(WindowDelegate* delegate);
-
   // Callbacks
   static void frameBufferSizeCallback(GLFWwindow* window, int width, int height);
   static void cursorPositionCallback(GLFWwindow* window, double xpos, double ypos);
