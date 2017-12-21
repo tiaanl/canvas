@@ -6,7 +6,6 @@
 #include "nucleus/Allocators/Allocator.h"
 #include "nucleus/Macros.h"
 #include "nucleus/Memory/Allocated.h"
-#include "nucleus/Memory/ScopedPtr.h"
 
 typedef struct GLFWwindow GLFWwindow;
 

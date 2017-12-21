@@ -6,7 +6,6 @@
 #include "nucleus/Config.h"
 #include "nucleus/Macros.h"
 #include "nucleus/Memory/Allocated.h"
-#include "nucleus/Memory/ScopedPtr.h"
 #include "nucleus/Win/WindowsMixin.h"
 
 namespace ca {
@@ -48,7 +47,7 @@ private:
 #define CANVAS_APP(DelegateType)                                                                                       \
   MAIN_HEADER {                                                                                                        \
     {                                                                                                                  \
-      nu::ScopedPtr<DelegateType> d = nu::makeScopedPtr<DelegateType>();                                               \
+      auto d = nu::allocate<DelegateType>(nu::getDefaultAllocator());                                                  \
       ca::App app{d.get()};                                                                                            \
       app.run();                                                                                                       \
     }                                                                                                                  \
