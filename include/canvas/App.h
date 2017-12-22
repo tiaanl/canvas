@@ -16,21 +16,21 @@ class Window;
 class App {
 public:
   // Construct a new app with the specified delegate that will control the app.
-  explicit App(WindowDelegate* delegate, nu::Allocator* allocator = nu::getDefaultAllocator());
+  explicit App(nu::Allocator* allocator = nu::getDefaultAllocator());
 
   // Destruct the app.
   ~App();
 
   // Run the application and only return once all the windows are closed.
-  void run();
+  void run(WindowDelegate* delegate);
 
 private:
   nu::Allocator* m_allocator;
 
+  ResourceManager m_resourceManager;
+
   // The single window we are managing.
   nu::Allocated<Window> m_window;
-
-  ResourceManager m_resourceManager;
 
   DISALLOW_COPY_AND_ASSIGN(App);
 };
@@ -54,8 +54,8 @@ private:
     {                                                                                                                  \
       nu::GlobalAllocator allocator;                                                                                   \
       auto d = nu::allocate<DelegateType>(&allocator);                                                                 \
-      ca::App app{d.get(), &allocator};                                                                                 \
-      app.run();                                                                                                       \
+      ca::App app{&allocator};                                                                                         \
+      app.run(d.get());                                                                                                \
     }                                                                                                                  \
     MEMORY_DUMP                                                                                                        \
     return 0;                                                                                                          \
