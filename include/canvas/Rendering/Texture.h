@@ -18,13 +18,12 @@ public:
 
   Texture() = default;
 
-  Texture(const Texture& other) = delete;
+  COPY_DELETE(Texture);
+
   Texture(Texture&& other);
+  Texture& operator=(Texture&& other);
 
   ~Texture();
-
-  Texture& operator=(const Texture& other) = delete;
-  Texture& operator=(Texture&& other);
 
   // Get the size of the texture.
   const Size<I32>& getSize() const { return m_size; }

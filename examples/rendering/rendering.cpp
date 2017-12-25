@@ -4,6 +4,7 @@
 #include "canvas/Math/Transform.h"
 #include "canvas/Primitives/Sprite.h"
 #include "canvas/Rendering/Shader.h"
+#include "canvas/Resources/ResourceCache.h"
 #include "nucleus/Utils/Files.h"
 
 class Rendering : public ca::WindowDelegate {
@@ -15,6 +16,8 @@ public:
   // Override: ca::WindowDelegate
 
   bool onWindowCreated() override {
+    m_resourceCache.setRootPath(nu::getCurrentWorkingDirectory().append("res"));
+
 #if 0
     nu::FilePath root{"C:\\Code\\canvas\\examples\\rendering"};
 
@@ -39,8 +42,10 @@ public:
 
     // And use the program.
     ca::Program::bind(&m_program);
+#endif  // 0
 
-    if (!m_texture.createFromImage(image)) {
+    m_texture = m_resourceCache.getTexture("images/canvas.png");
+    if (!m_texture) {
       return false;
     }
 
@@ -49,8 +54,7 @@ public:
     m_geometry.compileAndUpload();
 
     // Set up the sprite.
-    m_sprite.setTexture(&m_texture);
-#endif  // 0
+    m_sprite.setTexture(m_texture);
 
     return true;
   }
@@ -89,10 +93,13 @@ public:
   }
 
 private:
+  ca::ResourceCache m_resourceCache;
+
   ca::Mat4 m_projectionMatrix;
 
+  ca::Texture* m_texture;
+
   ca::Program m_program;
-  ca::Texture m_texture;
   ca::Geometry m_geometry;
 
   ca::Sprite m_sprite;
