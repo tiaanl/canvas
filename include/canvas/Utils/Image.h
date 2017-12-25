@@ -17,7 +17,14 @@ public:
   using DataType = nu::DynamicArray<U8>;
 
   Image() = default;
+
+  Image(const Image& other) = delete;
+  Image(Image&& other);
+
   ~Image() = default;
+
+  Image& operator=(const Image& other) = delete;
+  Image& operator=(Image&& other);
 
   // Get the size of the image.
   const Size<I32> getSize() const { return m_size; }
@@ -40,8 +47,6 @@ private:
 
   // The buffer that holds the pixel data.
   DataType m_data;
-
-  DISALLOW_COPY_AND_ASSIGN(Image);
 };
 
 }  // namespace ca

@@ -2,8 +2,8 @@
 #ifndef CANVAS_APP_H_
 #define CANVAS_APP_H_
 
-#include "canvas/Resources/ResourceManager.h"
 #include "canvas/Windows/WindowDelegate.h"
+#include "nucleus/Allocators/DefaultAllocator.h"
 #include "nucleus/Config.h"
 #include "nucleus/Macros.h"
 #include "nucleus/Memory/Allocated.h"
@@ -26,8 +26,6 @@ public:
 
 private:
   nu::Allocator* m_allocator;
-
-  ResourceManager m_resourceManager;
 
   // The single window we are managing.
   nu::Allocated<Window> m_window;

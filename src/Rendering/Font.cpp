@@ -38,11 +38,11 @@ bool Font::loadFromStream(nu::InputStream* stream) {
   // Load the entire stream into out m_fontData buffer.
   nu::InputStream::SizeType bytesRemaining = stream->getBytesRemaining();
   m_fontData.resize(bytesRemaining);
-  stream->read(&m_fontData.get(0), bytesRemaining);
+  stream->read(&m_fontData[0], bytesRemaining);
 
   // Load the new font face from the stream.
   FT_Face face;
-  FT_Error err = FT_New_Memory_Face(static_cast<FT_Library>(m_library), static_cast<const FT_Byte*>(&m_fontData.get(0)),
+  FT_Error err = FT_New_Memory_Face(static_cast<FT_Library>(m_library), static_cast<const FT_Byte*>(&m_fontData[0]),
                                     static_cast<FT_Long>(bytesRemaining), 0, &face);
   if (err != FT_Err_Ok) {
     switch (err) {
@@ -279,7 +279,7 @@ Font::Glyph Font::loadGlyph(U32 codePoint, U32 characterSize, bool bold) const {
         for (I32 x = 0; x < width; ++x) {
           // The color channels remain white, just fill the alpha channel.
           std::size_t index = (x + y * width) * 4 + 3;
-          m_pixelBuffer.get(index) = ((pixels[x / 8]) & (1 << (7 - (x % 8)))) ? 255 : 0;
+          m_pixelBuffer[index] = ((pixels[x / 8]) & (1 << (7 - (x % 8)))) ? 255 : 0;
         }
         pixels += bitmap.pitch;
       }
@@ -289,13 +289,13 @@ Font::Glyph Font::loadGlyph(U32 codePoint, U32 characterSize, bool bold) const {
         for (I32 x = 0; x < width; ++x) {
           // The color channels remain white, just fill  the alpha channel.
           std::size_t index = (x + y * width) * 4 + 3;
-          m_pixelBuffer.get(index) = pixels[x];
+          m_pixelBuffer[index] = pixels[x];
         }
         pixels += bitmap.pitch;
       }
     }
 
-    page.texture.update(&m_pixelBuffer.get(0), glyphRect);
+    page.texture.update(&m_pixelBuffer[0], glyphRect);
   }
 
   FT_Done_Glyph(glyphDesc);

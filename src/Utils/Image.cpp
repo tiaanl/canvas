@@ -39,6 +39,15 @@ void parseRGBA(const Size<I32> size, U8* outPtr, const png_structp& png, const p
 
 }  // namespace
 
+Image::Image(Image&& other) : m_size(nu::move(other.m_size)), m_data(nu::move(other.m_data)) {}
+
+Image& Image::operator=(Image&& other) {
+  m_size = nu::move(other.m_size);
+  m_data = nu::move(other.m_data);
+
+  return *this;
+}
+
 void Image::create(const Size<I32>& size, const Color& col) {
   if (size.width && size.height) {
     // Store the size of the image.
@@ -131,7 +140,7 @@ bool Image::loadFromStream(nu::InputStream* stream) {
 }
 
 void Image::setPixel(const Pos<I32>& pos, const Color& color) {
-  U8* ptr = &m_data.get(pos.y * (m_size.width * 4) + (pos.x * 4));
+  U8* ptr = &m_data[pos.y * (m_size.width * 4) + (pos.x * 4)];
   *ptr++ = color.r;
   *ptr++ = color.g;
   *ptr++ = color.b;

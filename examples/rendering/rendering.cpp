@@ -1,26 +1,22 @@
 
-#include "canvas/Primitives/Sprite.h"
 #include "canvas/App.h"
 #include "canvas/Math/Mat4.h"
 #include "canvas/Math/Transform.h"
-#include "canvas/Rendering/Canvas.h"
-#include "canvas/Rendering/Geometry.h"
-#include "canvas/Rendering/Program.h"
+#include "canvas/Primitives/Sprite.h"
 #include "canvas/Rendering/Shader.h"
-#include "canvas/Rendering/Texture.h"
-#include "canvas/Utils/Image.h"
-#include "nucleus/Streams/FileInputStream.h"
+#include "nucleus/Utils/Files.h"
 
 class Rendering : public ca::WindowDelegate {
 public:
-  Rendering() { m_title = "Rendering"; }
+  Rendering() : m_texture() { m_title = "Rendering"; }
 
-  ~Rendering() override {}
+  ~Rendering() override = default;
 
   // Override: ca::WindowDelegate
 
   bool onWindowCreated() override {
-    nu::FilePath root{FILE_PATH_LITERAL("C:\\Code\\canvas\\examples\\rendering")};
+#if 0
+    nu::FilePath root{"C:\\Code\\canvas\\examples\\rendering"};
 
     // Load vertex shader.
     nu::FileInputStream vertStream{root.append(FILE_PATH_LITERAL("res"))
@@ -44,16 +40,6 @@ public:
     // And use the program.
     ca::Program::bind(&m_program);
 
-    // Load a texture in.
-    nu::FileInputStream imageStream{root.append(FILE_PATH_LITERAL("res"))
-                                        .append(FILE_PATH_LITERAL("images"))
-                                        .append(FILE_PATH_LITERAL("canvas.png"))};
-
-    ca::Image image;
-    if (!image.loadFromStream(&imageStream)) {
-      return false;
-    }
-
     if (!m_texture.createFromImage(image)) {
       return false;
     }
@@ -64,6 +50,7 @@ public:
 
     // Set up the sprite.
     m_sprite.setTexture(&m_texture);
+#endif  // 0
 
     return true;
   }

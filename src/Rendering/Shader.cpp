@@ -31,7 +31,7 @@ bool Shader::loadFromStream(nu::InputStream* stream) {
   auto bytesRead = stream->read(data.getData(), streamLength);
 
   // Make sure we terminate the string buffer.
-  data.get(bytesRead) = '\0';
+  data[bytesRead] = '\0';
 
   // Set the source data and return the success status.
   return setSource(data.getData());

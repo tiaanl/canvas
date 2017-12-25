@@ -17,7 +17,14 @@ public:
   static void bind(const Texture* texture);
 
   Texture() = default;
+
+  Texture(const Texture& other) = delete;
+  Texture(Texture&& other);
+
   ~Texture();
+
+  Texture& operator=(const Texture& other) = delete;
+  Texture& operator=(Texture&& other);
 
   // Get the size of the texture.
   const Size<I32>& getSize() const { return m_size; }
@@ -36,12 +43,10 @@ private:
   void createNewName();
 
   // The OpenGL name of the texture.
-  GLuint m_name{0};
+  GLuint m_name = 0;
 
   // The size of the texture.
   Size<I32> m_size;
-
-  DISALLOW_COPY_AND_ASSIGN(Texture);
 };
 
 }  // namespace ca

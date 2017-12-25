@@ -1,8 +1,8 @@
 
 #include "canvas/Rendering/Texture.h"
 
-#include "nucleus/Logging.h"
 #include "canvas/Utils/GLCheck.h"
+#include "nucleus/Logging.h"
 
 #include "nucleus/MemoryDebug.h"
 
@@ -27,10 +27,25 @@ void Texture::bind(const Texture* texture) {
   }
 }
 
+Texture::Texture(Texture&& other) : m_name(nu::move(other.m_name)), m_size(nu::move(other.m_size)) {
+  other.m_name = 0;
+  other.m_size = {};
+}
+
 Texture::~Texture() {
   if (m_name != 0) {
     glDeleteTextures(1, &m_name);
   }
+}
+
+Texture& Texture::operator=(Texture&& other) {
+  m_name = nu::move(other.m_name);
+  m_size = nu::move(other.m_size);
+
+  other.m_name = 0;
+  other.m_size = {};
+
+  return *this;
 }
 
 bool Texture::create(const Size<I32>& size) {
