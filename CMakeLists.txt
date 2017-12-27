@@ -37,6 +37,7 @@ set(canvas_HEADER_FILES
     "include/canvas/Rendering/Texture.h"
     "include/canvas/Rendering/Vertex.h"
     "include/canvas/Rendering/VertexBufferObject.h"
+	"include/canvas/Resources/Resource.h"
     "include/canvas/Resources/ResourceCache.h"
     "include/canvas/Utils/Color.h"
     "include/canvas/Utils/GLCheck.h"
