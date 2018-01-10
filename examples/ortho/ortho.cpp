@@ -5,6 +5,7 @@
 #include "canvas/Rendering/Geometry.h"
 #include "canvas/Rendering/Program.h"
 #include "canvas/Rendering/Shader.h"
+#include "nucleus/Allocators/DefaultAllocator.h"
 #include "nucleus/Streams/WrappedMemoryInputStream.h"
 
 #include <cstring>
@@ -35,7 +36,7 @@ const char kFragmentShader[] =
 
 class OrthoWindow : public ca::WindowDelegate {
 public:
-  OrthoWindow() {}
+  OrthoWindow() : ca::WindowDelegate(nu::getDefaultAllocator()) {}
   ~OrthoWindow() override {}
 
   bool onWindowCreated() override {
@@ -60,9 +61,13 @@ public:
     return true;
   }
 
-  void onWindowResized(const ca::Size<U32>& clientSize) override { m_clientSize = clientSize; }
+  void onWindowResized(const ca::Size<U32>& clientSize) override {
+    m_clientSize = clientSize;
+  }
 
-  void onMouseMoved(const ca::MouseEvent& event) override { m_mousePos = event.pos; }
+  void onMouseMoved(const ca::MouseEvent& event) override {
+    m_mousePos = event.pos;
+  }
 
   // Override: ca::WindowDelegate
   void onPaint(ca::Canvas* canvas) override {

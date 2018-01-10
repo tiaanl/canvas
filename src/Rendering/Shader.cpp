@@ -9,8 +9,6 @@
 
 namespace ca {
 
-Shader::Shader(ShaderType type) : m_type(type) {}
-
 Shader::~Shader() {
   if (m_name) {
     GL_CHECK(glDeleteShader(m_name));

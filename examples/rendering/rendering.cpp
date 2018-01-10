@@ -4,47 +4,38 @@
 #include "canvas/Math/Transform.h"
 #include "canvas/Primitives/Sprite.h"
 #include "canvas/Rendering/Shader.h"
-#include "canvas/Resources/ResourceCache.h"
-#include "nucleus/Utils/Files.h"
+#include "canvas/Resources/ResourceManager.h"
+#include "nucleus/Files.h"
+
+using ca::ResourceRef;
+using ca::Shader;
+using ca::Texture;
 
 class Rendering : public ca::WindowDelegate {
 public:
-  Rendering() : m_texture() { m_title = "Rendering"; }
+  explicit Rendering(nu::Allocator* allocator)
+    : ca::WindowDelegate(allocator, "Rendering"), m_resourceManager(nu::getDefaultAllocator()), m_texture() {}
 
   ~Rendering() override = default;
 
   // Override: ca::WindowDelegate
 
   bool onWindowCreated() override {
-    m_resourceCache.setRootPath(nu::getCurrentWorkingDirectory().append("res"));
+    m_resourceManager.setRootPath(nu::getCurrentWorkingDirectory().append("res"));
 
-#if 0
-    nu::FilePath root{"C:\\Code\\canvas\\examples\\rendering"};
+    // ResourceRef<Shader> vertexShader = m_resourceManager.getShader("shaders/default.vert.glsl", Shader::Vertex);
+    // m_program.setVertexShader(vertexShader);
 
-    // Load vertex shader.
-    nu::FileInputStream vertStream{root.append(FILE_PATH_LITERAL("res"))
-                                       .append(FILE_PATH_LITERAL("shaders"))
-                                       .append(FILE_PATH_LITERAL("default.vert.glsl"))};
-    ca::Shader vertShader{ca::Shader::Vertex};
-    vertShader.loadFromStream(&vertStream);
-    m_program.setVertexShader(&vertShader);
-
-    // Load fragment shader.
-    nu::FileInputStream fragStream{root.append(FILE_PATH_LITERAL("res"))
-                                       .append(FILE_PATH_LITERAL("shaders"))
-                                       .append(FILE_PATH_LITERAL("default.frag.glsl"))};
-    ca::Shader fragShader{ca::Shader::Fragment};
-    fragShader.loadFromStream(&fragStream);
-    m_program.setFragmentShader(&fragShader);
+    // ResourceRef<Shader> fragmentShader = m_resourceManager.getShader("shaders/default.frag.glsl", Shader::Fragment);
+    // m_program.setFragmentShader(fragmentShader);
 
     // Make sure the program is linked.
-    m_program.link();
+    // m_program.link();
 
     // And use the program.
-    ca::Program::bind(&m_program);
-#endif  // 0
+    // ca::Program::bind(&m_program);
 
-    m_texture = m_resourceCache.getTexture("images/canvas.png");
+    m_texture = m_resourceManager.getTexture("images/canvas.png");
     if (!m_texture) {
       return false;
     }
@@ -54,7 +45,7 @@ public:
     m_geometry.compileAndUpload();
 
     // Set up the sprite.
-    m_sprite.setTexture(m_texture);
+    m_sprite.setTexture(&m_texture.get()->get());
 
     return true;
   }
@@ -93,11 +84,11 @@ public:
   }
 
 private:
-  ca::ResourceCache m_resourceCache;
+  ca::ResourceManager m_resourceManager;
 
   ca::Mat4 m_projectionMatrix;
 
-  ca::Texture* m_texture;
+  ResourceRef<Texture> m_texture;
 
   ca::Program m_program;
   ca::Geometry m_geometry;

@@ -2,12 +2,12 @@
 #ifndef CANVAS_RENDERING_SPRITE_H_
 #define CANVAS_RENDERING_SPRITE_H_
 
-#include "nucleus/Macros.h"
 #include "canvas/Math/Mat4.h"
 #include "canvas/Rendering/Canvas.h"
 #include "canvas/Rendering/Geometry.h"
 #include "canvas/Rendering/Program.h"
 #include "canvas/Rendering/Texture.h"
+#include "nucleus/Macros.h"
 
 namespace ca {
 
@@ -33,7 +33,10 @@ private:
   static void ensureShaderProgram();
 
   // The shader program we use to render the sprite.
-  static Program* s_shaderProgram;
+  static Program s_shaderProgram;
+  static bool s_shaderProgramInitialized;
+  static Resource<Shader> s_vertexShader;
+  static Resource<Shader> s_fragmentShader;
 
   // The texture we want to render.
   Texture* m_texture;

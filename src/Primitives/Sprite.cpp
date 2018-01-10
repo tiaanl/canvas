@@ -45,7 +45,16 @@ const char* kFragmentShader =
 }  // namespace
 
 // static
-Program* Sprite::s_shaderProgram = nullptr;
+Program Sprite::s_shaderProgram;
+
+// static
+bool Sprite::s_shaderProgramInitialized = false;
+
+// static
+Resource<Shader> Sprite::s_vertexShader{Shader::Vertex};
+
+// static
+Resource<Shader> Sprite::s_fragmentShader{Shader::Fragment};
 
 Sprite::Sprite(Texture* texture) : m_texture{texture} {
   // If we have a texture, rebuild the geometry.
@@ -79,8 +88,8 @@ void Sprite::render(Canvas* canvas, const Mat4& transform) const {
 
   // Make sure the shader program is created and bind it.
   ensureShaderProgram();
-  Program::bind(s_shaderProgram);
-  DCHECK(s_shaderProgram->setUniform("uni_mvp", transform));
+  Program::bind(&s_shaderProgram);
+  DCHECK(s_shaderProgram.setUniform("uni_mvp", transform));
 
   Texture::bind(m_texture);
 
@@ -113,17 +122,18 @@ void Sprite::updateGeometry() {
 
 // static
 void Sprite::ensureShaderProgram() {
-  if (!s_shaderProgram) {
-    nu::WrappedMemoryInputStream vertexStream{kVertexShader, std::strlen(kVertexShader)};
-    Shader vertexShader{Shader::Vertex};
-    vertexShader.loadFromStream(&vertexStream);
+  if (!s_shaderProgramInitialized) {
+    nu::WrappedMemoryInputStream vertexStream{kVertexShader, std::strlen(kVertexShader) + 1};
+    s_vertexShader.get().loadFromStream(&vertexStream);
 
-    nu::WrappedMemoryInputStream fragmentStream{kFragmentShader, std::strlen(kFragmentShader)};
-    Shader fragmentShader{Shader::Fragment};
-    fragmentShader.loadFromStream(&fragmentStream);
+    nu::WrappedMemoryInputStream fragmentStream{kFragmentShader, std::strlen(kFragmentShader) + 1};
+    s_fragmentShader.get().loadFromStream(&vertexStream);
 
-    s_shaderProgram = new Program{&vertexShader, &fragmentShader};
-    s_shaderProgram->link();
+    s_shaderProgram.setVertexShader(ResourceRef<Shader>{&s_vertexShader});
+    s_shaderProgram.setFragmentShader(ResourceRef<Shader>{&s_fragmentShader});
+    s_shaderProgram.link();
+
+    s_shaderProgramInitialized = true;
   }
 }
 

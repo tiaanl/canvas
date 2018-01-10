@@ -2,26 +2,37 @@
 #ifndef CANVAS_RESOURCES_RESOURCE_H_
 #define CANVAS_RESOURCES_RESOURCE_H_
 
+#include "nucleus/Logging.h"
+#include "nucleus/Ref.h"
 #include "nucleus/RefCounted.h"
-#include "nucleus/Utils/Move.h"
 
 namespace ca {
 
 template <typename T>
-class Resource : public nu::RefCounted {
+class Resource;
+
+template <typename T>
+struct ResourceTraits {
+  static void destruct(const Resource<T>* resource) {
+    LOG(Info) << "Destructing resource.";
+  }
+};
+
+template <typename T>
+class Resource : public nu::RefCounted<Resource<T>, ResourceTraits<T>> {
 public:
   using ResourceType = T;
 
   template <typename... Args>
-  Resource(Args&&... args) : m_resource(nu::forward<Args>(args)...) {}
+  Resource(Args&&... args) : m_resource(std::forward<Args>(args)...) {}
 
   Resource(const ResourceType& resource) : m_resource(resource) {}
 
-  Resource(ResourceType&& resource) : m_resource(nu::move(resource)) {}
+  Resource(ResourceType&& resource) : m_resource(std::move(resource)) {}
 
   Resource(const Resource& other) = delete;
 
-  Resource(Resource&& other) : m_resource(nu::move(other.m_resource)) {}
+  Resource(Resource&& other) : m_resource(std::move(other.m_resource)) {}
 
   ~Resource() = default;
 
@@ -31,14 +42,14 @@ public:
   }
 
   Resource& operator=(ResourceType&& resource) {
-    m_resource = nu::move(resource);
+    m_resource = std::move(resource);
     return *this;
   }
 
   Resource& operator=(const Resource& other) = delete;
 
   Resource& operator=(Resource&& other) {
-    m_resource = nu::move(other.m_resource);
+    m_resource = std::move(other.m_resource);
     return *this;
   }
 
@@ -50,15 +61,12 @@ public:
     return m_resource;
   }
 
-  void release() {
-    if (nu::RefCounted::release()) {
-      int a = 0;
-    }
-  }
-
 private:
   ResourceType m_resource;
 };
+
+template <typename T>
+using ResourceRef = nu::Ref<Resource<T>>;
 
 }  // namespace ca
 

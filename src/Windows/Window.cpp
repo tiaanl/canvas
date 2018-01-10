@@ -276,15 +276,15 @@ static void glfwErrorCallback(int error, const char* description) {
 }  // namespace
 
 // static
-nu::Allocated<Window> Window::create(nu::Allocator* allocator, WindowDelegate* delegate, const std::string& title) {
+std::unique_ptr<Window> Window::create(WindowDelegate* delegate, const std::string& title) {
   DCHECK(delegate) << "Can't create a window with no delegate.";
 
-  nu::Allocated<Window> newWindow = nu::allocate<Window>(allocator, delegate);
+  std::unique_ptr<Window> newWindow = std::make_unique<Window>(delegate);
 
   // Initialize GLFW.
   if (!glfwInit()) {
     LOG(Error) << "Could not initialize glfw.";
-    return nu::Allocated<Window>{allocator};
+    return nullptr;
   }
 
   glfwSetErrorCallback(glfwErrorCallback);
@@ -302,7 +302,7 @@ nu::Allocated<Window> Window::create(nu::Allocator* allocator, WindowDelegate* d
       glfwCreateWindow(clientSize.width, clientSize.height, delegate->getTitle().c_str(), nullptr, nullptr);
   if (!newWindow->m_window) {
     LOG(Error) << "Could not create window.";
-    return nu::Allocated<Window>{allocator};
+    return nullptr;
   }
 
   // Center the window on the screen.
@@ -432,6 +432,7 @@ void Window::mouseButtonCallback(GLFWwindow* window, int button, int action, int
 
     case GLFW_MOUSE_BUTTON_RIGHT:
       evtButton = MouseEvent::Button::Right;
+      break;
 
     default:
       NOTREACHED() << "Invalid button type.";

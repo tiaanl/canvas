@@ -19,6 +19,7 @@ add_subdirectory(third_party "third_party")
 # canvas
 
 set(canvas_HEADER_FILES
+	"include/canvas/Resources/Resource.h"
     "include/canvas/App.h"
     "include/canvas/Math/Mat4.h"
     "include/canvas/Math/Transform.h"
@@ -37,8 +38,8 @@ set(canvas_HEADER_FILES
     "include/canvas/Rendering/Texture.h"
     "include/canvas/Rendering/Vertex.h"
     "include/canvas/Rendering/VertexBufferObject.h"
-	"include/canvas/Resources/Resource.h"
     "include/canvas/Resources/ResourceCache.h"
+    "include/canvas/Resources/ResourceManager.h"
     "include/canvas/Utils/Color.h"
     "include/canvas/Utils/GLCheck.h"
     "include/canvas/Utils/Image.h"
@@ -56,7 +57,6 @@ set(canvas_HEADER_FILES
     )
 
 set(canvas_SOURCE_FILES
-    "src/App.cpp"
     "src/Primitives/Sprite.cpp"
     "src/Primitives/Text.cpp"
     "src/Rendering/Canvas.cpp"
@@ -67,7 +67,7 @@ set(canvas_SOURCE_FILES
     "src/Rendering/Shader.cpp"
     "src/Rendering/Texture.cpp"
     "src/Rendering/VertexBufferObject.cpp"
-    "src/Resources/ResourceCache.cpp"
+    "src/Resources/ResourceManager.cpp"
     "src/Utils/GLCheck.cpp"
     "src/Utils/Image.cpp"
     "src/Windows/Window.cpp"

@@ -11,6 +11,7 @@
 #include "canvas/Math/Vec3.h"
 #include "canvas/Math/Vec4.h"
 #include "canvas/OpenGL.h"
+#include "canvas/Resources/Resource.h"
 
 namespace ca {
 
@@ -22,22 +23,32 @@ public:
   static void bind(Program* program);
 
   Program();
-  Program(Shader* vertexShader, Shader* fragmentShader);
+  Program(const ResourceRef<Shader>& vertexShader, const ResourceRef<Shader>& fragmentShader);
   ~Program();
 
   // Return the OpenGL resource name for the shader program.
-  GLuint getNativeHandle() const { return m_name; }
+  GLuint getNativeHandle() const {
+    return m_name;
+  }
 
   // Get/set the vertex shader.
-  Shader* getVertexShader() const { return m_vertexShader; }
-  void setVertexShader(Shader* vertexShader);
+  const ResourceRef<Shader>& getVertexShader() const {
+    return m_vertexShader;
+  }
+
+  void setVertexShader(const ResourceRef<Shader>& vertexShader);
 
   // Get/set the fragment shader.
-  Shader* getFragmentShader() const { return m_fragmentShader; }
-  void setFragmentShader(Shader* fragmentShader);
+  const ResourceRef<Shader>& getFragmentShader() const {
+    return m_fragmentShader;
+  }
+
+  void setFragmentShader(const ResourceRef<Shader>& fragmentShader);
 
   // Returns true if the program is linked.
-  bool isLinked() const { return m_isLinked; }
+  bool isLinked() const {
+    return m_isLinked;
+  }
 
   // Link the program.
   void link();
@@ -50,20 +61,21 @@ public:
   bool setUniform(std::string name, const Mat4& mat4);
 
 private:
+  COPY_DELETE(Program);
+  MOVE_DELETE(Program);
+
   // Link the program.
   void linkInternal();
 
   // The native handle to the program.
-  GLuint m_name{0};
+  GLuint m_name = 0;
 
   // The shaders we'll use.
-  Shader* m_vertexShader{nullptr};
-  Shader* m_fragmentShader{nullptr};
+  ResourceRef<Shader> m_vertexShader;
+  ResourceRef<Shader> m_fragmentShader;
 
   // Flag to keep track of whether the program is linked.
-  bool m_isLinked{false};
-
-  DISALLOW_COPY_AND_ASSIGN(Program);
+  bool m_isLinked = false;
 };
 
 }  // namespace ca

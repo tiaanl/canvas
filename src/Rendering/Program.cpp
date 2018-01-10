@@ -25,7 +25,7 @@ void Program::bind(Program* program) {
 
 Program::Program() {}
 
-Program::Program(Shader* vertexShader, Shader* fragmentShader)
+Program::Program(const ResourceRef<Shader>& vertexShader, const ResourceRef<Shader>& fragmentShader)
   : m_vertexShader(vertexShader), m_fragmentShader(fragmentShader) {}
 
 Program::~Program() {
@@ -34,12 +34,12 @@ Program::~Program() {
   }
 }
 
-void Program::setVertexShader(Shader* vertexShader) {
+void Program::setVertexShader(const ResourceRef<Shader>& vertexShader) {
   m_vertexShader = vertexShader;
   m_isLinked = false;
 }
 
-void Program::setFragmentShader(Shader* fragmentShader) {
+void Program::setFragmentShader(const ResourceRef<Shader>& fragmentShader) {
   m_fragmentShader = fragmentShader;
   m_isLinked = false;
 }
@@ -95,8 +95,8 @@ void Program::linkInternal() {
   }
 
   // Attach the shaders.
-  GL_CHECK(glAttachShader(m_name, m_vertexShader->getNativeHandle()));
-  GL_CHECK(glAttachShader(m_name, m_fragmentShader->getNativeHandle()));
+  GL_CHECK(glAttachShader(m_name, m_vertexShader.get()->get().getNativeHandle()));
+  GL_CHECK(glAttachShader(m_name, m_fragmentShader.get()->get().getNativeHandle()));
 
   // Link the program.
   GL_CHECK(glLinkProgram(m_name));

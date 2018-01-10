@@ -49,10 +49,10 @@ const char* kTextFragmentShader =
     "  final = texture(sampler, frag_texCoord);\n"
     "}\n";
 
-// TODO(tiaanl): These are allocated, but never released.
-static Shader* gs_textVertexShader;
-static Shader* gs_textFragmentShader;
-static Program* gs_textProgram;
+static Resource<Shader> gs_vertexShader{Shader::Vertex};
+static Resource<Shader> gs_fragmentShader{Shader::Fragment};
+static Program gs_textProgram;
+static bool gs_textProgramInitialized = false;
 
 }  // namespace
 
@@ -97,8 +97,8 @@ void Text::render(Canvas* canvas, const Mat4& transform) const {
   Texture::bind(texture);
 
   // Bind the program.
-  Program::bind(gs_textProgram);
-  gs_textProgram->setUniform("uni_mvp", transform);
+  Program::bind(&gs_textProgram);
+  gs_textProgram.setUniform("uni_mvp", transform);
 
   // Enable blending.
   glEnable(GL_BLEND);
@@ -113,20 +113,19 @@ void Text::render(Canvas* canvas, const Mat4& transform) const {
 }
 
 void Text::ensureShaders() {
-  if (gs_textVertexShader && gs_textFragmentShader && gs_textProgram) {
+  if (gs_textProgramInitialized) {
     return;
   }
 
   nu::WrappedMemoryInputStream vertexStream{kTextVertexShader, std::strlen(kTextVertexShader)};
-  gs_textVertexShader = new Shader{Shader::Vertex};
-  gs_textVertexShader->loadFromStream(&vertexStream);
+  gs_vertexShader.get().loadFromStream(&vertexStream);
 
   nu::WrappedMemoryInputStream fragmentStream{kTextFragmentShader, std::strlen(kTextFragmentShader)};
-  gs_textFragmentShader = new Shader{Shader::Fragment};
-  gs_textFragmentShader->loadFromStream(&fragmentStream);
+  gs_fragmentShader.get().loadFromStream(&fragmentStream);
 
-  gs_textProgram = new Program{gs_textVertexShader, gs_textFragmentShader};
-  gs_textProgram->link();
+  gs_textProgram.setVertexShader(ResourceRef<Shader>{&gs_vertexShader});
+  gs_textProgram.setFragmentShader(ResourceRef<Shader>{&gs_fragmentShader});
+  gs_textProgram.link();
 }
 
 void Text::updateGeometry() {

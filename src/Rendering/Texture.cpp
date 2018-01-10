@@ -27,7 +27,7 @@ void Texture::bind(const Texture* texture) {
   }
 }
 
-Texture::Texture(Texture&& other) : m_name(nu::move(other.m_name)), m_size(nu::move(other.m_size)) {
+Texture::Texture(Texture&& other) : m_name(std::move(other.m_name)), m_size(std::move(other.m_size)) {
   other.m_name = 0;
   other.m_size = {};
 }
@@ -39,8 +39,8 @@ Texture::~Texture() {
 }
 
 Texture& Texture::operator=(Texture&& other) {
-  m_name = nu::move(other.m_name);
-  m_size = nu::move(other.m_size);
+  m_name = std::move(other.m_name);
+  m_size = std::move(other.m_size);
 
   other.m_name = 0;
   other.m_size = {};

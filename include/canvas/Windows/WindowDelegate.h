@@ -2,10 +2,12 @@
 #ifndef CANVAS_WINDOWS_WINDOW_DELEGATE_H_
 #define CANVAS_WINDOWS_WINDOW_DELEGATE_H_
 
-#include "nucleus/Macros.h"
+#include <string>
 
 #include "canvas/Utils/Size.h"
-#include "Event.h"
+#include "canvas/Windows/Event.h"
+#include "nucleus/Macros.h"
+#include "nucleus/Text/String.h"
 
 namespace ca {
 
@@ -13,12 +15,14 @@ class Canvas;
 
 class WindowDelegate {
 public:
-  WindowDelegate() = default;
+  explicit WindowDelegate(const std::string& title) : m_title(title) {}
 
-  virtual ~WindowDelegate() {}
+  virtual ~WindowDelegate() = default;
 
   // Get the title of the window.
-  const std::string& getTitle() const { return m_title; }
+  const std::string& getTitle() const {
+    return m_title;
+  }
 
   // Called right after the window was created.  Return false if the app creation failed.
   virtual bool onWindowCreated();
@@ -38,11 +42,14 @@ public:
   virtual void onKeyReleased(const KeyEvent& evt);
 
 protected:
+  nu::Allocator* m_allocator;
+
   // The title that appears in the window title bar.
   std::string m_title;
 
 private:
-  DISALLOW_COPY_AND_ASSIGN(WindowDelegate);
+  COPY_DELETE(WindowDelegate);
+  MOVE_DELETE(WindowDelegate);
 };
 
 }  // namespace ca

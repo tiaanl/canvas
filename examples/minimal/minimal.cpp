@@ -4,11 +4,13 @@
 
 class MinimalWindow : public ca::WindowDelegate {
 public:
-  MinimalWindow() {}
+  MinimalWindow() : ca::WindowDelegate(nu::getDefaultAllocator(), "Minimal") {}
   ~MinimalWindow() override {}
 
   // Override: ca::WindowDelegate
-  void onPaint(ca::Canvas* canvas) override { canvas->clear(ca::Color{31, 63, 95}); }
+  void onPaint(ca::Canvas* canvas) override {
+    canvas->clear(ca::Color{31, 63, 95});
+  }
 
 private:
   DISALLOW_COPY_AND_ASSIGN(MinimalWindow);

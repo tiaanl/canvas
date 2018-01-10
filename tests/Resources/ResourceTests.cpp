@@ -71,7 +71,7 @@ TEST(ResourceTests, ResourceIsMoved) {
 
   {
     ca::Resource<TrackingResource> res = TrackingResource{10};
-    ca::Resource<TrackingResource> res2 = nu::move(res);
+    ca::Resource<TrackingResource> res2 = std::move(res);
   }
 
   EXPECT_EQ(1, TrackingResource::constructs);

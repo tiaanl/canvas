@@ -2,35 +2,42 @@
 #ifndef CANVAS_APP_H_
 #define CANVAS_APP_H_
 
+#include "canvas/Windows/Window.h"
 #include "canvas/Windows/WindowDelegate.h"
+#include "nucleus/Allocators/Allocated.h"
 #include "nucleus/Allocators/DefaultAllocator.h"
 #include "nucleus/Config.h"
 #include "nucleus/Macros.h"
-#include "nucleus/Memory/Allocated.h"
 #include "nucleus/Win/WindowsMixin.h"
 
 namespace ca {
 
-class Window;
-
+template <typename T>
 class App {
 public:
-  // Construct a new app with the specified delegate that will control the app.
-  explicit App(nu::Allocator* allocator = nu::getDefaultAllocator());
+  using DelegateType = T;
 
-  // Destruct the app.
-  ~App();
+  // Construct a new app with the specified delegate that will control the app.
+  explicit App() {}
 
   // Run the application and only return once all the windows are closed.
-  void run(WindowDelegate* delegate);
+  void run() {
+    // Set up the window.
+    m_window = Window::create(&m_delegate, m_delegate.getTitle());
+
+    while (m_window->processEvents()) {
+      m_window->paint();
+    }
+  }
 
 private:
-  nu::Allocator* m_allocator;
+  COPY_DELETE(App);
+  MOVE_DELETE(App);
+
+  DelegateType m_delegate;
 
   // The single window we are managing.
-  nu::Allocated<Window> m_window;
-
-  DISALLOW_COPY_AND_ASSIGN(App);
+  std::unique_ptr<Window> m_window;
 };
 
 }  // namespace ca
@@ -50,10 +57,8 @@ private:
 #define CANVAS_APP(DelegateType)                                                                                       \
   MAIN_HEADER {                                                                                                        \
     {                                                                                                                  \
-      nu::GlobalAllocator allocator;                                                                                   \
-      auto d = nu::allocate<DelegateType>(&allocator);                                                                 \
-      ca::App app{&allocator};                                                                                         \
-      app.run(d.get());                                                                                                \
+      ca::App<DelegateType> app;                                                                                       \
+      app.run();                                                                                                       \
     }                                                                                                                  \
     MEMORY_DUMP                                                                                                        \
     return 0;                                                                                                          \

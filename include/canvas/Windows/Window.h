@@ -2,10 +2,12 @@
 #ifndef CANVAS_WINDOWS_WINDOW_H_
 #define CANVAS_WINDOWS_WINDOW_H_
 
+#include <memory>
+
 #include "WindowDelegate.h"
+#include "nucleus/Allocators/Allocated.h"
 #include "nucleus/Allocators/Allocator.h"
 #include "nucleus/Macros.h"
-#include "nucleus/Memory/Allocated.h"
 
 typedef struct GLFWwindow GLFWwindow;
 
@@ -14,7 +16,7 @@ namespace ca {
 class Window {
 public:
   // Factory function to create a window with the specified delegate.
-  static nu::Allocated<Window> create(nu::Allocator* allocator, WindowDelegate* delegate, const std::string& title);
+  static std::unique_ptr<Window> create(WindowDelegate* delegate, const std::string& title);
 
   // Construct a new window with the specified delegate.  Use the static factory function `create` in stead.
   explicit Window(WindowDelegate* delegate);
