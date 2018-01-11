@@ -35,11 +35,13 @@ Command* Canvas::render(GLuint program, GLuint vertexArray, GLenum primitiveType
 }
 
 void Canvas::render() {
+#if 0
   for (Command& command : m_commands) {
     command.execute();
   }
 
   m_commands.clear();
+#endif  // 0
 }
 
 }  // namespace ca

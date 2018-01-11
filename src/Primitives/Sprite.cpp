@@ -14,7 +14,7 @@ namespace ca {
 namespace {
 
 const char* kVertexShader =
-    "#version 410\n"
+    "#version 330\n"
     "\n"
     "layout(location = 0) in vec3 vert_position;\n"
     "layout(location = 1) in vec2 vert_texCoord;\n"
@@ -30,7 +30,7 @@ const char* kVertexShader =
     "}\n";
 
 const char* kFragmentShader =
-    "#version 410\n"
+    "#version 330\n"
     "\n"
     "in vec2 frag_texCoord;\n"
     "\n"
@@ -127,7 +127,7 @@ void Sprite::ensureShaderProgram() {
     s_vertexShader.get().loadFromStream(&vertexStream);
 
     nu::WrappedMemoryInputStream fragmentStream{kFragmentShader, std::strlen(kFragmentShader) + 1};
-    s_fragmentShader.get().loadFromStream(&vertexStream);
+    s_fragmentShader.get().loadFromStream(&fragmentStream);
 
     s_shaderProgram.setVertexShader(ResourceRef<Shader>{&s_vertexShader});
     s_shaderProgram.setFragmentShader(ResourceRef<Shader>{&s_fragmentShader});
