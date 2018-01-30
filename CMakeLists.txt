@@ -77,7 +77,10 @@ set(canvas_SOURCE_FILES
 add_library(canvas STATIC ${canvas_HEADER_FILES} ${canvas_SOURCE_FILES})
 target_link_libraries(canvas nucleus glfw glad freetype libpng zlib)
 target_include_directories(canvas PUBLIC "${canvas_SOURCE_DIR}/include")
-set_property(TARGET canvas PROPERTY FOLDER canvas)
+set_target_properties(canvas PROPERTIES
+    CXX_STANDARD 14
+    FOLDER canvas
+    )
 
 add_subdirectory(tests "canvas_tests")
 

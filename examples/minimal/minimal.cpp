@@ -4,7 +4,7 @@
 
 class MinimalWindow : public ca::WindowDelegate {
 public:
-  MinimalWindow() : ca::WindowDelegate(nu::getDefaultAllocator(), "Minimal") {}
+  MinimalWindow() : ca::WindowDelegate("Minimal") {}
   ~MinimalWindow() override {}
 
   // Override: ca::WindowDelegate

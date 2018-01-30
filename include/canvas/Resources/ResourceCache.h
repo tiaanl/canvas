@@ -13,7 +13,7 @@
 
 namespace ca {
 
-template <typename T>
+template <typename ResourceType>
 class ResourceCache {
 public:
   explicit ResourceCache(nu::Allocator* allocator) : m_cache(allocator) {}
@@ -28,18 +28,18 @@ public:
     return false;
   }
 
-  ResourceRef<T> get(const nu::String& path) const {
+  ResourceRef<ResourceType> get(const nu::String& path) const {
     for (USize i = 0; i < m_cache.getSize(); ++i) {
       if (m_cache[i].path == path) {
-        return {const_cast<Resource<T>*>(&m_cache[i].resource)};
+        return {const_cast<Resource<ResourceType>*>(&m_cache[i].resource)};
       }
     }
 
     return {};
   }
 
-  ResourceRef<T> put(const nu::String& path, T&& resource) {
-    Pair<Resource<T>>* pair = nullptr;
+  ResourceRef<ResourceType> put(const nu::String& path, ResourceType&& resource) {
+    Pair* pair = nullptr;
 
     for (USize i = 0; i < m_cache.getSize(); ++i) {
       if (m_cache[i].path == path) {
@@ -48,9 +48,9 @@ public:
     }
 
     if (pair) {
-      pair->resource = std::forward<T>(resource);
+      pair->resource.get() = std::forward<ResourceType>(resource);
     } else {
-      m_cache.emplaceBack(path, std::forward<T>(resource));
+      m_cache.emplaceBack(path, std::forward<ResourceType>(resource));
       pair = &m_cache.last();
     }
 
@@ -58,16 +58,15 @@ public:
   }
 
 private:
-  template <typename T>
   struct Pair {
     nu::String path;
-    T resource;
+    Resource<ResourceType> resource;
 
-    Pair(const nu::String& path, T&& resource) : path(path), resource(std::move(resource)) {}
+    Pair(const nu::String& path, ResourceType&& resource) : path(path), resource(std::move(resource)) {}
     Pair(Pair&& other) noexcept : path(std::move(other.path)), resource(std::move(other.resource)) {}
   };
 
-  nu::DynamicArray<Pair<Resource<T>>> m_cache;
+  nu::DynamicArray<Pair> m_cache;
 };
 
 }  // namespace ca

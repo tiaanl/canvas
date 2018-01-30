@@ -13,8 +13,8 @@ using ca::Texture;
 
 class Rendering : public ca::WindowDelegate {
 public:
-  explicit Rendering(nu::Allocator* allocator)
-    : ca::WindowDelegate(allocator, "Rendering"), m_resourceManager(nu::getDefaultAllocator()), m_texture() {}
+  explicit Rendering()
+    : ca::WindowDelegate("Rendering"), m_resourceManager(nu::getDefaultAllocator()), m_texture() {}
 
   ~Rendering() override = default;
 

@@ -18,7 +18,7 @@ public:
   using DelegateType = T;
 
   // Construct a new app with the specified delegate that will control the app.
-  explicit App() {}
+  App() {}
 
   // Run the application and only return once all the windows are closed.
   void run() {
