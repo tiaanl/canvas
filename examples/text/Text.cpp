@@ -5,11 +5,12 @@
 #include "canvas/Rendering/Font.h"
 #include "canvas/Rendering/Program.h"
 #include "canvas/Rendering/Shader.h"
+#include "nucleus/Memory/Ptr.h"
 #include "nucleus/Streams/FileInputStream.h"
 
 class Rendering : public ca::WindowDelegate {
 public:
-  Rendering() { m_title = "Text"; }
+  Rendering() : ca::WindowDelegate("Text") {}
 
   ~Rendering() override = default;
 
@@ -20,6 +21,8 @@ public:
     nu::FileInputStream fontStream{nu::FilePath{"C:\\Windows\\Fonts\\arial.ttf"}};
 #elif OS(MACOSX)
     nu::FileInputStream fontStream{nu::FilePath{"/Library/Fonts/Arial.ttf"}};
+#elif OS(LINUX)
+    nu::FileInputStream fontStream{nu::FilePath{"/usr/share/fonts/truetype/ubuntu-font-family/Ubuntu-M.ttf"}};
 #endif
 
     m_font.loadFromStream(&fontStream);
@@ -54,7 +57,7 @@ private:
   ca::Mat4 m_projectionMatrix;
 
   ca::Font m_font;
-  std::unique_ptr<ca::Text> m_text1;
+  nu::Ptr<ca::Text> m_text1;
 
   DISALLOW_COPY_AND_ASSIGN(Rendering);
 };

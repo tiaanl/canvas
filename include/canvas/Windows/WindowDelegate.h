@@ -15,6 +15,9 @@ class Canvas;
 
 class WindowDelegate {
 public:
+  COPY_DELETE(WindowDelegate);
+  MOVE_DELETE(WindowDelegate);
+
   explicit WindowDelegate(const std::string& title) : m_title(title) {}
 
   virtual ~WindowDelegate() = default;
@@ -42,14 +45,8 @@ public:
   virtual void onKeyReleased(const KeyEvent& evt);
 
 protected:
-  nu::Allocator* m_allocator;
-
   // The title that appears in the window title bar.
   std::string m_title;
-
-private:
-  COPY_DELETE(WindowDelegate);
-  MOVE_DELETE(WindowDelegate);
 };
 
 }  // namespace ca

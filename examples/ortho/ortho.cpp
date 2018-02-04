@@ -36,8 +36,8 @@ const char kFragmentShader[] =
 
 class OrthoWindow : public ca::WindowDelegate {
 public:
-  OrthoWindow() : ca::WindowDelegate(nu::getDefaultAllocator()) {}
-  ~OrthoWindow() override {}
+  OrthoWindow() : ca::WindowDelegate("Ortho") {}
+  ~OrthoWindow() override = default;
 
   bool onWindowCreated() override {
     nu::WrappedMemoryInputStream vertexStream(kVertexShader, std::strlen(kVertexShader));
