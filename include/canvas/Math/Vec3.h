@@ -4,38 +4,20 @@
 
 #include <cmath>
 
-#include "nucleus/Logging.h"
 #include "nucleus/Types.h"
-
-#include "Vec2.h"
 
 namespace ca {
 
 struct Vec3 {
-  F32 x{0.f};
-  F32 y{0.f};
-  F32 z{0.f};
+  F32 x = 0.f;
+  F32 y = 0.f;
+  F32 z = 0.f;
 
-  explicit Vec3(F32 x = 0.f, F32 y = 0.f, F32 z = 0.f) : x{x}, y{y}, z{z} {}
-  Vec3(const Vec2& xy, F32 z) : x{xy.x}, y{xy.y}, z{z} {}
+  explicit Vec3(F32 x_, F32 y_, F32 z_) : x{x_}, y{y_}, z{z_} {}
 
-  F32& operator[](USize index) {
-    DCHECK(index <= 2);
-    return (&x)[index];
+  Vec3 operator-() const {
+    return Vec3{-x, -y, -z};
   }
-
-  F32 operator[](USize index) const {
-    DCHECK(index <= 2);
-    return (&x)[index];
-  }
-
-  bool operator==(const Vec3& other) const { return x == other.x && y == other.y && z == other.z; }
-
-  bool operator!=(const Vec3& other) const { return x != other.x || y != other.y || z != other.z; }
-
-  Vec3 operator-() const { return Vec3{-x, -y, -z}; }
-
-  Vec3 operator+(const Vec3& other) const { return Vec3{x + other.x, y + other.y, z + other.z}; }
 
   Vec3& operator+=(const Vec3& other) {
     x += other.x;
@@ -44,16 +26,12 @@ struct Vec3 {
     return *this;
   }
 
-  Vec3 operator-(const Vec3& other) const { return Vec3{x - other.x, y - other.y, z - other.z}; }
-
   Vec3& operator-=(const Vec3& other) {
     x -= other.x;
     y -= other.y;
     z -= other.z;
     return *this;
   }
-
-  Vec3 operator*(F32 scalar) const { return Vec3{x * scalar, y * scalar, z * scalar}; }
 
   Vec3& operator*=(F32 scalar) {
     x *= scalar;
@@ -62,8 +40,6 @@ struct Vec3 {
     return *this;
   }
 
-  Vec3 operator/(F32 scalar) const { return Vec3{x / scalar, y / scalar, z / scalar}; }
-
   Vec3& operator/=(F32 scalar) {
     x /= scalar;
     y /= scalar;
@@ -71,6 +47,30 @@ struct Vec3 {
     return *this;
   }
 };
+
+inline Vec3 operator+(const Vec3& left, const Vec3& right) {
+  return Vec3{left.x + right.x, left.y + right.y, left.z + right.z};
+}
+
+inline Vec3 operator-(const Vec3& left, const Vec3& right) {
+  return Vec3{left.x - right.x, left.y - right.y, left.z - right.z};
+}
+
+inline Vec3 operator*(const Vec3& left, F32 scalar) {
+  return Vec3{left.x * scalar, left.y * scalar, left.z * scalar};
+}
+
+inline Vec3 operator/(const Vec3& left, F32 scalar) {
+  return Vec3{left.x / scalar, left.y / scalar, left.z / scalar};
+}
+
+inline bool operator==(const Vec3& left, const Vec3& right) {
+  return left.x == right.x && left.y == right.y && left.z == right.z;
+}
+
+inline bool operator!=(const Vec3& left, const Vec3& right) {
+  return left.x != right.x || left.y != right.y || left.z != right.z;
+}
 
 inline F32 dotProduct(const Vec3& a, const Vec3& b) {
   return a.x * b.x + a.y * b.y + a.z * b.z;

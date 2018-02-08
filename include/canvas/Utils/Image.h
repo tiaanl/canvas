@@ -14,23 +14,27 @@ namespace ca {
 
 class Image {
 public:
+  COPY_DELETE(Image);
+
   using DataType = nu::DynamicArray<U8>;
 
   Image() = default;
 
-  Image(const Image& other) = delete;
   Image(Image&& other);
 
   ~Image() = default;
 
-  Image& operator=(const Image& other) = delete;
   Image& operator=(Image&& other);
 
   // Get the size of the image.
-  const Size<I32> getSize() const { return m_size; }
+  const Size<I32> getSize() const {
+    return m_size;
+  }
 
   // Get the pixel data for the image.
-  const DataType& getData() const { return m_data; }
+  const DataType& getData() const {
+    return m_data;
+  }
 
   // Create a blank image with the specified color.
   void create(const Size<I32>& size, const Color& col = Color{});

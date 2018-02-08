@@ -4,38 +4,15 @@
 
 #include <cmath>
 
-#include "nucleus/Logging.h"
 #include "nucleus/Types.h"
 
 namespace ca {
 
 struct Vec2 {
-  F32 x{0.f};
-  F32 y{0.f};
+  F32 x = 0.f;
+  F32 y = 0.f;
 
-  explicit Vec2(F32 x = 0.f, F32 y = 0.f) : x{x}, y{y} {}
-
-  F32& operator[](USize index) {
-    DCHECK(index <= 1);
-    return (&x)[index];
-  }
-
-  F32 operator[](USize index) const {
-    DCHECK(index <= 1);
-    return (&x)[index];
-  }
-
-  // Comparison
-
-  bool operator==(const Vec2& right) const { return x == right.x && y == right.y; }
-
-  bool operator!=(const Vec2& right) const { return x != right.x || y != right.y; }
-
-  // Arithmatic
-
-  Vec2 operator-() const { return Vec2{-x, -y}; }
-
-  Vec2 operator+(const Vec2& right) const { return Vec2{x + right.x, y + right.y}; }
+  explicit Vec2(F32 x_, F32 y_) : x{x_}, y{y_} {}
 
   Vec2& operator+=(const Vec2& other) {
     x += other.x;
@@ -43,15 +20,11 @@ struct Vec2 {
     return *this;
   }
 
-  Vec2 operator-(const Vec2& right) const { return Vec2{x - right.x, y - right.y}; }
-
   Vec2& operator-=(const Vec2& other) {
     x -= other.x;
     y -= other.y;
     return *this;
   }
-
-  Vec2 operator*(F32 scalar) const { return Vec2{x * scalar, y * scalar}; }
 
   Vec2& operator*=(F32 scalar) {
     x *= scalar;
@@ -59,14 +32,40 @@ struct Vec2 {
     return *this;
   }
 
-  Vec2 operator/(F32 scalar) const { return Vec2{x / scalar, y / scalar}; }
-
   Vec2& operator/=(F32 scalar) {
     x /= scalar;
     y /= scalar;
     return *this;
   }
 };
+
+inline Vec2 operator-(const Vec2& x) {
+  return Vec2{-x.x, -x.y};
+}
+
+inline Vec2 operator+(const Vec2& left, const Vec2& right) {
+  return Vec2{left.x + right.x, left.y + right.y};
+}
+
+inline Vec2 operator-(const Vec2& left, const Vec2& right) {
+  return Vec2{left.x - right.x, left.y - right.y};
+}
+
+inline Vec2 operator*(const Vec2& left, F32 scalar) {
+  return Vec2{left.x * scalar, left.y * scalar};
+}
+
+inline Vec2 operator/(const Vec2& left, F32 scalar) {
+  return Vec2{left.x / scalar, left.y / scalar};
+}
+
+inline bool operator==(const Vec2& left, const Vec2& right) {
+  return left.x == right.x && left.y == right.y;
+}
+
+inline bool operator!=(const Vec2& left, const Vec2& right) {
+  return left.x != right.x || left.y != right.y;
+}
 
 inline F32 dotProduct(const Vec2& a, const Vec2& b) {
   return a.x * b.x + a.y * b.y;
