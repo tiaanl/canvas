@@ -39,13 +39,13 @@ struct Vec4 {
     return (&x)[index];
   }
 
-  bool operator==(const Vec4& other) const { return x == other.x && y == other.y && z == other.z && w == other.w; }
+  Vec4 operator-() const {
+    return Vec4{-x, -y, -z, -w};
+  }
 
-  bool operator!=(const Vec4& other) const { return x != other.x || y != other.y || z != other.z || w != other.w; }
-
-  Vec4 operator-() const { return Vec4{-x, -y, -z, -w}; }
-
-  Vec4 operator+(const Vec4& other) const { return Vec4{x + other.x, y + other.y, z + other.z, w + other.w}; }
+  Vec4 operator+(const Vec4& other) const {
+    return Vec4{x + other.x, y + other.y, z + other.z, w + other.w};
+  }
 
   Vec4& operator+=(const Vec4& other) {
     x += other.x;
@@ -55,9 +55,13 @@ struct Vec4 {
     return *this;
   }
 
-  Vec4 operator-(const Vec4& other) const { return Vec4{x - other.x, y - other.y, z - other.z, w - other.w}; }
+  Vec4 operator-(const Vec4& other) const {
+    return Vec4{x - other.x, y - other.y, z - other.z, w - other.w};
+  }
 
-  Vec4 operator-(F32 scalar) const { return Vec4{x - scalar, y - scalar, z - scalar, w - scalar}; }
+  Vec4 operator-(F32 scalar) const {
+    return Vec4{x - scalar, y - scalar, z - scalar, w - scalar};
+  }
 
   Vec4& operator-=(const Vec4& other) {
     x -= other.x;
@@ -67,7 +71,9 @@ struct Vec4 {
     return *this;
   }
 
-  Vec4 operator*(const Vec4& other) const { return Vec4{x * other.x, y * other.y, z * other.z, w * other.w}; }
+  Vec4 operator*(const Vec4& other) const {
+    return Vec4{x * other.x, y * other.y, z * other.z, w * other.w};
+  }
 
   Vec4& operator*=(const Vec4& other) {
     x *= other.x;
@@ -77,7 +83,9 @@ struct Vec4 {
     return *this;
   }
 
-  Vec4 operator*(F32 scalar) const { return Vec4{x * scalar, y * scalar, z * scalar, w * scalar}; }
+  Vec4 operator*(F32 scalar) const {
+    return Vec4{x * scalar, y * scalar, z * scalar, w * scalar};
+  }
 
   Vec4& operator*=(F32 scalar) {
     x *= scalar;
@@ -87,7 +95,9 @@ struct Vec4 {
     return *this;
   }
 
-  Vec4 operator/(F32 scalar) const { return Vec4{x / scalar, y / scalar, z / scalar, w / scalar}; }
+  Vec4 operator/(F32 scalar) const {
+    return Vec4{x / scalar, y / scalar, z / scalar, w / scalar};
+  }
 
   Vec4& operator/=(F32 scalar) {
     x /= scalar;
@@ -114,11 +124,19 @@ inline Vec4 normalize(const Vec4& a) {
   return a * (1.f / length(a));
 }
 
-}  // namespace ca
+inline bool operator==(const Vec4& left, const Vec4& right) {
+  return left.x == right.x && left.y == right.y && left.z == right.z && left.w == right.w;
+}
 
-inline std::ostream& operator<<(std::ostream& os, const ca::Vec4& vec4) {
+inline bool operator!=(const Vec4& left, const Vec4& right) {
+  return left.x != right.x || left.y != right.y || left.z != right.z || left.w != right.w;
+}
+
+inline std::ostream& operator<<(std::ostream& os, const Vec4& vec4) {
   os << "{" << vec4.x << ", " << vec4.y << ", " << vec4.z << ", " << vec4.w << "}";
   return os;
 }
+
+}  // namespace ca
 
 #endif  // CANVAS_MATH_VEC2_H_

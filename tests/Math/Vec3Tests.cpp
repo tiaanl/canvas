@@ -1,19 +1,19 @@
 
 #include "canvas/Math/Vec3.h"
-#include "gtest/gtest.h"
+#include "nucleus/Testing.h"
 
 namespace ca {
 
-TEST(Vec3Test, Basic) {
+TEST_CASE("Vec3Basic") {
   Vec3 v1;
-  EXPECT_EQ(0.f, v1.x);
-  EXPECT_EQ(0.f, v1.y);
-  EXPECT_EQ(0.f, v1.z);
+  REQUIRE(v1.x == 0.f);
+  REQUIRE(v1.y == 0.f);
+  REQUIRE(v1.z == 0.f);
 
   Vec3 v2{1.f, 2.f, 3.f};
-  EXPECT_EQ(1.f, v2.x);
-  EXPECT_EQ(2.f, v2.y);
-  EXPECT_EQ(3.f, v2.z);
+  REQUIRE(v2.x == 1.f);
+  REQUIRE(v2.y == 2.f);
+  REQUIRE(v2.z == 3.f);
 }
 
 }  // namespace ca

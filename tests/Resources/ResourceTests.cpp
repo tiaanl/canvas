@@ -1,9 +1,9 @@
 
 #include "canvas/Resources/Resource.h"
-#include "gtest/gtest.h"
 #include "nucleus/Logging.h"
 #include "nucleus/Ref.h"
 #include "nucleus/Text/String.h"
+#include "nucleus/Testing.h"
 
 struct TrackingResource {
   static USize constructs;
@@ -55,18 +55,18 @@ USize TrackingResource::copies = 0;
 USize TrackingResource::moves = 0;
 USize TrackingResource::destructs = 0;
 
-TEST(ResourceTests, ResourceIsMovedIntoContainer) {
+TEST_CASE("ResourceIsMovedIntoContainer") {
   TrackingResource::reset();
 
   { ca::Resource<TrackingResource> res = TrackingResource{10}; }
 
-  EXPECT_EQ(1, TrackingResource::constructs);
-  EXPECT_EQ(1, TrackingResource::moves);
-  EXPECT_EQ(0, TrackingResource::copies);
-  EXPECT_EQ(2, TrackingResource::destructs);
+  REQUIRE(TrackingResource::constructs == 1);
+  REQUIRE(TrackingResource::moves == 1);
+  REQUIRE(TrackingResource::copies == 0);
+  REQUIRE(TrackingResource::destructs == 2);
 }
 
-TEST(ResourceTests, ResourceIsMoved) {
+TEST_CASE("ResourceIsMoved") {
   TrackingResource::reset();
 
   {
@@ -74,24 +74,24 @@ TEST(ResourceTests, ResourceIsMoved) {
     ca::Resource<TrackingResource> res2 = std::move(res);
   }
 
-  EXPECT_EQ(1, TrackingResource::constructs);
-  EXPECT_EQ(2, TrackingResource::moves);
-  EXPECT_EQ(0, TrackingResource::copies);
-  EXPECT_EQ(3, TrackingResource::destructs);
+  REQUIRE(TrackingResource::constructs == 1);
+  REQUIRE(TrackingResource::moves == 2);
+  REQUIRE(TrackingResource::copies == 0);
+  REQUIRE(TrackingResource::destructs == 3);
 }
 
-TEST(ResourceTests, ConstructResourceInPlace) {
+TEST_CASE("ConstructResourceInPlace") {
   TrackingResource::reset();
 
   { ca::Resource<TrackingResource> res{10}; }
 
-  EXPECT_EQ(1, TrackingResource::constructs);
-  EXPECT_EQ(0, TrackingResource::moves);
-  EXPECT_EQ(0, TrackingResource::copies);
-  EXPECT_EQ(1, TrackingResource::destructs);
+  REQUIRE(TrackingResource::constructs == 1);
+  REQUIRE(TrackingResource::moves == 0);
+  REQUIRE(TrackingResource::copies == 0);
+  REQUIRE(TrackingResource::destructs == 1);
 }
 
-TEST(ResourceTests, CanHoldAReference) {
+TEST_CASE("CanHoldAReference") {
   TrackingResource::reset();
 
   {
@@ -101,8 +101,8 @@ TEST(ResourceTests, CanHoldAReference) {
     nu::Ref<ca::Resource<TrackingResource>> ref2 = ref1;
   }
 
-  EXPECT_EQ(1, TrackingResource::constructs);
-  EXPECT_EQ(0, TrackingResource::moves);
-  EXPECT_EQ(0, TrackingResource::copies);
-  EXPECT_EQ(1, TrackingResource::destructs);
+  REQUIRE(TrackingResource::constructs == 1);
+  REQUIRE(TrackingResource::moves == 0);
+  REQUIRE(TrackingResource::copies == 0);
+  REQUIRE(TrackingResource::destructs == 1);
 }

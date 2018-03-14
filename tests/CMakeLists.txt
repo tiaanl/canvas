@@ -10,6 +10,6 @@ set(canvas_TEST_FILES
     "Resources/ResourceTests.cpp"
 )
 
-add_executable(canvas_tests ${canvas_TEST_FILES})
-target_link_libraries(canvas_tests googletest canvas nucleus)
-set_property(TARGET canvas_tests PROPERTY FOLDER canvas)
+add_executable(canvasTests ${canvas_TEST_FILES})
+target_link_libraries(canvasTests testing canvas nucleus)
+set_property(TARGET canvasTests PROPERTY FOLDER canvas)

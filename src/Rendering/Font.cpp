@@ -18,8 +18,7 @@
 
 namespace ca {
 
-Font::Font(nu::Allocator* allocator)
-  : m_allocator(allocator), m_library(nullptr), m_face(nullptr), m_fontData(allocator) {}
+Font::Font() = default;
 
 Font::~Font() {
   cleanup();

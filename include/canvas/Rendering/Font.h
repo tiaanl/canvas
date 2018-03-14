@@ -24,7 +24,7 @@ public:
     Rect<F32> textureRect;
   };
 
-  Font(nu::Allocator* allocator = nu::getDefaultAllocator());
+  Font();
   ~Font();
 
   // Load a font from the given stream.
@@ -88,13 +88,11 @@ private:
 
   using PageTable = std::unordered_map<U32, Page>;
 
-  nu::Allocator* m_allocator;
-
   // Pointer to the internal library.
-  void* m_library;
+  void* m_library = nullptr;
 
   // Pointer to the internal font face.
-  void* m_face;
+  void* m_face = nullptr;
 
   // Table containing the glyph pages by character size.
   mutable PageTable m_pages;

@@ -1,12 +1,11 @@
 
-#include "gtest/gtest.h"
 #include "nucleus/Streams/FileInputStream.h"
-
 #include "canvas/Rendering/Font.h"
+#include "nucleus/Testing.h"
 
 namespace ca {
 
-TEST(FontTest, Basic) {
+TEST_CASE("FontBasic") {
 #if 0
   fontTest();
 

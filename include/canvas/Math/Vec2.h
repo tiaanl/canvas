@@ -3,6 +3,7 @@
 #define CANVAS_MATH_VEC2_H_
 
 #include <cmath>
+#include <ostream>
 
 #include "nucleus/Types.h"
 

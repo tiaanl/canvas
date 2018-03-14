@@ -17,7 +17,8 @@ public:
   COPY_DELETE(ResourceManager);
   MOVE_DELETE(ResourceManager);
 
-  explicit ResourceManager(nu::Allocator* allocator);
+  ResourceManager();
+  ~ResourceManager();
 
   const nu::FilePath& getRootPath() const;
   void setRootPath(const nu::FilePath& rootPath);

@@ -6,8 +6,6 @@
 #include "canvas/Rendering/Texture.h"
 #include "canvas/Resources/Resource.h"
 #include "canvas/Utils/Image.h"
-#include "nucleus/Allocators/Allocated.h"
-#include "nucleus/Allocators/DefaultAllocator.h"
 #include "nucleus/FilePath.h"
 #include "nucleus/Ref.h"
 
@@ -16,7 +14,11 @@ namespace ca {
 template <typename ResourceType>
 class ResourceCache {
 public:
-  explicit ResourceCache(nu::Allocator* allocator) : m_cache(allocator) {}
+  COPY_DELETE(ResourceCache);
+  MOVE_DELETE(ResourceCache);
+
+  ResourceCache() = default;
+  ~ResourceCache() = default;
 
   bool has(const nu::String& path) const {
     for (USize i = 0; i < m_cache.getSize(); ++i) {

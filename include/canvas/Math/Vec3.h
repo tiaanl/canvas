@@ -13,6 +13,8 @@ struct Vec3 {
   F32 y = 0.f;
   F32 z = 0.f;
 
+  Vec3() = default;
+
   explicit Vec3(F32 x_, F32 y_, F32 z_) : x{x_}, y{y_}, z{z_} {}
 
   F32 operator[](USize index) {

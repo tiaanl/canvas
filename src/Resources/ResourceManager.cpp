@@ -8,8 +8,9 @@
 
 namespace ca {
 
-ResourceManager::ResourceManager(nu::Allocator* allocator)
-  : m_images(allocator), m_textures(allocator), m_shaders(allocator), m_programs(allocator) {}
+ResourceManager::ResourceManager() = default;
+
+ResourceManager::~ResourceManager() = default;
 
 const nu::FilePath& ResourceManager::getRootPath() const {
   return m_rootPath;
