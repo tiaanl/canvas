@@ -26,7 +26,6 @@ inline Mat4 translate(F32 x, F32 y, F32 z) {
 }
 
 inline Mat4 rotate(F32 radians, const Vec3& v) {
-  const F32 a = radians;
   const F32 c = std::cos(radians);
   const F32 s = std::sin(radians);
 

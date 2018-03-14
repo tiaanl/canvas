@@ -8,6 +8,7 @@
 #include "nucleus/Allocators/Allocated.h"
 #include "nucleus/Allocators/Allocator.h"
 #include "nucleus/Macros.h"
+#include "nucleus/Memory/Ptr.h"
 
 typedef struct GLFWwindow GLFWwindow;
 
@@ -15,11 +16,13 @@ namespace ca {
 
 class Window {
 public:
-  // Factory function to create a window with the specified delegate.
-  static std::unique_ptr<Window> create(WindowDelegate* delegate, const std::string& title);
+  COPY_DELETE(Window);
+  MOVE_DELETE(Window);
 
-  // Construct a new window with the specified delegate.  Use the static factory function `create` in stead.
-  explicit Window(WindowDelegate* delegate);
+  // Factory function to create a window with the specified delegate.
+  static nu::Ptr<Window> create(WindowDelegate* delegate, const std::string& title);
+
+  Window() = delete;
 
   // Cleanup.
   ~Window();
@@ -38,6 +41,9 @@ public:
   void paint();
 
 private:
+  template <typename T, typename... Args>
+  friend nu::Ptr<T> nu::makePtr(Args&&...);
+
   // Callbacks
   static void frameBufferSizeCallback(GLFWwindow* window, int width, int height);
   static void cursorPositionCallback(GLFWwindow* window, double xpos, double ypos);
@@ -45,13 +51,14 @@ private:
   static void scrollCallback(GLFWwindow* window, double xOffset, double yOffset);
   static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
+  // Construct a new window with the specified delegate.
+  explicit Window(WindowDelegate* delegate);
+
   // The window delegate we pass events to.
   WindowDelegate* m_delegate;
 
   // Our internal pointer to the window's implementation.
   GLFWwindow* m_window;
-
-  DISALLOW_IMPLICIT_CONSTRUCTORS(Window);
 };
 
 }  // namespace ca

@@ -269,22 +269,22 @@ Key getKeyFromGLFWKey(int key) {
   };
 }
 
-static void glfwErrorCallback(int error, const char* description) {
+void glfwErrorCallback(int error, const char* description) {
   LOG(Error) << "GLFW Error (" << error << ") " << description;
 }
 
 }  // namespace
 
 // static
-std::unique_ptr<Window> Window::create(WindowDelegate* delegate, const std::string& title) {
+nu::Ptr<Window> Window::create(WindowDelegate* delegate, const std::string& title) {
   DCHECK(delegate) << "Can't create a window with no delegate.";
 
-  std::unique_ptr<Window> newWindow = std::make_unique<Window>(delegate);
+  nu::Ptr<Window> newWindow = nu::makePtr<Window>(delegate);
 
   // Initialize GLFW.
   if (!glfwInit()) {
     LOG(Error) << "Could not initialize glfw.";
-    return nullptr;
+    return nu::Ptr<Window>{};
   }
 
   glfwSetErrorCallback(glfwErrorCallback);
@@ -302,7 +302,7 @@ std::unique_ptr<Window> Window::create(WindowDelegate* delegate, const std::stri
       glfwCreateWindow(clientSize.width, clientSize.height, delegate->getTitle().c_str(), nullptr, nullptr);
   if (!newWindow->m_window) {
     LOG(Error) << "Could not create window.";
-    return nullptr;
+    return nu::Ptr<Window>{};
   }
 
   // Center the window on the screen.

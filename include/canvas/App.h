@@ -15,6 +15,9 @@ namespace ca {
 template <typename T>
 class App {
 public:
+  COPY_DELETE(App);
+  MOVE_DELETE(App);
+
   using DelegateType = T;
 
   // Construct a new app with the specified delegate that will control the app.
@@ -23,7 +26,7 @@ public:
   // Run the application and only return once all the windows are closed.
   void run() {
     // Set up the window.
-    m_window = Window::create(&m_delegate, m_delegate.getTitle());
+    m_window = std::move(Window::create(&m_delegate, m_delegate.getTitle()));
 
     while (m_window->processEvents()) {
       m_window->paint();
@@ -31,13 +34,10 @@ public:
   }
 
 private:
-  COPY_DELETE(App);
-  MOVE_DELETE(App);
-
   DelegateType m_delegate;
 
   // The single window we are managing.
-  std::unique_ptr<Window> m_window;
+  nu::Ptr<Window> m_window;
 };
 
 }  // namespace ca

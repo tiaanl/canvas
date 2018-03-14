@@ -14,7 +14,7 @@ class Resource;
 template <typename T>
 struct ResourceTraits {
   static void destruct(const Resource<T>* resource) {
-    // LOG(Info) << "Destructing resource.";
+    LOG(Info) << "Destructing resource.";
   }
 };
 
@@ -24,15 +24,15 @@ public:
   using ResourceType = T;
 
   template <typename... Args>
-  Resource(Args&&... args) : m_resource(std::forward<Args>(args)...) {}
+  explicit Resource(Args&&... args) : m_resource(std::forward<Args>(args)...) {}
 
   Resource(const ResourceType& resource) : m_resource(resource) {}
 
-  Resource(ResourceType&& resource) : m_resource(std::move(resource)) {}
+  Resource(ResourceType&& resource) noexcept : m_resource(std::move(resource)) {}
 
   Resource(const Resource& other) = delete;
 
-  Resource(Resource&& other) : m_resource(std::move(other.m_resource)) {}
+  Resource(Resource&& other) noexcept : m_resource(std::move(other.m_resource)) {}
 
   ~Resource() = default;
 
