@@ -1,4 +1,6 @@
 
+#include <utility>
+
 #include "canvas/Resources/ResourceManager.h"
 #include "nucleus/Streams/FileInputStream.h"
 
@@ -6,7 +8,8 @@
 
 namespace ca {
 
-ResourceManager::ResourceManager(nu::Allocator* allocator) : m_images(allocator), m_textures(allocator) {}
+ResourceManager::ResourceManager(nu::Allocator* allocator)
+  : m_images(allocator), m_textures(allocator), m_shaders(allocator), m_programs(allocator) {}
 
 const nu::FilePath& ResourceManager::getRootPath() const {
   return m_rootPath;
@@ -47,6 +50,44 @@ ResourceRef<Texture> ResourceManager::getTexture(const nu::String& path) {
   newTexture.createFromImage(resource.get()->get());
 
   return m_textures.put(path, std::move(newTexture));
+}
+
+ResourceRef<Shader> ResourceManager::getShader(const nu::String& path, Shader::ShaderType shaderType) {
+  ResourceRef<Shader> resource = m_shaders.get(path);
+  if (!resource.isEmpty()) {
+    return resource;
+  }
+
+  nu::FileInputStream stream{getFilePathForResource(path)};
+  if (!stream.openedOk()) {
+    LOG(Error) << "Could not open resource (" << path << ")";
+    return {nullptr};
+  }
+
+  Shader newShader{shaderType};
+  if (!newShader.loadFromStream(&stream)) {
+    LOG(Error) << "Could not load resource (" << path << ")";
+    return {nullptr};
+  }
+
+  return m_shaders.put(path, std::move(newShader));
+}
+
+ResourceRef<Program> ResourceManager::getProgram(const nu::String& path) {
+  ResourceRef<Program> resource = m_programs.get(path);
+  if (!resource.isEmpty()) {
+    return resource;
+  }
+
+  return nullptr;
+}
+
+ResourceRef<Shader> ResourceManager::insertShader(const nu::String& path, Shader&& shader) {
+  return m_shaders.put(path, std::forward<ca::Shader>(shader));
+}
+
+ResourceRef<Program> ResourceManager::insertProgram(const nu::String& path, Program&& program) {
+  return m_programs.put(path, std::forward<ca::Program>(program));
 }
 
 nu::FilePath ResourceManager::getFilePathForResource(const nu::String& path) {

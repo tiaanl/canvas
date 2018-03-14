@@ -19,12 +19,17 @@ class Shader;
 
 class Program {
 public:
+  COPY_DELETE(Program);
+
   // Bind the specified program.  Can pass nullptr to clear the program binding.
   static void bind(Program* program);
 
   Program();
+  Program(Program&& other) noexcept;
   Program(const ResourceRef<Shader>& vertexShader, const ResourceRef<Shader>& fragmentShader);
   ~Program();
+
+  Program& operator=(Program&& other) noexcept;
 
   // Return the OpenGL resource name for the shader program.
   GLuint getNativeHandle() const {
@@ -51,7 +56,7 @@ public:
   }
 
   // Link the program.
-  void link();
+  bool link();
 
   // Set uniforms inside the program.
   bool setUniform(std::string name, float f);
@@ -61,11 +66,8 @@ public:
   bool setUniform(std::string name, const Mat4& mat4);
 
 private:
-  COPY_DELETE(Program);
-  MOVE_DELETE(Program);
-
   // Link the program.
-  void linkInternal();
+  bool linkInternal();
 
   // The native handle to the program.
   GLuint m_name = 0;

@@ -2,10 +2,13 @@
 #ifndef CANVAS_RESOURCES_RESOURCE_MANAGER_H_
 #define CANVAS_RESOURCES_RESOURCE_MANAGER_H_
 
+#include "canvas/Rendering/Program.h"
+#include "canvas/Rendering/Shader.h"
 #include "canvas/Resources/ResourceCache.h"
 #include "nucleus/Allocators/Allocator.h"
 #include "nucleus/FilePath.h"
 #include "nucleus/Macros.h"
+#include "nucleus/Memory/Ptr.h"
 
 namespace ca {
 
@@ -21,7 +24,11 @@ public:
 
   ResourceRef<Image> getImage(const nu::String& path);
   ResourceRef<Texture> getTexture(const nu::String& path);
-  // ResourceRef<Shader> getShader(const nu::String& path, Shader::ShaderType shaderType);
+  ResourceRef<Shader> getShader(const nu::String& path, Shader::ShaderType shaderType);
+  ResourceRef<Program> getProgram(const nu::String& path);
+
+  ResourceRef<Shader> insertShader(const nu::String& path, Shader&& shader);
+  ResourceRef<Program> insertProgram(const nu::String& path, Program&& program);
 
 private:
   nu::FilePath getFilePathForResource(const nu::String& path);
@@ -30,6 +37,8 @@ private:
 
   ResourceCache<Image> m_images;
   ResourceCache<Texture> m_textures;
+  ResourceCache<Shader> m_shaders;
+  ResourceCache<Program> m_programs;
 };
 
 }  // namespace ca

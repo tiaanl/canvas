@@ -12,7 +12,9 @@ struct Vec2 {
   F32 x = 0.f;
   F32 y = 0.f;
 
-  explicit Vec2(F32 x_, F32 y_) : x{x_}, y{y_} {}
+  Vec2() = default;
+
+  Vec2(F32 x_, F32 y_) : x{x_}, y{y_} {}
 
   Vec2& operator+=(const Vec2& other) {
     x += other.x;

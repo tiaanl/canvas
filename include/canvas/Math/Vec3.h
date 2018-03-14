@@ -15,6 +15,10 @@ struct Vec3 {
 
   explicit Vec3(F32 x_, F32 y_, F32 z_) : x{x_}, y{y_}, z{z_} {}
 
+  F32 operator[](USize index) {
+    return (&x)[index];
+  }
+
   Vec3 operator-() const {
     return Vec3{-x, -y, -z};
   }

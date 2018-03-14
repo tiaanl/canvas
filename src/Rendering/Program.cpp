@@ -23,7 +23,16 @@ void Program::bind(Program* program) {
   }
 }
 
-Program::Program() {}
+Program::Program() = default;
+
+Program::Program(Program&& other) noexcept
+  : m_name(other.m_name), m_vertexShader{other.m_vertexShader}, m_fragmentShader{other.m_fragmentShader},
+    m_isLinked(other.m_isLinked) {
+  other.m_name = 0;
+  other.m_vertexShader = nullptr;
+  other.m_fragmentShader = nullptr;
+  other.m_isLinked = false;
+}
 
 Program::Program(const ResourceRef<Shader>& vertexShader, const ResourceRef<Shader>& fragmentShader)
   : m_vertexShader(vertexShader), m_fragmentShader(fragmentShader) {}
@@ -32,6 +41,18 @@ Program::~Program() {
   if (m_name) {
     GL_CHECK(glDeleteProgram(m_name));
   }
+}
+
+Program& Program::operator=(Program&& other) noexcept {
+  m_name = other.m_name;
+  m_vertexShader = other.m_vertexShader;
+  m_fragmentShader = other.m_fragmentShader;
+  m_isLinked = other.m_isLinked;
+
+  other.m_name = 0;
+  other.m_vertexShader = nullptr;
+  other.m_fragmentShader = nullptr;
+  other.m_isLinked = false;
 }
 
 void Program::setVertexShader(const ResourceRef<Shader>& vertexShader) {
@@ -44,8 +65,9 @@ void Program::setFragmentShader(const ResourceRef<Shader>& fragmentShader) {
   m_isLinked = false;
 }
 
-void Program::link() {
-  linkInternal();
+bool Program::link() {
+  m_isLinked = linkInternal();
+  return m_isLinked;
 }
 
 #define BIND_AND_GET_LOCATION()                                                                                        \
@@ -88,7 +110,7 @@ bool Program::setUniform(std::string name, const Mat4& mat4) {
 
 #undef BIND_AND_GET_LOCATION
 
-void Program::linkInternal() {
+bool Program::linkInternal() {
   // Make sure the program is created.
   if (!m_name) {
     m_name = glCreateProgram();
@@ -112,9 +134,10 @@ void Program::linkInternal() {
     if (infoLength) {
       LOG(Error) << buffer.getData();
     }
+    return false;
   }
 
-  m_isLinked = true;
+  return true;
 }
 
 }  // namespace ca

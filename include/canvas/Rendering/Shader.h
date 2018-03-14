@@ -18,13 +18,13 @@ public:
 
   explicit Shader(ShaderType type) : m_type(type), m_name(0) {}
 
-  Shader(Shader&& other) : m_type(other.m_type), m_name(other.m_name) {
+  Shader(Shader&& other) noexcept : m_type(other.m_type), m_name(other.m_name) {
     other.m_name = 0;
   }
 
   ~Shader();
 
-  Shader& operator=(Shader&& other) {
+  Shader& operator=(Shader&& other) noexcept {
     m_type = other.m_type;
     m_name = other.m_name;
 
