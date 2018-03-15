@@ -53,6 +53,8 @@ Program& Program::operator=(Program&& other) noexcept {
   other.m_vertexShader = nullptr;
   other.m_fragmentShader = nullptr;
   other.m_isLinked = false;
+
+  return *this;
 }
 
 void Program::setVertexShader(const ResourceRef<Shader>& vertexShader) {

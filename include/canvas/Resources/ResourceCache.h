@@ -40,14 +40,28 @@ public:
     return {};
   }
 
-  ResourceRef<ResourceType> put(const nu::String& path, ResourceType&& resource) {
-    Pair* pair = nullptr;
+  template <typename... Args>
+  ResourceRef<ResourceType> getOrCreate(const nu::String& path, Args&&... args) {
+    // Check if the pair already exists.
+    Pair* pair = findPair(path);
 
-    for (USize i = 0; i < m_cache.getSize(); ++i) {
-      if (m_cache[i].path == path) {
-        pair = &m_cache[i];
-      }
+    // If it exists, then we just return the existing resource.
+    if (pair) {
+      return {&pair->resource};
     }
+
+    // Create a new empty resource.
+    ResourceType newResource{std::forward<Args>(args)...};
+
+    // Save it in the cache.
+    m_cache.emplaceBack(path, std::move(newResource));
+    pair = &m_cache.last();
+
+    return {&pair->resource};
+  }
+
+  ResourceRef<ResourceType> put(const nu::String& path, ResourceType&& resource) {
+    Pair* pair = findPair(path);
 
     if (pair) {
       pair->resource.get() = std::forward<ResourceType>(resource);
@@ -67,6 +81,16 @@ private:
     Pair(const nu::String& path, ResourceType&& resource) : path(path), resource(std::move(resource)) {}
     Pair(Pair&& other) noexcept : path(std::move(other.path)), resource(std::move(other.resource)) {}
   };
+
+  Pair* findPair(const nu::String& path) {
+    for (USize i = 0; i < m_cache.getSize(); ++i) {
+      if (m_cache[i].path == path) {
+        return &m_cache[i];
+      }
+    }
+
+    return nullptr;
+  }
 
   nu::DynamicArray<Pair> m_cache;
 };

@@ -13,7 +13,7 @@ class Resource;
 
 template <typename T>
 struct ResourceTraits {
-  static void destruct(const Resource<T>* resource) {
+  static void destruct(const Resource<T>*) {
     LOG(Info) << "Destructing resource.";
   }
 };

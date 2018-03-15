@@ -28,8 +28,8 @@ public:
   ResourceRef<Shader> getShader(const nu::String& path, Shader::ShaderType shaderType);
   ResourceRef<Program> getProgram(const nu::String& path);
 
-  ResourceRef<Shader> insertShader(const nu::String& path, Shader&& shader);
-  ResourceRef<Program> insertProgram(const nu::String& path, Program&& program);
+  ResourceRef<Shader> getOrCreateShader(const nu::String& path, Shader::ShaderType shaderType);
+  ResourceRef<Program> getOrCreateProgram(const nu::String& path);
 
 private:
   nu::FilePath getFilePathForResource(const nu::String& path);

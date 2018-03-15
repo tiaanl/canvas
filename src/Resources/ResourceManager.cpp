@@ -83,12 +83,12 @@ ResourceRef<Program> ResourceManager::getProgram(const nu::String& path) {
   return nullptr;
 }
 
-ResourceRef<Shader> ResourceManager::insertShader(const nu::String& path, Shader&& shader) {
-  return m_shaders.put(path, std::forward<ca::Shader>(shader));
+ResourceRef<Shader> ResourceManager::getOrCreateShader(const nu::String& path, Shader::ShaderType shaderType) {
+  return m_shaders.getOrCreate(path, shaderType);
 }
 
-ResourceRef<Program> ResourceManager::insertProgram(const nu::String& path, Program&& program) {
-  return m_programs.put(path, std::forward<ca::Program>(program));
+ResourceRef<Program> ResourceManager::getOrCreateProgram(const nu::String& path) {
+  return m_programs.getOrCreate(path);
 }
 
 nu::FilePath ResourceManager::getFilePathForResource(const nu::String& path) {
