@@ -1,15 +1,15 @@
 
 #include "canvas/Utils/GLCheck.h"
 
-#include "nucleus/Logging.h"
-
 #include "canvas/OpenGL.h"
+#include "nucleus/Debugger.h"
+#include "nucleus/Logging.h"
 
 #include "nucleus/MemoryDebug.h"
 
 namespace ca {
 
-void glCheck() {
+bool glCheck() {
   GLint error = glGetError();
 
   if (error != GL_NO_ERROR) {
@@ -32,11 +32,12 @@ void glCheck() {
         break;
     }
 
-#if OS(WIN) && COMPILER(MSVC)
-      // Break into the debugger.
-      //__debugbreak();
-#endif
+    nu::breakDebugger();
+
+    return false;
   }
+
+  return true;
 }
 
 }  // namespace ca

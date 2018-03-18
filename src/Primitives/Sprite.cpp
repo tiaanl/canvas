@@ -4,6 +4,7 @@
 #include <cstring>
 
 #include "canvas/Rendering/Shader.h"
+#include "canvas/Resources/ResourceManager.h"
 #include "canvas/Utils/ScopedOpenGLEnable.h"
 #include "nucleus/Streams/WrappedMemoryInputStream.h"
 
@@ -44,19 +45,10 @@ const char* kFragmentShader =
 
 }  // namespace
 
-// static
-Program Sprite::s_shaderProgram;
+Sprite::Sprite(ResourceManager* resourceManager, const ResourceRef<Texture>& texture)
+  : m_resourceManager(resourceManager), m_texture{texture} {
+  DCHECK(m_resourceManager) << "Can't create sprites without a resource manager";
 
-// static
-bool Sprite::s_shaderProgramInitialized = false;
-
-// static
-Resource<Shader> Sprite::s_vertexShader{Shader::Vertex};
-
-// static
-Resource<Shader> Sprite::s_fragmentShader{Shader::Fragment};
-
-Sprite::Sprite(Texture* texture) : m_texture{texture} {
   // If we have a texture, rebuild the geometry.
   if (texture) {
     updateGeometry();
@@ -76,7 +68,7 @@ ca::Rect<F32> Sprite::getBounds() const {
   return Rect<F32>{-width, -height, width * 2.f, height * 2.f};
 }
 
-void Sprite::setTexture(Texture* texture) {
+void Sprite::setTexture(const ResourceRef<Texture>& texture) {
   m_texture = texture;
   updateGeometry();
 }
@@ -86,6 +78,7 @@ void Sprite::render(Canvas* canvas, const Mat4& transform) const {
     return;
   }
 
+#if 0
   // Make sure the shader program is created and bind it.
   ensureShaderProgram();
   Program::bind(&s_shaderProgram);
@@ -99,6 +92,36 @@ void Sprite::render(Canvas* canvas, const Mat4& transform) const {
   GL_CHECK(glBlendEquation(GL_FUNC_ADD));
 
   m_geometry.render(canvas);
+#endif  // 0
+}
+
+bool Sprite::ensureShaderProgram() {
+  if (m_shaderProgram && m_shaderProgram->isLoaded()) {
+    return true;
+  }
+
+  nu::WrappedMemoryInputStream vertexStream{kVertexShader, std::strlen(kVertexShader) + 1};
+  ResourceRef<Shader> vertexShader = m_resourceManager->getOrCreateShader("_canvas_sprite_vertex");
+  if (!vertexShader->isLoaded() || !vertexShader->loadFromStream(Shader::Vertex, &vertexStream)) {
+    return false;
+  }
+
+  nu::WrappedMemoryInputStream fragmentStream{kFragmentShader, std::strlen(kFragmentShader) + 1};
+  ResourceRef<Shader> fragmentShader = m_resourceManager->getOrCreateShader("_canvas_sprite_fragment");
+  if (!fragmentShader->isLoaded() || !fragmentShader->loadFromStream(Shader::Fragment, &fragmentStream)) {
+    return false;
+  }
+
+  m_shaderProgram = m_resourceManager->getOrCreateProgram("_canvas_sprite_program");
+  if (!m_shaderProgram->isLoaded()) {
+    m_shaderProgram->setVertexShader(vertexShader);
+    m_shaderProgram->setFragmentShader(fragmentShader);
+    if (!m_shaderProgram->link()) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 void Sprite::updateGeometry() {
@@ -118,23 +141,6 @@ void Sprite::updateGeometry() {
   m_geometry = Geometry::createRectangle(rect, Color{255, 255, 255, 255});
 
   m_geometry.compileAndUpload();
-}
-
-// static
-void Sprite::ensureShaderProgram() {
-  if (!s_shaderProgramInitialized) {
-    nu::WrappedMemoryInputStream vertexStream{kVertexShader, std::strlen(kVertexShader) + 1};
-    s_vertexShader.get().loadFromStream(&vertexStream);
-
-    nu::WrappedMemoryInputStream fragmentStream{kFragmentShader, std::strlen(kFragmentShader) + 1};
-    s_fragmentShader.get().loadFromStream(&fragmentStream);
-
-    s_shaderProgram.setVertexShader(ResourceRef<Shader>{&s_vertexShader});
-    s_shaderProgram.setFragmentShader(ResourceRef<Shader>{&s_fragmentShader});
-    s_shaderProgram.link();
-
-    s_shaderProgramInitialized = true;
-  }
 }
 
 }  // namespace ca

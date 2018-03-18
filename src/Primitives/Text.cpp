@@ -49,11 +49,6 @@ const char* kTextFragmentShader =
     "  final = texture(sampler, frag_texCoord);\n"
     "}\n";
 
-static Resource<Shader> gs_vertexShader{Shader::Vertex};
-static Resource<Shader> gs_fragmentShader{Shader::Fragment};
-static Program gs_textProgram;
-static bool gs_textProgramInitialized = false;
-
 }  // namespace
 
 Text::Text() {
@@ -93,6 +88,7 @@ void Text::render(Canvas* canvas, const Mat4& transform) const {
     return;
   }
 
+#if 0
   // Bind the font's texture.
   Texture::bind(texture);
 
@@ -110,9 +106,11 @@ void Text::render(Canvas* canvas, const Mat4& transform) const {
 
   // Disable blending when we're done.
   glDisable(GL_BLEND);
+#endif  // 0
 }
 
 void Text::ensureShaders() {
+#if 0
   if (gs_textProgramInitialized) {
     return;
   }
@@ -126,6 +124,7 @@ void Text::ensureShaders() {
   gs_textProgram.setVertexShader(ResourceRef<Shader>{&gs_vertexShader});
   gs_textProgram.setFragmentShader(ResourceRef<Shader>{&gs_fragmentShader});
   gs_textProgram.link();
+#endif  // 0
 }
 
 void Text::updateGeometry() {

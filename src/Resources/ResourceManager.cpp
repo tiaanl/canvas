@@ -20,9 +20,9 @@ void ResourceManager::setRootPath(const nu::FilePath& rootPath) {
   m_rootPath = rootPath;
 }
 
-ResourceRef<Image> ResourceManager::getImage(const nu::String& path) {
-  ResourceRef<Image> resource = m_images.get(path);
-  if (!resource.isEmpty()) {
+ResourceRef<Image> ResourceManager::loadImage(const nu::String& path) {
+  auto resource = m_images.getOrCreate(path);
+  if (resource->isLoaded()) {
     return resource;
   }
 
@@ -32,27 +32,34 @@ ResourceRef<Image> ResourceManager::getImage(const nu::String& path) {
     return {nullptr};
   }
 
-  Image newImage;
-  if (!newImage.loadFromStream(&stream)) {
+  if (!resource->loadFromStream(&stream)) {
     LOG(Error) << "Could not load resource (" << path << ")";
     return {nullptr};
   }
 
-  return m_images.put(path, std::move(newImage));
+  resource->setLoaded(true);
+
+  return {resource};
 }
 
-ResourceRef<Texture> ResourceManager::getTexture(const nu::String& path) {
-  auto resource = getImage(path);
-  if (resource.isEmpty()) {
-    return {};
+ResourceRef<Texture> ResourceManager::loadTexture(const nu::String& path) {
+  auto resource = m_textures.getOrCreate(path);
+  if (resource->isLoaded()) {
+    return resource;
   }
 
-  Texture newTexture;
-  newTexture.createFromImage(resource.get()->get());
+  auto image = m_images.getOrCreate(path);
+  if (!resource->createFromImage(*image)) {
+    LOG(Error) << "Could not create texture from image (" << path << ")";
+    return {nullptr};
+  }
 
-  return m_textures.put(path, std::move(newTexture));
+  resource->setLoaded(true);
+
+  return {resource};
 }
 
+#if 0
 ResourceRef<Shader> ResourceManager::getShader(const nu::String& path, Shader::ShaderType shaderType) {
   ResourceRef<Shader> resource = m_shaders.get(path);
   if (!resource.isEmpty()) {
@@ -82,9 +89,10 @@ ResourceRef<Program> ResourceManager::getProgram(const nu::String& path) {
 
   return nullptr;
 }
+#endif  // 0
 
-ResourceRef<Shader> ResourceManager::getOrCreateShader(const nu::String& path, Shader::ShaderType shaderType) {
-  return m_shaders.getOrCreate(path, shaderType);
+ResourceRef<Shader> ResourceManager::getOrCreateShader(const nu::String& path) {
+  return m_shaders.getOrCreate(path);
 }
 
 ResourceRef<Program> ResourceManager::getOrCreateProgram(const nu::String& path) {

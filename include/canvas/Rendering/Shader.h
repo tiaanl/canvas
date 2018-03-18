@@ -2,6 +2,7 @@
 #ifndef CANVAS_RENDERING_SHADER_H_
 #define CANVAS_RENDERING_SHADER_H_
 
+#include "nucleus/Containers/DynamicArray.h"
 #include "nucleus/Macros.h"
 #include "nucleus/Streams/InputStream.h"
 
@@ -11,27 +12,19 @@ namespace ca {
 
 class Shader {
 public:
+  COPY_DELETE(Shader);
+
   enum ShaderType {
+    Unknown,
     Vertex,
     Fragment,
   };
 
-  explicit Shader(ShaderType type) : m_type(type), m_name(0) {}
-
-  Shader(Shader&& other) noexcept : m_type(other.m_type), m_name(other.m_name) {
-    other.m_name = 0;
-  }
-
+  Shader() = default;
+  Shader(Shader&& other) noexcept;
   ~Shader();
 
-  Shader& operator=(Shader&& other) noexcept {
-    m_type = other.m_type;
-    m_name = other.m_name;
-
-    other.m_name = 0;
-
-    return *this;
-  }
+  Shader& operator=(Shader&& other) noexcept;
 
   // Get the native handle of the shader.
   GLuint getNativeHandle() const {
@@ -39,22 +32,20 @@ public:
   }
 
   // Load the shader source from an input stream.
-  bool loadFromStream(nu::InputStream* stream);
+  bool loadFromStream(ShaderType shaderType, nu::InputStream* stream);
 
 private:
-  COPY_DELETE(Shader);
-
   // Create the shader.
   bool createInternal();
 
   // Set the source of the shader.
-  bool setSource(const I8* data);
+  bool setSource(const nu::DynamicArray<I8>& source);
 
   // The type of this shader.
-  ShaderType m_type;
+  ShaderType m_type = Unknown;
 
   // The name of the shader.
-  GLuint m_name;
+  GLuint m_name = 0;
 };
 
 }  // namespace ca

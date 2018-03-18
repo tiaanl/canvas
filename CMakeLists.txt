@@ -82,7 +82,7 @@ set_target_properties(canvas PROPERTIES
     FOLDER canvas
     )
 
-add_subdirectory(tests "canvas_tests")
+add_subdirectory(tests "tests")
 
 if(CANVAS_BUILD_EXAMPLES)
     add_subdirectory("examples")

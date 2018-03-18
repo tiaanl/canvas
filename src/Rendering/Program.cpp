@@ -114,13 +114,13 @@ bool Program::setUniform(std::string name, const Mat4& mat4) {
 
 bool Program::linkInternal() {
   // Make sure the program is created.
-  if (!m_name) {
+  if (!m_name || !glIsProgram(m_name)) {
     m_name = glCreateProgram();
   }
 
   // Attach the shaders.
-  GL_CHECK(glAttachShader(m_name, m_vertexShader.get()->get().getNativeHandle()));
-  GL_CHECK(glAttachShader(m_name, m_fragmentShader.get()->get().getNativeHandle()));
+  GL_CHECK(glAttachShader(m_name, m_vertexShader->getNativeHandle()));
+  GL_CHECK(glAttachShader(m_name, m_fragmentShader->getNativeHandle()));
 
   // Link the program.
   GL_CHECK(glLinkProgram(m_name));

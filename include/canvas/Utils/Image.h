@@ -19,12 +19,10 @@ public:
   using DataType = nu::DynamicArray<U8>;
 
   Image() = default;
-
-  Image(Image&& other);
-
+  Image(Image&& other) noexcept;
   ~Image() = default;
 
-  Image& operator=(Image&& other);
+  Image& operator=(Image&& other) noexcept;
 
   // Get the size of the image.
   const Size<I32> getSize() const {

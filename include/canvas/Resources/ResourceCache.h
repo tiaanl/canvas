@@ -31,13 +31,12 @@ public:
   }
 
   ResourceRef<ResourceType> get(const nu::String& path) const {
-    for (USize i = 0; i < m_cache.getSize(); ++i) {
-      if (m_cache[i].path == path) {
-        return {const_cast<Resource<ResourceType>*>(&m_cache[i].resource)};
-      }
+    Pair* pair = findPair(path);
+    if (pair) {
+      return {&pair->resource};
     }
 
-    return {};
+    return nullptr;
   }
 
   template <typename... Args>
@@ -50,42 +49,25 @@ public:
       return {&pair->resource};
     }
 
-    // Create a new empty resource.
-    ResourceType newResource{std::forward<Args>(args)...};
-
-    // Save it in the cache.
-    m_cache.emplaceBack(path, std::move(newResource));
+    // Create a new empty resource and save it to the cache.
+    m_cache.emplaceBack(path, std::move(Resource<ResourceType>{std::forward<Args>(args)...}));
     pair = &m_cache.last();
-
-    return {&pair->resource};
-  }
-
-  ResourceRef<ResourceType> put(const nu::String& path, ResourceType&& resource) {
-    Pair* pair = findPair(path);
-
-    if (pair) {
-      pair->resource.get() = std::forward<ResourceType>(resource);
-    } else {
-      m_cache.emplaceBack(path, std::forward<ResourceType>(resource));
-      pair = &m_cache.last();
-    }
 
     return {&pair->resource};
   }
 
 private:
   struct Pair {
+    COPY_DELETE(Pair);
+
     nu::String path;
     Resource<ResourceType> resource;
-
-    Pair(const nu::String& path, ResourceType&& resource) : path(path), resource(std::move(resource)) {}
-    Pair(Pair&& other) noexcept : path(std::move(other.path)), resource(std::move(other.resource)) {}
   };
 
-  Pair* findPair(const nu::String& path) {
+  Pair* findPair(const nu::String& path) const {
     for (USize i = 0; i < m_cache.getSize(); ++i) {
       if (m_cache[i].path == path) {
-        return &m_cache[i];
+        return const_cast<Pair*>(&m_cache[i]);
       }
     }
 

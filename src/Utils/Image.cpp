@@ -39,9 +39,9 @@ void parseRGBA(const Size<I32> size, U8* outPtr, const png_structp& png, const p
 
 }  // namespace
 
-Image::Image(Image&& other) : m_size(std::move(other.m_size)), m_data(std::move(other.m_data)) {}
+Image::Image(Image&& other) noexcept : m_size(std::move(other.m_size)), m_data(std::move(other.m_data)) {}
 
-Image& Image::operator=(Image&& other) {
+Image& Image::operator=(Image&& other) noexcept {
   m_size = std::move(other.m_size);
   m_data = std::move(other.m_data);
 

@@ -14,7 +14,7 @@
 
 namespace ca {
 
-void glCheck();
+bool glCheck();
 
 }  // namespace ca
 

@@ -2,8 +2,10 @@
 #include "canvas/Resources/Resource.h"
 #include "nucleus/Logging.h"
 #include "nucleus/Ref.h"
-#include "nucleus/Text/String.h"
 #include "nucleus/Testing.h"
+#include "nucleus/Text/String.h"
+
+namespace ca {
 
 struct TrackingResource {
   static USize constructs;
@@ -20,7 +22,7 @@ struct TrackingResource {
 
   I32 data;
 
-  explicit TrackingResource(I32 data = 0) : data(data) {
+  explicit TrackingResource(I32 data) : data(data) {
     constructs++;
   }
 
@@ -28,7 +30,7 @@ struct TrackingResource {
     copies++;
   }
 
-  TrackingResource(TrackingResource&& other) : data(other.data) {
+  TrackingResource(TrackingResource&& other) noexcept : data(other.data) {
     other.data = 0;
     moves++;
   }
@@ -40,12 +42,15 @@ struct TrackingResource {
   TrackingResource& operator=(const TrackingResource& other) {
     data = other.data;
     copies++;
+
+    return *this;
   }
 
-  TrackingResource& operator=(TrackingResource&& other) {
+  TrackingResource& operator=(TrackingResource&& other) noexcept {
     data = other.data;
     other.data = 0;
     moves++;
+
     return *this;
   }
 };
@@ -58,51 +63,57 @@ USize TrackingResource::destructs = 0;
 TEST_CASE("ResourceIsMovedIntoContainer") {
   TrackingResource::reset();
 
-  { ca::Resource<TrackingResource> res = TrackingResource{10}; }
+  {
+    Resource<TrackingResource> res{10};
+    res.setName("Some name");
+  }
 
-  REQUIRE(TrackingResource::constructs == 1);
-  REQUIRE(TrackingResource::moves == 1);
-  REQUIRE(TrackingResource::copies == 0);
-  REQUIRE(TrackingResource::destructs == 2);
+  CHECK(TrackingResource::constructs == 1);
+  CHECK(TrackingResource::moves == 0);
+  CHECK(TrackingResource::copies == 0);
+  CHECK(TrackingResource::destructs == 1);
 }
 
 TEST_CASE("ResourceIsMoved") {
   TrackingResource::reset();
 
   {
-    ca::Resource<TrackingResource> res = TrackingResource{10};
-    ca::Resource<TrackingResource> res2 = std::move(res);
+    Resource<TrackingResource> res{10};
+    Resource<TrackingResource> res2 = std::move(res);
   }
 
-  REQUIRE(TrackingResource::constructs == 1);
-  REQUIRE(TrackingResource::moves == 2);
-  REQUIRE(TrackingResource::copies == 0);
-  REQUIRE(TrackingResource::destructs == 3);
+  CHECK(TrackingResource::constructs == 1);
+  CHECK(TrackingResource::moves == 1);
+  CHECK(TrackingResource::copies == 0);
+  CHECK(TrackingResource::destructs == 2);
 }
 
 TEST_CASE("ConstructResourceInPlace") {
   TrackingResource::reset();
 
-  { ca::Resource<TrackingResource> res{10}; }
+  { Resource<TrackingResource> res{10}; }
 
-  REQUIRE(TrackingResource::constructs == 1);
-  REQUIRE(TrackingResource::moves == 0);
-  REQUIRE(TrackingResource::copies == 0);
-  REQUIRE(TrackingResource::destructs == 1);
+  CHECK(TrackingResource::constructs == 1);
+  CHECK(TrackingResource::moves == 0);
+  CHECK(TrackingResource::copies == 0);
+  CHECK(TrackingResource::destructs == 1);
 }
 
 TEST_CASE("CanHoldAReference") {
   TrackingResource::reset();
 
   {
-    ca::Resource<TrackingResource> res{10};
+    Resource<TrackingResource> res{10};
+    res.setName("testing");
 
-    nu::Ref<ca::Resource<TrackingResource>> ref1 = &res;
-    nu::Ref<ca::Resource<TrackingResource>> ref2 = ref1;
+    ResourceRef<TrackingResource> ref1 = &res;
+    ResourceRef<TrackingResource> ref2 = ref1;
   }
 
-  REQUIRE(TrackingResource::constructs == 1);
-  REQUIRE(TrackingResource::moves == 0);
-  REQUIRE(TrackingResource::copies == 0);
-  REQUIRE(TrackingResource::destructs == 1);
+  CHECK(TrackingResource::constructs == 1);
+  CHECK(TrackingResource::moves == 0);
+  CHECK(TrackingResource::copies == 0);
+  CHECK(TrackingResource::destructs == 1);
 }
+
+}  // namespace ca

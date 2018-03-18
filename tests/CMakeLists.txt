@@ -6,6 +6,7 @@ set(canvas_TEST_FILES
     "Math/Vec3Tests.cpp"
     "Math/Vec4Tests.cpp"
     "Rendering/FontTests.cpp"
+    "Resources/ResourceCacheTests.cpp"
     "Resources/ResourceManagerTests.cpp"
     "Resources/ResourceTests.cpp"
 )

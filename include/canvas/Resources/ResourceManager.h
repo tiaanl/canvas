@@ -23,12 +23,14 @@ public:
   const nu::FilePath& getRootPath() const;
   void setRootPath(const nu::FilePath& rootPath);
 
-  ResourceRef<Image> getImage(const nu::String& path);
-  ResourceRef<Texture> getTexture(const nu::String& path);
-  ResourceRef<Shader> getShader(const nu::String& path, Shader::ShaderType shaderType);
+  ResourceRef<Image> loadImage(const nu::String& path);
+  ResourceRef<Texture> loadTexture(const nu::String& path);
+#if 0
+  ResourceRef<Shader> getShader(const nu::String& path);
   ResourceRef<Program> getProgram(const nu::String& path);
+#endif  // 0
 
-  ResourceRef<Shader> getOrCreateShader(const nu::String& path, Shader::ShaderType shaderType);
+  ResourceRef<Shader> getOrCreateShader(const nu::String& path);
   ResourceRef<Program> getOrCreateProgram(const nu::String& path);
 
 private:

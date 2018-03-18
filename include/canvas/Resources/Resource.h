@@ -5,6 +5,7 @@
 #include "nucleus/Logging.h"
 #include "nucleus/Ref.h"
 #include "nucleus/RefCounted.h"
+#include "nucleus/Text/String.h"
 
 namespace ca {
 
@@ -13,56 +14,44 @@ class Resource;
 
 template <typename T>
 struct ResourceTraits {
-  static void destruct(const Resource<T>*) {
-    LOG(Info) << "Destructing resource.";
+  static void destruct(const Resource<T>* resource) {
+    LOG(Info) << "Destructing resource. (" << resource->getName() << ")";
   }
 };
 
 template <typename T>
-class Resource : public nu::RefCounted<Resource<T>, ResourceTraits<T>> {
+class Resource : public T, public nu::RefCounted<Resource<T>, ResourceTraits<T>> {
 public:
-  using ResourceType = T;
+  COPY_DELETE(Resource);
 
-  template <typename... Args>
-  explicit Resource(Args&&... args) : m_resource(std::forward<Args>(args)...) {}
+  Resource() : T{}, nu::RefCounted<Resource<T>, ResourceTraits<T>>{} {}
 
-  Resource(const ResourceType& resource) : m_resource(resource) {}
+  // template <typename... Args>
+  // Resource(Args&&... args) : T{std::forward<Args>(args)...} {}
 
-  Resource(ResourceType&& resource) noexcept : m_resource(std::move(resource)) {}
+  Resource(Resource&& other) : T{std::forward<T>(other)} {}
 
-  Resource(const Resource& other) = delete;
+  Resource& operator=(Resource&&) = delete;
 
-  Resource(Resource&& other) noexcept : m_resource(std::move(other.m_resource)) {}
-
-  ~Resource() = default;
-
-  Resource& operator=(const ResourceType& resource) {
-    m_resource = resource;
-    return *this;
+  const nu::String& getName() const {
+    return m_name;
   }
 
-  Resource& operator=(ResourceType&& resource) {
-    m_resource = std::move(resource);
-    return *this;
+  void setName(const nu::String& name) {
+    m_name = name;
   }
 
-  Resource& operator=(const Resource& other) = delete;
-
-  Resource& operator=(Resource&& other) {
-    m_resource = std::move(other.m_resource);
-    return *this;
+  bool isLoaded() const {
+    return m_isLoaded;
   }
 
-  ResourceType& get() {
-    return m_resource;
-  }
-
-  const ResourceType& get() const {
-    return m_resource;
+  void setLoaded(bool loaded) {
+    m_isLoaded = loaded;
   }
 
 private:
-  ResourceType m_resource;
+  nu::String m_name{};
+  bool m_isLoaded = false;
 };
 
 template <typename T>
