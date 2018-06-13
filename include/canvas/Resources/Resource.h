@@ -3,7 +3,7 @@
 #define CANVAS_RESOURCES_RESOURCE_H_
 
 #include "nucleus/Logging.h"
-#include "nucleus/Ref.h"
+#include "nucleus/Memory/ScopedRefPtr.h"
 #include "nucleus/RefCounted.h"
 #include "nucleus/Text/String.h"
 
@@ -55,7 +55,7 @@ private:
 };
 
 template <typename T>
-using ResourceRef = nu::Ref<Resource<T>>;
+using ResourceRef = nu::ScopedRefPtr<Resource<T>>;
 
 }  // namespace ca
 

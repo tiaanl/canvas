@@ -7,7 +7,6 @@
 #include "canvas/Resources/Resource.h"
 #include "canvas/Utils/Image.h"
 #include "nucleus/FilePath.h"
-#include "nucleus/Ref.h"
 
 namespace ca {
 
