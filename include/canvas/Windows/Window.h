@@ -8,7 +8,7 @@
 #include "nucleus/Allocators/Allocated.h"
 #include "nucleus/Allocators/Allocator.h"
 #include "nucleus/Macros.h"
-#include "nucleus/Memory/Ptr.h"
+#include "nucleus/Memory/ScopedPtr.h"
 
 typedef struct GLFWwindow GLFWwindow;
 
@@ -20,7 +20,7 @@ public:
   MOVE_DELETE(Window);
 
   // Factory function to create a window with the specified delegate.
-  static nu::Ptr<Window> create(WindowDelegate* delegate, const std::string& title);
+  static nu::ScopedPtr<Window> create(WindowDelegate* delegate, const std::string& title);
 
   Window() = delete;
 
@@ -42,7 +42,7 @@ public:
 
 private:
   template <typename T, typename... Args>
-  friend nu::Ptr<T> nu::makePtr(Args&&...);
+  friend nu::ScopedPtr<T> nu::makeScopedPtr(Args&&...);
 
   // Callbacks
   static void frameBufferSizeCallback(GLFWwindow* window, int width, int height);

@@ -8,6 +8,7 @@
 #include "nucleus/Allocators/DefaultAllocator.h"
 #include "nucleus/Config.h"
 #include "nucleus/Macros.h"
+#include "nucleus/Memory/ScopedPtr.h"
 #include "nucleus/Win/WindowsMixin.h"
 
 namespace ca {
@@ -37,7 +38,7 @@ private:
   DelegateType m_delegate;
 
   // The single window we are managing.
-  nu::Ptr<Window> m_window;
+  nu::ScopedPtr<Window> m_window;
 };
 
 }  // namespace ca
@@ -45,7 +46,7 @@ private:
 #if OS(WIN)
 #define MAIN_HEADER int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #else
-#define MAIN_HEADER int main(int, char* [])
+#define MAIN_HEADER int main(int, char*[])
 #endif
 
 #if COMPILER(MSVC)
