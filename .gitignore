@@ -1,6 +1,7 @@
 /.idea
 /cmake-build-*
 /xcode
+/.vscode
 
 # Compiled Object files
 *.slo

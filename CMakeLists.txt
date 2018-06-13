@@ -22,6 +22,7 @@ set(canvas_HEADER_FILES
 	"include/canvas/Resources/Resource.h"
     "include/canvas/App.h"
     "include/canvas/Math/Mat4.h"
+    "include/canvas/Math/Ray.h"
     "include/canvas/Math/Transform.h"
     "include/canvas/Math/Vec2.h"
     "include/canvas/Math/Vec3.h"
@@ -50,6 +51,8 @@ set(canvas_HEADER_FILES
     "include/canvas/Windows/Event.h"
     "include/canvas/Windows/Keyboard.h"
     "include/canvas/Windows/KeyboardEventHandlerInterface.h"
+    "include/canvas/Windows/MessageLoop/MessagePumpUI.h"
+    "include/canvas/Windows/MessageLoop/MessageWindow.h"
     "include/canvas/Windows/MouseEventHandlerInterface.h"
     "include/canvas/Windows/Window.h"
     "include/canvas/Windows/WindowDelegate.h"
@@ -70,6 +73,8 @@ set(canvas_SOURCE_FILES
     "src/Resources/ResourceManager.cpp"
     "src/Utils/GLCheck.cpp"
     "src/Utils/Image.cpp"
+    "src/Windows/MessageLoop/MessagePumpUI.cpp"
+    "src/Windows/MessageLoop/MessageWindow.cpp"
     "src/Windows/Window.cpp"
     "src/Windows/WindowDelegate.cpp"
     )
@@ -77,6 +82,7 @@ set(canvas_SOURCE_FILES
 add_library(canvas STATIC ${canvas_HEADER_FILES} ${canvas_SOURCE_FILES})
 target_link_libraries(canvas nucleus glfw glad freetype libpng zlib)
 target_include_directories(canvas PUBLIC "${canvas_SOURCE_DIR}/include")
+target_compile_definitions(canvas PUBLIC "-DUNICODE")
 set_target_properties(canvas PROPERTIES
     CXX_STANDARD 14
     FOLDER canvas

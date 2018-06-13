@@ -18,6 +18,7 @@ struct Vec3 {
   explicit Vec3(F32 x_, F32 y_, F32 z_) : x{x_}, y{y_}, z{z_} {}
 
   F32 operator[](USize index) {
+    DCHECK(index < 3) << "Vec3 only has 3 members";
     return (&x)[index];
   }
 
@@ -29,6 +30,7 @@ struct Vec3 {
     x += other.x;
     y += other.y;
     z += other.z;
+
     return *this;
   }
 
@@ -36,6 +38,7 @@ struct Vec3 {
     x -= other.x;
     y -= other.y;
     z -= other.z;
+
     return *this;
   }
 
@@ -43,6 +46,7 @@ struct Vec3 {
     x *= scalar;
     y *= scalar;
     z *= scalar;
+
     return *this;
   }
 
@@ -50,6 +54,7 @@ struct Vec3 {
     x /= scalar;
     y /= scalar;
     z /= scalar;
+
     return *this;
   }
 };
