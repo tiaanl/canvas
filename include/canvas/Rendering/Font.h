@@ -15,6 +15,8 @@ namespace ca {
 
 class Font {
 public:
+  COPY_DELETE(Font);
+
   // The type we use for character codepoints.
   using Char = char32_t;
 
@@ -25,7 +27,10 @@ public:
   };
 
   Font();
+  Font(Font&& other);
   ~Font();
+
+  Font& operator=(Font&& other);
 
   // Load a font from the given stream.
   bool loadFromStream(nu::InputStream* stream);
@@ -102,8 +107,6 @@ private:
 
   // Buffer that holds the entire font, for loading glyphs.
   nu::DynamicArray<U8> m_fontData;
-
-  DISALLOW_COPY_AND_ASSIGN(Font);
 };
 
 }  // namespace ca

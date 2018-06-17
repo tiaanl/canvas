@@ -7,6 +7,7 @@
 #include "canvas/Rendering/Font.h"
 #include "canvas/Rendering/Program.h"
 #include "canvas/Rendering/Shader.h"
+#include "canvas/Resources/ResourceManager.h"
 #include "nucleus/Streams/WrappedMemoryInputStream.h"
 
 #include "nucleus/MemoryDebug.h"
@@ -51,11 +52,9 @@ const char* kTextFragmentShader =
 
 }  // namespace
 
-Text::Text() {
-  ensureShaders();
-}
-
-Text::Text(Font* font, I32 textSize, const std::string& text) : m_font(font), m_text(text), m_textSize(textSize) {
+Text::Text(ResourceManager* resourceManager, nu::String text, nu::String fontName, I32 textSize)
+  : m_resourceManager(resourceManager), m_font(resourceManager->getOrCreateFont(fontName)),
+    m_text(text), m_textSize(textSize) {
   ensureShaders();
 
   if (m_font) {
@@ -63,12 +62,12 @@ Text::Text(Font* font, I32 textSize, const std::string& text) : m_font(font), m_
   }
 }
 
-void Text::setFont(Font* font) {
+void Text::setFont(const ResourceRef<Font>& font) {
   m_font = font;
   updateGeometry();
 }
 
-void Text::setText(const std::string& text) {
+void Text::setText(const nu::String& text) {
   m_text = text;
   updateGeometry();
 }
@@ -88,13 +87,12 @@ void Text::render(Canvas* canvas, const Mat4& transform) const {
     return;
   }
 
-#if 0
   // Bind the font's texture.
   Texture::bind(texture);
 
   // Bind the program.
-  Program::bind(&gs_textProgram);
-  gs_textProgram.setUniform("uni_mvp", transform);
+  Program::bind(m_program);
+  m_program->setUniform("uni_mvp", transform);
 
   // Enable blending.
   glEnable(GL_BLEND);
@@ -106,29 +104,46 @@ void Text::render(Canvas* canvas, const Mat4& transform) const {
 
   // Disable blending when we're done.
   glDisable(GL_BLEND);
-#endif  // 0
 }
 
 void Text::ensureShaders() {
-#if 0
-  if (gs_textProgramInitialized) {
+  if (m_program && m_program->isLoaded()) {
     return;
   }
 
-  nu::WrappedMemoryInputStream vertexStream{kTextVertexShader, std::strlen(kTextVertexShader)};
-  gs_vertexShader.get().loadFromStream(&vertexStream);
+  // Create the program by adding the two shaders.
+  m_program = m_resourceManager->getOrCreateProgram("elastic-text-program");
+  if (!m_program->isLoaded()) {
+    // Create the vertex shader.
+    ResourceRef<Shader> vertexShader = m_resourceManager->getOrCreateShader("elastic-text-vertex");
+    if (!vertexShader->isLoaded()) {
+      nu::WrappedMemoryInputStream vertexStream{kTextVertexShader, std::strlen(kTextVertexShader)};
+      if (!vertexShader->loadFromStream(Shader::Vertex, &vertexStream)) {
+        return;
+      }
+      vertexShader->setLoaded(true);
+    }
 
-  nu::WrappedMemoryInputStream fragmentStream{kTextFragmentShader, std::strlen(kTextFragmentShader)};
-  gs_fragmentShader.get().loadFromStream(&fragmentStream);
+    // Create the fragment shader.
+    ResourceRef<Shader> fragmentShader =
+        m_resourceManager->getOrCreateShader("elastic-text-fragment");
+    if (!fragmentShader->isLoaded()) {
+      nu::WrappedMemoryInputStream fragmentStream{kTextFragmentShader,
+                                                  std::strlen(kTextFragmentShader)};
+      if (!fragmentShader->loadFromStream(Shader::Fragment, &fragmentStream)) {
+        return;
+      }
+      fragmentShader->setLoaded(true);
+    }
 
-  gs_textProgram.setVertexShader(ResourceRef<Shader>{&gs_vertexShader});
-  gs_textProgram.setFragmentShader(ResourceRef<Shader>{&gs_fragmentShader});
-  gs_textProgram.link();
-#endif  // 0
+    m_program->setVertexShader(vertexShader);
+    m_program->setFragmentShader(fragmentShader);
+    m_program->link();
+  }
 }
 
 void Text::updateGeometry() {
-  if (!m_font) {
+  if (!m_font->isLoaded()) {
     return;
   }
 
@@ -136,7 +151,7 @@ void Text::updateGeometry() {
   m_geometry.clear();
 
   // If there is no text to render, then that's it.
-  if (m_text.empty()) {
+  if (m_text.isEmpty()) {
     m_geometry.compileAndUpload();
 
     // Update the bounds.
@@ -152,7 +167,7 @@ void Text::updateGeometry() {
   m_bounds = ca::Rect<I32>{};
 
   // Build geometry for each character in the text.
-  for (USize i = 0; i < m_text.length(); ++i) {
+  for (USize i = 0; i < m_text.getLength(); ++i) {
     ca::Font::Char ch = static_cast<ca::Font::Char>(m_text[i]);
 
     // Get the glyph.

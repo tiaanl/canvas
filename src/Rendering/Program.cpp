@@ -4,6 +4,7 @@
 #include "canvas/Rendering/Shader.h"
 #include "canvas/Utils/GLCheck.h"
 #include "nucleus/Containers/DynamicArray.h"
+#include "nucleus/Logging.h"
 
 #include "nucleus/MemoryDebug.h"
 
@@ -26,8 +27,8 @@ void Program::bind(Program* program) {
 Program::Program() = default;
 
 Program::Program(Program&& other) noexcept
-  : m_name(other.m_name), m_vertexShader{other.m_vertexShader}, m_fragmentShader{other.m_fragmentShader},
-    m_isLinked(other.m_isLinked) {
+  : m_name(other.m_name), m_vertexShader{other.m_vertexShader},
+    m_fragmentShader{other.m_fragmentShader}, m_isLinked(other.m_isLinked) {
   other.m_name = 0;
   other.m_vertexShader = nullptr;
   other.m_fragmentShader = nullptr;
@@ -72,12 +73,12 @@ bool Program::link() {
   return m_isLinked;
 }
 
-#define BIND_AND_GET_LOCATION()                                                                                        \
-  bind(this);                                                                                                          \
-  GLint location = glGetUniformLocation(m_name, name.c_str());                                                         \
-  if (location == -1 || glGetError() != GL_NO_ERROR) {                                                                 \
-    LOG(Warning) << "Could not find uniform location. (" << name << ")";                                               \
-    return false;                                                                                                      \
+#define BIND_AND_GET_LOCATION()                                                                    \
+  bind(this);                                                                                      \
+  GLint location = glGetUniformLocation(m_name, name.c_str());                                     \
+  if (location == -1 || glGetError() != GL_NO_ERROR) {                                             \
+    LOG(Warning) << "Could not find uniform location. (" << name << ")";                           \
+    return false;                                                                                  \
   }
 
 bool Program::setUniform(std::string name, float f) {
@@ -125,18 +126,24 @@ bool Program::linkInternal() {
   // Link the program.
   GL_CHECK(glLinkProgram(m_name));
 
-  // Check if there were any information.
-  GLint infoLength = 0;
-  GL_CHECK(glGetProgramiv(m_name, GL_INFO_LOG_LENGTH, &infoLength));
+  GLint result;
+  glGetProgramiv(m_name, GL_LINK_STATUS, &result);
+  if (result == GL_FALSE) {
+    // Check if there were any information.
+    GLint infoLength = 0;
+    GL_CHECK(glGetProgramiv(m_name, GL_INFO_LOG_LENGTH, &infoLength));
 
-  if (infoLength > 0) {
-    nu::DynamicArray<I8> buffer;
-    buffer.resize(infoLength);
-    GL_CHECK(glGetProgramInfoLog(m_name, infoLength, &infoLength, (GLchar*)buffer.getData()));
-    if (infoLength) {
-      LOG(Error) << buffer.getData();
+    if (infoLength > 0) {
+      nu::DynamicArray<I8> buffer;
+      buffer.resize(infoLength);
+      GL_CHECK(glGetProgramInfoLog(m_name, infoLength, &infoLength, (GLchar*)buffer.getData()));
+      if (infoLength) {
+        LOG(Error) << buffer.getData();
+      }
+      return false;
+    } else {
+      LOG(Warning) << "Program not linked and no information available!";
     }
-    return false;
   }
 
   return true;

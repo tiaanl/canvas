@@ -20,8 +20,30 @@ namespace ca {
 
 Font::Font() = default;
 
+Font::Font(Font&& other) {
+  std::swap(m_library, other.m_library);
+  std::swap(m_face, other.m_face);
+  std::swap(m_pages, other.m_pages);
+  std::swap(m_pixelBuffer, other.m_pixelBuffer);
+  std::swap(m_fontData, other.m_fontData);
+}
+
 Font::~Font() {
   cleanup();
+}
+
+Font& Font::operator=(Font&& other) {
+  m_library = other.m_library;
+  other.m_library = nullptr;
+
+  m_face = other.m_face;
+  other.m_face = nullptr;
+
+  std::swap(m_pages, other.m_pages);
+  std::swap(m_pixelBuffer, other.m_pixelBuffer);
+  std::swap(m_fontData, other.m_fontData);
+
+  return *this;
 }
 
 bool Font::loadFromStream(nu::InputStream* stream) {

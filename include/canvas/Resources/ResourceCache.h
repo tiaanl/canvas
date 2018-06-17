@@ -45,14 +45,18 @@ public:
 
     // If it exists, then we just return the existing resource.
     if (pair) {
-      return {&pair->resource};
+      return pair->resource;
     }
 
     // Create a new empty resource and save it to the cache.
-    m_cache.emplaceBack(path, std::move(Resource<ResourceType>{std::forward<Args>(args)...}));
+    m_cache.emplaceBack(path,
+                        nu::makeScopedRefPtr<Resource<ResourceType>>(std::forward<Args>(args)...));
     pair = &m_cache.last();
 
-    return {&pair->resource};
+    // Set the name of the new resource.
+    pair->resource->setName(path);
+
+    return pair->resource;
   }
 
 private:
@@ -60,7 +64,7 @@ private:
     COPY_DELETE(Pair);
 
     nu::String path;
-    Resource<ResourceType> resource;
+    ResourceRef<ResourceType> resource;
   };
 
   Pair* findPair(const nu::String& path) const {

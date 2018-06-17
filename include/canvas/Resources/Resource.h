@@ -16,6 +16,8 @@ template <typename T>
 struct ResourceTraits {
   static void destruct(const Resource<T>* resource) {
     LOG(Info) << "Destructing resource. (" << resource->getName() << ")";
+
+    nu::detail::DefaultRefCountedTraits<Resource<T>>::destruct(resource);
   }
 };
 
@@ -50,7 +52,7 @@ public:
   }
 
 private:
-  nu::String m_name{};
+  nu::String m_name;
   bool m_isLoaded = false;
 };
 

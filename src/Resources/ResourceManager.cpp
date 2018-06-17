@@ -8,9 +8,51 @@
 
 namespace ca {
 
+namespace {
+
+template <typename ResourceType>
+ResourceRef<ResourceType> createResourceFromFile(ResourceCache<ResourceType>& cache,
+                                                 const nu::String& name, const nu::FilePath& path) {
+  auto resource = cache.getOrCreate(name);
+  if (resource->isLoaded()) {
+    return resource;
+  }
+
+  nu::FileInputStream stream{path};
+  if (!stream.openedOk()) {
+    LOG(Error) << "Could not load file resource: " << name << " (" << path << ")";
+    return ResourceRef<ResourceType>{nullptr};
+  }
+
+  if (!resource->loadFromStream(&stream)) {
+    LOG(Error) << "Could not load file resource: " << name << " (" << path << ")";
+    return ResourceRef<ResourceType>{nullptr};
+  }
+
+  resource->setLoaded(true);
+
+  return ResourceRef<ResourceType>{resource};
+}
+
+template <typename ResourceType>
+ResourceRef<ResourceType> createResourceFromFile(ResourceCache<ResourceType>& cache,
+                                                 const nu::FilePath& path) {
+  return createResourceFromFile<ResourceType>(cache, path.getPath(), path);
+}
+
+}  // namespace
+
 ResourceManager::ResourceManager() = default;
 
 ResourceManager::~ResourceManager() = default;
+
+void ResourceManager::createDefaults() {
+#if OS(WIN)
+  createResourceFromFile(m_fonts, "default", nu::FilePath{"C:\\Windows\\Fonts\\Arial.ttf"});
+#elif OS(MACOSX)
+  createResourceFromFile(m_fonts, "default", nu::FilePath{"/Library/Fonts/Arial.ttf"});
+#endif
+}
 
 const nu::FilePath& ResourceManager::getRootPath() const {
   return m_rootPath;
@@ -56,40 +98,12 @@ ResourceRef<Texture> ResourceManager::loadTexture(const nu::String& path) {
 
   resource->setLoaded(true);
 
-  return {resource};
+  return ResourceRef<Texture>{resource};
 }
 
-#if 0
-ResourceRef<Shader> ResourceManager::getShader(const nu::String& path, Shader::ShaderType shaderType) {
-  ResourceRef<Shader> resource = m_shaders.get(path);
-  if (!resource.isEmpty()) {
-    return resource;
-  }
-
-  nu::FileInputStream stream{getFilePathForResource(path)};
-  if (!stream.openedOk()) {
-    LOG(Error) << "Could not open resource (" << path << ")";
-    return {nullptr};
-  }
-
-  Shader newShader{shaderType};
-  if (!newShader.loadFromStream(&stream)) {
-    LOG(Error) << "Could not load resource (" << path << ")";
-    return {nullptr};
-  }
-
-  return m_shaders.put(path, std::move(newShader));
+ResourceRef<Font> ResourceManager::loadFont(const nu::String& path) {
+  return createResourceFromFile(m_fonts, getFilePathForResource(path));
 }
-
-ResourceRef<Program> ResourceManager::getProgram(const nu::String& path) {
-  ResourceRef<Program> resource = m_programs.get(path);
-  if (!resource.isEmpty()) {
-    return resource;
-  }
-
-  return nullptr;
-}
-#endif  // 0
 
 ResourceRef<Shader> ResourceManager::getOrCreateShader(const nu::String& path) {
   return m_shaders.getOrCreate(path);
@@ -97,6 +111,10 @@ ResourceRef<Shader> ResourceManager::getOrCreateShader(const nu::String& path) {
 
 ResourceRef<Program> ResourceManager::getOrCreateProgram(const nu::String& path) {
   return m_programs.getOrCreate(path);
+}
+
+ResourceRef<Font> ResourceManager::getOrCreateFont(const nu::String& path) {
+  return m_fonts.getOrCreate(path);
 }
 
 nu::FilePath ResourceManager::getFilePathForResource(const nu::String& path) {

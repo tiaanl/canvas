@@ -2,6 +2,7 @@
 #ifndef CANVAS_RESOURCES_RESOURCE_MANAGER_H_
 #define CANVAS_RESOURCES_RESOURCE_MANAGER_H_
 
+#include "canvas/Rendering/Font.h"
 #include "canvas/Rendering/Program.h"
 #include "canvas/Rendering/Shader.h"
 #include "canvas/Resources/ResourceCache.h"
@@ -19,18 +20,19 @@ public:
   ResourceManager();
   ~ResourceManager();
 
+  // Create a set of default resources.
+  void createDefaults();
+
   const nu::FilePath& getRootPath() const;
   void setRootPath(const nu::FilePath& rootPath);
 
   ResourceRef<Image> loadImage(const nu::String& path);
   ResourceRef<Texture> loadTexture(const nu::String& path);
-#if 0
-  ResourceRef<Shader> getShader(const nu::String& path);
-  ResourceRef<Program> getProgram(const nu::String& path);
-#endif  // 0
+  ResourceRef<Font> loadFont(const nu::String& path);
 
   ResourceRef<Shader> getOrCreateShader(const nu::String& path);
   ResourceRef<Program> getOrCreateProgram(const nu::String& path);
+  ResourceRef<Font> getOrCreateFont(const nu::String& path);
 
 private:
   nu::FilePath getFilePathForResource(const nu::String& path);
@@ -41,6 +43,7 @@ private:
   ResourceCache<Texture> m_textures;
   ResourceCache<Shader> m_shaders;
   ResourceCache<Program> m_programs;
+  ResourceCache<Font> m_fonts;
 };
 
 }  // namespace ca
