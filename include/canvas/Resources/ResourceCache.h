@@ -20,7 +20,7 @@ public:
   ~ResourceCache() = default;
 
   bool has(const nu::String& path) const {
-    for (USize i = 0; i < m_cache.getSize(); ++i) {
+    for (MemSize i = 0; i < m_cache.getSize(); ++i) {
       if (m_cache[i].path == path) {
         return true;
       }

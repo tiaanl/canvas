@@ -10,6 +10,8 @@
 namespace ca {
 
 void RenderGroup::render(RenderContext* renderContext) {
+  setUpMatrices();
+
   for (auto& command : m_commands) {
     switch (command.type) {
       case RenderCommandType::ClearColorBuffer:
@@ -56,20 +58,25 @@ void RenderGroup::renderGeometry(GeometryId geometryId, TextureId textureId, Pro
   m_commands.pushBack(command);
 }
 
-void RenderGroup::processData(RenderContext* renderContext, ClearColorBufferData* data) {
+void RenderGroup::setUpMatrices() {
+  // TODO: Kill this
+  m_projection = RenderGroupProjection::Orthographic;
+}
+
+// static
+void RenderGroup::processData(RenderContext*, ClearColorBufferData* data) {
   glClearColor(data->color.r, data->color.g, data->color.b, data->color.a);
   glClear(GL_COLOR_BUFFER_BIT);
 }
 
+// static
 void RenderGroup::processData(RenderContext* renderContext, RenderGeometryData* data) {
-  GL_CHECK(glBindVertexArray(data->geometryId));
-  // TODO: Enable attribute array?
+  auto& programData = renderContext->getProgramData(data->programId);
+  auto& geometryData = renderContext->getGeometryData(data->geometryId);
 
-  auto geometryData = renderContext->getGeometryData(data->geometryId);
-
+  GL_CHECK(glUseProgram(programData.id));
+  GL_CHECK(glBindVertexArray(geometryData.id));
   GL_CHECK(glDrawArrays(GL_TRIANGLE_STRIP, 0, geometryData.numComponents));
-
-  GL_CHECK(glBindVertexArray(0));
 }
 
 }  // namespace ca

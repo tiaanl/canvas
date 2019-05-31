@@ -36,8 +36,16 @@ public:
     U32 id;
   };
 
+  const ProgramData& getProgramData(ProgramId id) const {
+    return m_programs[id];
+  }
+
   const GeometryData& getGeometryData(GeometryId id) const {
     return m_geometries[id];
+  }
+
+  const TextureData& getTextureData(TextureId id) const {
+    return m_textures[id];
   }
 
   TextureId createTexture(const Image& image);
@@ -45,15 +53,14 @@ public:
   template <typename T>
   GeometryId createGeometry(const GeometryDefinition& geometryDefinition, T* components,
                             MemSize numComponents) {
-    return createGeometryInternal(geometryDefinition, components, sizeof(T) * numComponents,
-                                  numComponents);
+    return createGeometryInternal(geometryDefinition, components, sizeof(T), numComponents);
   }
 
   ProgramId createProgram(const ShaderSource& vertexShader, const ShaderSource& fragmentShader);
 
 private:
   GeometryId createGeometryInternal(const GeometryDefinition& geometryDefinition, void* data,
-                                    MemSize dataSize, MemSize numComponents);
+                                    MemSize componentSize, MemSize numComponents);
 
   nu::DynamicArray<TextureData> m_textures;
   nu::DynamicArray<GeometryData> m_geometries;

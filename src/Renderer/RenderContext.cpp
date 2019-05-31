@@ -105,6 +105,10 @@ ProgramId RenderContext::createProgram(const ShaderSource& vertexShader,
   // Link the program.
   GL_CHECK(glLinkProgram(result.id));
 
+  // Release the references to the shaders.
+  GL_CHECK(glDeleteShader(fragmentShaderId));
+  GL_CHECK(glDeleteShader(vertexShaderId));
+
   GLint success;
   glGetProgramiv(result.id, GL_LINK_STATUS, &success);
   if (success == GL_FALSE) {
@@ -131,7 +135,7 @@ ProgramId RenderContext::createProgram(const ShaderSource& vertexShader,
 }
 
 GeometryId RenderContext::createGeometryInternal(const GeometryDefinition& geometryDefinition,
-                                                 void* data, MemSize dataSize,
+                                                 void* data, MemSize componentSize,
                                                  MemSize numComponents) {
   GeometryData result;
 
@@ -139,25 +143,23 @@ GeometryId RenderContext::createGeometryInternal(const GeometryDefinition& geome
   GL_CHECK(glGenVertexArrays(1, &result.id));
   GL_CHECK(glBindVertexArray(result.id));
 
-  // Create a buffer and bind it.
+  // Create a buffer with our vertex data.
   GLuint bufferId;
   GL_CHECK(glGenBuffers(1, &bufferId));
   GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, bufferId));
-
-  // Upload the data into the buffer.
-  GL_CHECK(glBufferData(GL_ARRAY_BUFFER, dataSize, data, GL_STATIC_DRAW));
+  GL_CHECK(glBufferData(GL_ARRAY_BUFFER, numComponents * componentSize, data, GL_STATIC_DRAW));
 
   // Create each attribute.
   const auto& attributes = geometryDefinition.getAttributes();
-  for (auto i = 0; i < attributes.getSize(); ++i) {
+  for (MemSize i = 0; i < attributes.getSize(); ++i) {
     const auto& attribute = attributes[i];
     glVertexAttribPointer(i, attribute.numberOfComponents,
                           kComponentTypeMap[static_cast<U32>(attribute.componentType)], GL_FALSE,
-                          attribute.stride, (GLvoid*)attribute.offset);
+                          componentSize * attribute.numberOfComponents, (GLvoid*)attribute.offset);
     glEnableVertexAttribArray(i);
   }
 
-  // Reset the curren VAO bind.
+  // Reset the current VAO bind.
   GL_CHECK(glBindVertexArray(0));
 
   // We can delete the buffer here, because the VAO is holding a reference to it.

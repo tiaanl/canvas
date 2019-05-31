@@ -15,7 +15,7 @@ enum class RenderGroupProjection : U8 {
 
 class RenderGroup {
 public:
-  RenderGroup(RenderGroupProjection projection) : m_projection{projection} {}
+  explicit RenderGroup(RenderGroupProjection projection) : m_projection{projection} {}
   ~RenderGroup() = default;
 
   // Render the group.
@@ -26,8 +26,11 @@ public:
   void renderGeometry(GeometryId geometryId, TextureId textureId, ProgramId programId);
 
 private:
-  void processData(RenderContext* renderContext, ClearColorBufferData* data);
-  void processData(RenderContext* renderContext, RenderGeometryData* data);
+  // Set up all the matrices we're going to use for positioning the world.
+  void setUpMatrices();
+
+  static void processData(RenderContext* renderContext, ClearColorBufferData* data);
+  static void processData(RenderContext* renderContext, RenderGeometryData* data);
 
   RenderGroupProjection m_projection;
   nu::DynamicArray<RenderCommand> m_commands;
