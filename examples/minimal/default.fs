@@ -1,7 +1,11 @@
 #version 330
 
+in vec2 uTextureCoord;
+
+uniform sampler2D uTexture;
+
 out vec4 final;
 
 void main() {
-  final = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+  final = texture(uTexture, uTextureCoord);
 }

@@ -29,7 +29,7 @@ set(canvas_HEADER_FILES
     "include/canvas/OpenGL.h"
     "include/canvas/Primitives/Sprite.h"
     "include/canvas/Primitives/Text.h"
-    "include/canvas/Renderer/GeometryDefinition.h"
+    "include/canvas/Renderer/BufferDefinition.h"
     "include/canvas/Renderer/RenderCommand.h"
     "include/canvas/Renderer/RenderContext.h"
     "include/canvas/Renderer/Renderer.h"
@@ -66,7 +66,7 @@ set(canvas_HEADER_FILES
 set(canvas_SOURCE_FILES
     "src/Primitives/Sprite.cpp"
     "src/Primitives/Text.cpp"
-    "src/Renderer/GeometryDefinition.cpp"
+    "src/Renderer/BufferDefinition.cpp"
     "src/Renderer/RenderContext.cpp"
     "src/Renderer/Renderer.cpp"
     "src/Renderer/RenderGroup.cpp"

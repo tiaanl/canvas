@@ -73,8 +73,10 @@ void RenderGroup::processData(RenderContext*, ClearColorBufferData* data) {
 void RenderGroup::processData(RenderContext* renderContext, RenderGeometryData* data) {
   auto& programData = renderContext->getProgramData(data->programId);
   auto& geometryData = renderContext->getGeometryData(data->geometryId);
+  auto& textureData = renderContext->getTextureData(data->textureId);
 
   GL_CHECK(glUseProgram(programData.id));
+  GL_CHECK(glBindTexture(GL_TEXTURE_2D, textureData.id));
   GL_CHECK(glBindVertexArray(geometryData.id));
   GL_CHECK(glDrawArrays(GL_TRIANGLE_STRIP, 0, geometryData.numComponents));
 }

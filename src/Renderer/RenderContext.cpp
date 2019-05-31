@@ -134,9 +134,17 @@ ProgramId RenderContext::createProgram(const ShaderSource& vertexShader,
   return m_programs.getSize() - 1;
 }
 
-GeometryId RenderContext::createGeometryInternal(const GeometryDefinition& geometryDefinition,
-                                                 void* data, MemSize componentSize,
-                                                 MemSize numComponents) {
+GeometryId RenderContext::createGeometryInternal(const BufferDefinition& bufferDefinition,
+                                                 void* data, MemSize dataSize,
+                                                 MemSize componentSize) {
+#if BUILD(DEBUG)
+  U32 totalComponents = 0;
+  for (auto& attr : bufferDefinition.getAttributes()) {
+    totalComponents += attr.numberOfComponents;
+  }
+  DCHECK(totalComponents == bufferDefinition.getComponentsPerVertex());
+#endif  // BUILD(DEBUG)
+
   GeometryData result;
 
   // Create a vertex array object and bind it.
@@ -147,16 +155,21 @@ GeometryId RenderContext::createGeometryInternal(const GeometryDefinition& geome
   GLuint bufferId;
   GL_CHECK(glGenBuffers(1, &bufferId));
   GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, bufferId));
-  GL_CHECK(glBufferData(GL_ARRAY_BUFFER, numComponents * componentSize, data, GL_STATIC_DRAW));
+  GL_CHECK(glBufferData(GL_ARRAY_BUFFER, dataSize, data, GL_STATIC_DRAW));
 
   // Create each attribute.
-  const auto& attributes = geometryDefinition.getAttributes();
+  const auto& attributes = bufferDefinition.getAttributes();
+  MemSize stride = bufferDefinition.getComponentsPerVertex() * componentSize;
+  MemSize offset = 0;
   for (MemSize i = 0; i < attributes.getSize(); ++i) {
     const auto& attribute = attributes[i];
+
     glVertexAttribPointer(i, attribute.numberOfComponents,
                           kComponentTypeMap[static_cast<U32>(attribute.componentType)], GL_FALSE,
-                          componentSize * attribute.numberOfComponents, (GLvoid*)attribute.offset);
+                          stride, (GLvoid*)offset);
     glEnableVertexAttribArray(i);
+
+    offset += attribute.numberOfComponents * componentSize;
   }
 
   // Reset the current VAO bind.
@@ -165,7 +178,7 @@ GeometryId RenderContext::createGeometryInternal(const GeometryDefinition& geome
   // We can delete the buffer here, because the VAO is holding a reference to it.
   glDeleteBuffers(1, &bufferId);
 
-  result.numComponents = numComponents;
+  result.numComponents = dataSize / componentSize;
 
   m_geometries.pushBack(result);
   return m_geometries.getSize() - 1;

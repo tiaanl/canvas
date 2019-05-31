@@ -49,16 +49,18 @@ private:
   }
 
   bool loadGeometry(ca::RenderContext* renderContext) {
-    ca::GeometryDefinition def;
-    def.addAttribute(3, ca::ComponentType::Float32, 0, 0);
+    ca::BufferDefinition def{5};
+    def.addAttribute(3, ca::ComponentType::Float32);
+    def.addAttribute(2, ca::ComponentType::Float32);
 
     static F32 vertices[] = {
-        0.0f,  0.5f,  0.0f,  //
-        0.5f,  -0.5f, 0.0f,  //
-        -0.5f, -0.5f, 0.0f,  //
+        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,  //
+        -0.5f, 0.5f,  0.0f, 0.0f, 1.0f,  //
+        0.5f,  -0.5f, 0.0f, 1.0f, 0.0f,  //
+        0.5f,  0.5f,  0.0f, 1.0f, 1.0f,  //
     };
 
-    m_geometryId = renderContext->createGeometry(def, vertices, ARRAY_SIZE(vertices));
+    m_geometryId = renderContext->createGeometry(def, vertices, sizeof(vertices));
 
     return true;
   }

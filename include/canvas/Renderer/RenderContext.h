@@ -2,7 +2,7 @@
 #ifndef CANVAS_RENDER_CONTEXT_H_
 #define CANVAS_RENDER_CONTEXT_H_
 
-#include "canvas/Renderer/GeometryDefinition.h"
+#include "canvas/Renderer/BufferDefinition.h"
 #include "canvas/Utils/Size.h"
 #include "nucleus/Containers/DynamicArray.h"
 #include "nucleus/Types.h"
@@ -51,16 +51,16 @@ public:
   TextureId createTexture(const Image& image);
 
   template <typename T>
-  GeometryId createGeometry(const GeometryDefinition& geometryDefinition, T* components,
-                            MemSize numComponents) {
-    return createGeometryInternal(geometryDefinition, components, sizeof(T), numComponents);
+  GeometryId createGeometry(const BufferDefinition& bufferDefinition, T* data,
+                            MemSize dataSize) {
+    return createGeometryInternal(bufferDefinition, data, dataSize, sizeof(T));
   }
 
   ProgramId createProgram(const ShaderSource& vertexShader, const ShaderSource& fragmentShader);
 
 private:
-  GeometryId createGeometryInternal(const GeometryDefinition& geometryDefinition, void* data,
-                                    MemSize componentSize, MemSize numComponents);
+  GeometryId createGeometryInternal(const BufferDefinition& bufferDefinition, void* data,
+                                    MemSize dataSize, MemSize componentSize);
 
   nu::DynamicArray<TextureData> m_textures;
   nu::DynamicArray<GeometryData> m_geometries;
