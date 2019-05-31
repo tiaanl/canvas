@@ -24,7 +24,7 @@ public:
   GLuint getNativeHandle() const { return m_name; }
 
   // Upload the given data to the GPU.
-  bool setData(const void* data, USize size);
+  bool setData(const void* data, MemSize size);
 
 private:
   // Create the name of the object.

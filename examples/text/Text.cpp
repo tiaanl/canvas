@@ -5,7 +5,7 @@
 #include "canvas/Rendering/Font.h"
 #include "canvas/Rendering/Program.h"
 #include "canvas/Rendering/Shader.h"
-#include "nucleus/Memory/Ptr.h"
+#include "nucleus/Memory/ScopedPtr.h"
 #include "nucleus/Streams/FileInputStream.h"
 
 class Rendering : public ca::WindowDelegate {
@@ -18,27 +18,31 @@ public:
 
   bool onWindowCreated() override {
 #if OS(WIN)
-    nu::FileInputStream fontStream{nu::FilePath{"C:\\Windows\\Fonts\\arial.ttf"}};
+    nu::FileInputStream fontStream{nu::FilePath { "C:\\Windows\\Fonts\\arial.ttf" }};
 #elif OS(MACOSX)
-    nu::FileInputStream fontStream{nu::FilePath{"/Library/Fonts/Arial.ttf"}};
+    nu::FileInputStream fontStream{nu::FilePath { "/Library/Fonts/Arial.ttf" }};
 #elif OS(LINUX)
-    nu::FileInputStream fontStream{nu::FilePath{"/usr/share/fonts/truetype/ubuntu-font-family/Ubuntu-M.ttf"}};
+    nu::FileInputStream fontStream{
+        nu::FilePath{"/usr/share/fonts/truetype/ubuntu-font-family/Ubuntu-M.ttf"}};
 #endif
 
     m_font.loadFromStream(&fontStream);
 
-    m_text1.reset(new ca::Text{&m_font, 50, "Hello, yyg!"});
+    // m_text1.reset(new ca::Text{&m_font, 50, "Hello, yyg!"});
 
     return true;
   }
 
   void onWindowResized(const ca::Size<U32>& size) override {
-    // m_projectionMatrix = ca::ortho(-static_cast<float>(size.width) / 2.f, static_cast<float>(size.width) / 2.f,
-    //                               -static_cast<float>(size.height) / 2.f, static_cast<float>(size.height) / 2.f);
+    // m_projectionMatrix = ca::ortho(-static_cast<float>(size.width) / 2.f,
+    // static_cast<float>(size.width) / 2.f,
+    //                               -static_cast<float>(size.height) / 2.f,
+    //                               static_cast<float>(size.height) / 2.f);
 
     // Top left = 0, 0
     // Bottom right = width, height
-    m_projectionMatrix = ca::ortho(0.f, static_cast<F32>(size.width), static_cast<F32>(size.height), 0.f);
+    m_projectionMatrix =
+        ca::ortho(0.f, static_cast<F32>(size.width), static_cast<F32>(size.height), 0.f);
   }
 
   void onPaint(ca::Canvas* canvas) override {
@@ -57,7 +61,7 @@ private:
   ca::Mat4 m_projectionMatrix;
 
   ca::Font m_font;
-  nu::Ptr<ca::Text> m_text1;
+  nu::ScopedPtr<ca::Text> m_text1;
 
   DISALLOW_COPY_AND_ASSIGN(Rendering);
 };

@@ -5,7 +5,7 @@
 
 namespace ca {
 
-bool WindowDelegate::onWindowCreated() {
+bool WindowDelegate::onWindowCreated(RenderContext* renderContext) {
   return true;
 }
 

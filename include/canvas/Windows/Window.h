@@ -5,10 +5,12 @@
 #include <memory>
 
 #include "WindowDelegate.h"
+#include "canvas/Renderer/RenderContext.h"
 #include "nucleus/Allocators/Allocated.h"
 #include "nucleus/Allocators/Allocator.h"
 #include "nucleus/Macros.h"
 #include "nucleus/Memory/ScopedPtr.h"
+#include "nucleus/Text/StringView.h"
 
 typedef struct GLFWwindow GLFWwindow;
 
@@ -20,7 +22,7 @@ public:
   MOVE_DELETE(Window);
 
   // Factory function to create a window with the specified delegate.
-  static nu::ScopedPtr<Window> create(WindowDelegate* delegate, const std::string& title);
+  static nu::ScopedPtr<Window> create(WindowDelegate* delegate, const nu::StringView& title);
 
   Window() = delete;
 
@@ -59,6 +61,12 @@ private:
 
   // Our internal pointer to the window's implementation.
   GLFWwindow* m_window;
+
+  // RenderContext wrapping the rendering system.
+  RenderContext m_renderContext;
+
+  // The renderer we use to render anything to this window.
+  Renderer m_renderer;
 };
 
 }  // namespace ca

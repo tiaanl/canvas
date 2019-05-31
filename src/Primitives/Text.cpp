@@ -167,7 +167,7 @@ void Text::updateGeometry() {
   m_bounds = ca::Rect<I32>{};
 
   // Build geometry for each character in the text.
-  for (USize i = 0; i < m_text.getLength(); ++i) {
+  for (MemSize i = 0; i < m_text.getLength(); ++i) {
     ca::Font::Char ch = static_cast<ca::Font::Char>(m_text[i]);
 
     // Get the glyph.

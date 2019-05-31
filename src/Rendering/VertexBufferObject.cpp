@@ -12,7 +12,7 @@ VertexBufferObject::~VertexBufferObject() {
   GL_CHECK(glDeleteBuffers(1, &m_name));
 }
 
-bool VertexBufferObject::setData(const void* data, USize size) {
+bool VertexBufferObject::setData(const void* data, MemSize size) {
   // Make sure the buffer is created.
   createInternal();
 

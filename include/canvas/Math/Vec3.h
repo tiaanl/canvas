@@ -2,9 +2,10 @@
 #ifndef CANVAS_MATH_VEC3_H_
 #define CANVAS_MATH_VEC3_H_
 
-#include <cmath>
-
+#include "nucleus/Logging.h"
 #include "nucleus/Types.h"
+
+#include <cmath>
 
 namespace ca {
 
@@ -17,7 +18,7 @@ struct Vec3 {
 
   explicit Vec3(F32 x_, F32 y_, F32 z_) : x{x_}, y{y_}, z{z_} {}
 
-  F32 operator[](USize index) {
+  F32 operator[](MemSize index) {
     DCHECK(index < 3) << "Vec3 only has 3 members";
     return (&x)[index];
   }

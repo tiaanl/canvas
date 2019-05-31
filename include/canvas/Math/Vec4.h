@@ -8,16 +8,16 @@
 #include "nucleus/Logging.h"
 #include "nucleus/Types.h"
 
-#include "Vec2.h"
-#include "Vec3.h"
+#include "canvas/Math/Vec2.h"
+#include "canvas/Math/Vec3.h"
 
 namespace ca {
 
 struct Vec4 {
-  F32 x{0.f};
-  F32 y{0.f};
-  F32 z{0.f};
-  F32 w{0.f};
+  F32 x = 0.f;
+  F32 y = 0.f;
+  F32 z = 0.f;
+  F32 w = 0.f;
 
   Vec4() = default;
 
@@ -29,12 +29,12 @@ struct Vec4 {
 
   Vec4(const Vec2& xy, const Vec2& zw) : x{xy.x}, y{xy.y}, z{zw.x}, w{zw.y} {}
 
-  F32& operator[](USize index) {
+  F32& operator[](MemSize index) {
     DCHECK(index <= 3);
     return (&x)[index];
   }
 
-  F32 operator[](USize index) const {
+  F32 operator[](MemSize index) const {
     DCHECK(index <= 3);
     return (&x)[index];
   }

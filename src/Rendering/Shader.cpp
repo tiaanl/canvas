@@ -78,7 +78,7 @@ bool Shader::setSource(const nu::DynamicArray<I8>& source) {
     GL_CHECK(glGetShaderiv(m_name, GL_INFO_LOG_LENGTH, &logSize));
 
     nu::DynamicArray<GLchar> log;
-    log.resize(static_cast<USize>(logSize));
+    log.resize(static_cast<MemSize>(logSize));
     GL_CHECK(glGetShaderInfoLog(m_name, logSize, &logSize, log.getData()));
 
     LOG(Error) << log.getData();

@@ -42,19 +42,12 @@ struct Mat4 {
     col[3] = Vec4{c41, c42, c43, c44};
   }
 
-  Mat4(const Mat4& other) {
-    col[0] = other.col[0];
-    col[1] = other.col[1];
-    col[2] = other.col[2];
-    col[3] = other.col[3];
-  }
-
-  Vec4& operator[](U32 index) {
+  Vec4& operator[](MemSize index) {
     DCHECK(index <= 3);
     return col[index];
   }
 
-  const Vec4& operator[](U32 index) const {
+  const Vec4& operator[](MemSize index) const {
     DCHECK(index <= 3);
     return col[index];
   }

@@ -1,4 +1,4 @@
 
-add_executable("minimal" WIN32 MACOSX_BUNDLE "minimal.cpp")
-target_link_libraries("minimal" "canvas")
-set_property(TARGET "minimal" PROPERTY FOLDER "canvas/examples")
+add_executable("Minimal" WIN32 MACOSX_BUNDLE "Minimal.cpp")
+target_link_libraries("Minimal" "canvas")
+set_property(TARGET "Minimal" PROPERTY FOLDER "canvas/examples")

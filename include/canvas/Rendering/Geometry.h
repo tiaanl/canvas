@@ -29,7 +29,7 @@ public:
   void addVertex(const Vertex& vertex);
 
   // Add an array of vertices to the geometry.
-  void addVertices(Vertex* vertices, USize count);
+  void addVertices(Vertex* vertices, MemSize count);
 
   // Clear the list of vertices.
   void clear();

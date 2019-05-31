@@ -7,17 +7,33 @@
 namespace ca {
 
 struct Color {
-  U8 r;
-  U8 g;
-  U8 b;
-  U8 a;
-
-  // Construct a color with default values.
-  Color() : r{0}, g{0}, b{0}, a{255} {}
-
-  // Construct a color without alpha component.
-  Color(U8 r, U8 g, U8 b, U8 a = 255) : r{r}, g{g}, b{b}, a{a} {}
+  F32 r;
+  F32 g;
+  F32 b;
+  F32 a;
 };
+
+inline Color color() {
+  Color result;
+
+  result.r = 0;
+  result.g = 0;
+  result.b = 0;
+  result.a = 255;
+
+  return result;
+}
+
+inline Color color(F32 r, F32 g, F32 b, F32 a) {
+  Color result;
+
+  result.r = r;
+  result.g = g;
+  result.b = b;
+  result.a = a;
+
+  return result;
+}
 
 }  // namespace ca
 

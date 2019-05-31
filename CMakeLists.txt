@@ -19,7 +19,6 @@ add_subdirectory(third_party "third_party")
 # canvas
 
 set(canvas_HEADER_FILES
-	"include/canvas/Resources/Resource.h"
     "include/canvas/App.h"
     "include/canvas/Math/Mat4.h"
     "include/canvas/Math/Ray.h"
@@ -30,6 +29,11 @@ set(canvas_HEADER_FILES
     "include/canvas/OpenGL.h"
     "include/canvas/Primitives/Sprite.h"
     "include/canvas/Primitives/Text.h"
+    "include/canvas/Renderer/GeometryDefinition.h"
+    "include/canvas/Renderer/RenderCommand.h"
+    "include/canvas/Renderer/RenderContext.h"
+    "include/canvas/Renderer/Renderer.h"
+    "include/canvas/Renderer/RenderGroup.h"
     "include/canvas/Rendering/Canvas.h"
     "include/canvas/Rendering/Command.h"
     "include/canvas/Rendering/Font.h"
@@ -39,6 +43,7 @@ set(canvas_HEADER_FILES
     "include/canvas/Rendering/Texture.h"
     "include/canvas/Rendering/Vertex.h"
     "include/canvas/Rendering/VertexBufferObject.h"
+    "include/canvas/Resources/Resource.h"
     "include/canvas/Resources/ResourceCache.h"
     "include/canvas/Resources/ResourceManager.h"
     "include/canvas/Utils/Color.h"
@@ -57,11 +62,16 @@ set(canvas_HEADER_FILES
     "include/canvas/Windows/Window.h"
     "include/canvas/Windows/WindowDelegate.h"
     "include/canvas/Windows/WindowStyle.h"
+    "include/canvas/Utils/ShaderSource.h"
     )
 
 set(canvas_SOURCE_FILES
     "src/Primitives/Sprite.cpp"
     "src/Primitives/Text.cpp"
+    "src/Renderer/GeometryDefinition.cpp"
+    "src/Renderer/RenderContext.cpp"
+    "src/Renderer/Renderer.cpp"
+    "src/Renderer/RenderGroup.cpp"
     "src/Rendering/Canvas.cpp"
     "src/Rendering/Command.cpp"
     "src/Rendering/Font.cpp"
@@ -77,6 +87,7 @@ set(canvas_SOURCE_FILES
     "src/Windows/MessageLoop/MessageWindow.cpp"
     "src/Windows/Window.cpp"
     "src/Windows/WindowDelegate.cpp"
+    "src/Utils/ShaderSource.cpp"
     )
 
 add_library(canvas STATIC ${canvas_HEADER_FILES} ${canvas_SOURCE_FILES})

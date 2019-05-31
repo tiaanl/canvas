@@ -4,37 +4,37 @@
 
 #include <string>
 
+#include "canvas/Renderer/Renderer.h"
 #include "canvas/Utils/Size.h"
 #include "canvas/Windows/Event.h"
 #include "nucleus/Macros.h"
-#include "nucleus/Text/String.h"
+#include "nucleus/Text/StaticString.h"
 
 namespace ca {
 
-class Canvas;
+class RenderContext;
 
 class WindowDelegate {
 public:
   COPY_DELETE(WindowDelegate);
   MOVE_DELETE(WindowDelegate);
 
-  explicit WindowDelegate(const std::string& title) : m_title(title) {}
+  explicit WindowDelegate(const nu::StringView& title) : m_title(title) {}
 
   virtual ~WindowDelegate() = default;
 
   // Get the title of the window.
-  const std::string& getTitle() const {
-    return m_title;
+  nu::StringView getTitle() const {
+    return nu::StringView{m_title.getData(), m_title.getLength()};
   }
 
   // Called right after the window was created.  Return false if the app creation failed.
-  virtual bool onWindowCreated();
+  virtual bool onWindowCreated(RenderContext* renderContext);
 
   // Called when the size of the window changed.
   virtual void onWindowResized(const Size<U32>& size);
 
-  // Called when the window wants to paint to it's canvas.
-  virtual void onPaint(Canvas* canvas) = 0;
+  virtual void onRender(Renderer* renderer) = 0;
 
   // Mouse events.
   virtual void onMouseMoved(const MouseEvent& evt);
@@ -46,7 +46,7 @@ public:
 
 protected:
   // The title that appears in the window title bar.
-  std::string m_title;
+  nu::StaticString<128> m_title;
 };
 
 }  // namespace ca

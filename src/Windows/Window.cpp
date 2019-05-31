@@ -276,7 +276,7 @@ void glfwErrorCallback(int error, const char* description) {
 }  // namespace
 
 // static
-nu::ScopedPtr<Window> Window::create(WindowDelegate* delegate, const std::string& title) {
+nu::ScopedPtr<Window> Window::create(WindowDelegate* delegate, const nu::StringView& title) {
   DCHECK(delegate) << "Can't create a window with no delegate.";
 
   nu::ScopedPtr<Window> newWindow = nu::makeScopedPtr<Window>(delegate);
@@ -298,8 +298,8 @@ nu::ScopedPtr<Window> Window::create(WindowDelegate* delegate, const std::string
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
   // Create the window.
-  newWindow->m_window =
-      glfwCreateWindow(clientSize.width, clientSize.height, delegate->getTitle().c_str(), nullptr, nullptr);
+  newWindow->m_window = glfwCreateWindow(clientSize.width, clientSize.height,
+                                         delegate->getTitle().getData(), nullptr, nullptr);
   if (!newWindow->m_window) {
     LOG(Error) << "Could not create window.";
     return nu::ScopedPtr<Window>{};
@@ -342,7 +342,7 @@ nu::ScopedPtr<Window> Window::create(WindowDelegate* delegate, const std::string
   LOG(Info) << "Supported GLSL is " << glGetString(GL_SHADING_LANGUAGE_VERSION);
 
   // Let the delegate know we were just created.
-  delegate->onWindowCreated();
+  delegate->onWindowCreated(&newWindow->m_renderContext);
 
   // We send a window resized to the delegate as well so that it can do any
   // setup needed.
@@ -376,17 +376,18 @@ void Window::activateContext() {
 }
 
 void Window::paint() {
-  // Create the canvas we will be painting on.
-  Canvas canvas(this);
+  m_renderer.beginFrame();
 
-  // Tell the delegate to paint.
-  m_delegate->onPaint(&canvas);
+  m_delegate->onRender(&m_renderer);
+
+  m_renderer.endFrame();
 
   // Swap buffers.
   glfwSwapBuffers(m_window);
 }
 
-Window::Window(WindowDelegate* delegate) : m_delegate(delegate) {}
+Window::Window(WindowDelegate* delegate)
+  : m_delegate{delegate}, m_window{nullptr}, m_renderer{this, &m_renderContext} {}
 
 // static
 void Window::frameBufferSizeCallback(GLFWwindow* window, int width, int height) {
@@ -456,7 +457,8 @@ void Window::scrollCallback(GLFWwindow* window, double xOffset, double yOffset) 
   glfwGetCursorPos(window, &xPos, &yPos);
   Pos<I32> mousePos{static_cast<I32>(std::round(xPos)), static_cast<I32>(std::round(yPos))};
 
-  Pos<I32> scrollOffset{static_cast<I32>(std::lround(xOffset)), static_cast<I32>(std::lround(yOffset))};
+  Pos<I32> scrollOffset{static_cast<I32>(std::lround(xOffset)),
+                        static_cast<I32>(std::lround(yOffset))};
   MouseWheelEvent evt{Event::MouseWheel, mousePos, scrollOffset};
   windowPtr->m_delegate->onMouseWheel(evt);
 }

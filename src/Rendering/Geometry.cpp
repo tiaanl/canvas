@@ -35,9 +35,9 @@ void Geometry::addVertex(const Vertex& vertex) {
   m_compiled = false;
 }
 
-void Geometry::addVertices(Vertex* vertices, USize count) {
+void Geometry::addVertices(Vertex* vertices, MemSize count) {
   m_vertices.reserve(m_vertices.getSize() + count);
-  for (USize i = 0; i < count; ++i) {
+  for (MemSize i = 0; i < count; ++i) {
     m_vertices.pushBack(vertices[i]);
   }
 

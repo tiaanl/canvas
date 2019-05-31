@@ -68,7 +68,7 @@ private:
   };
 
   Pair* findPair(const nu::String& path) const {
-    for (USize i = 0; i < m_cache.getSize(); ++i) {
+    for (MemSize i = 0; i < m_cache.getSize(); ++i) {
       if (m_cache[i].path == path) {
         return const_cast<Pair*>(&m_cache[i]);
       }
