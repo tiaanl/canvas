@@ -1,4 +1,6 @@
 
+#if 0
+
 #ifndef CANVAS_RENDERING_FONT_H_
 #define CANVAS_RENDERING_FONT_H_
 
@@ -112,3 +114,5 @@ private:
 }  // namespace ca
 
 #endif  // CANVAS_RENDERING_FONT_H_
+
+#endif  // 0

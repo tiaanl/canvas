@@ -4,7 +4,6 @@
 #include <cmath>
 
 #include "canvas/OpenGL.h"
-#include "canvas/Rendering/Canvas.h"
 #include "canvas/Windows/Keyboard.h"
 #include "nucleus/Logging.h"
 

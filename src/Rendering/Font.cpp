@@ -1,6 +1,8 @@
 
 #include "canvas/Rendering/Font.h"
 
+#if 0
+
 #include "canvas/Utils/GLCheck.h"
 #include "canvas/Utils/Rect.h"
 #include "nucleus/Logging.h"
@@ -378,3 +380,5 @@ Rect<I32> Font::findGlyphRect(Page& page, const Size<I32>& size) const {
 }
 
 }  // namespace ca
+
+#endif  // 0
