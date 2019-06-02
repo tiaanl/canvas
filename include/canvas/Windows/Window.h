@@ -5,7 +5,7 @@
 #include <memory>
 
 #include "WindowDelegate.h"
-#include "canvas/Renderer/RenderContext.h"
+#include "canvas/Renderer/Renderer.h"
 #include "nucleus/Allocators/Allocated.h"
 #include "nucleus/Allocators/Allocator.h"
 #include "nucleus/Macros.h"
@@ -61,9 +61,6 @@ private:
 
   // Our internal pointer to the window's implementation.
   GLFWwindow* m_window;
-
-  // RenderContext wrapping the rendering system.
-  RenderContext m_renderContext;
 
   // The renderer we use to render anything to this window.
   Renderer m_renderer;

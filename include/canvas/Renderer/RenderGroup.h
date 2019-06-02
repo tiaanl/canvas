@@ -8,6 +8,8 @@
 
 namespace ca {
 
+class Renderer;
+
 enum class RenderGroupProjection : U8 {
   Perspective = 0x01,
   Orthographic = 0x02,
@@ -19,7 +21,7 @@ public:
   ~RenderGroup() = default;
 
   // Render the group.
-  void render(RenderContext* renderContext);
+  void render(Renderer* renderer);
 
   void clearColorBuffer(const Color& color);
   void clearDepthBuffer(F32 depth);
@@ -29,8 +31,8 @@ private:
   // Set up all the matrices we're going to use for positioning the world.
   void setUpMatrices();
 
-  static void processData(RenderContext* renderContext, ClearColorBufferData* data);
-  static void processData(RenderContext* renderContext, RenderGeometryData* data);
+  static void processData(Renderer* renderer, ClearColorBufferData* data);
+  static void processData(Renderer* renderer, RenderGeometryData* data);
 
   RenderGroupProjection m_projection;
   nu::DynamicArray<RenderCommand> m_commands;

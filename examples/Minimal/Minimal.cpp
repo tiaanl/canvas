@@ -1,7 +1,7 @@
 
 #include "canvas/App.h"
 
-#include "canvas/Renderer/RenderContext.h"
+#include "canvas/Renderer/BufferDefinition.h"
 #include "canvas/Utils/Image.h"
 #include "canvas/Utils/ShaderSource.h"
 #include "nucleus/FilePath.h"
@@ -14,9 +14,9 @@ public:
   ~MinimalWindow() override = default;
 
   // Override: ca::WindowDelegate
-  bool onWindowCreated(ca::RenderContext* renderContext) override {
+  bool onWindowCreated(ca::Renderer* renderer) override {
     LOG(Info) << "Root path: " << m_rootPath;
-    return loadProgram(renderContext) && loadGeometry(renderContext) && loadTexture(renderContext);
+    return loadProgram(renderer) && loadGeometry(renderer) && loadTexture(renderer);
   }
 
   void onRender(ca::Renderer* renderer) override {
@@ -28,7 +28,7 @@ public:
 private:
   DISALLOW_COPY_AND_ASSIGN(MinimalWindow);
 
-  bool loadProgram(ca::RenderContext* renderContext) {
+  bool loadProgram(ca::Renderer* renderer) {
     nu::FileInputStream* vs = new nu::FileInputStream{m_rootPath / "default.vs"};
     if (!vs->openedOk()) {
       return false;
@@ -43,12 +43,12 @@ private:
 
     auto fragmentShader = ca::ShaderSource::from(fs);
 
-    m_programId = renderContext->createProgram(vertexShader, fragmentShader);
+    m_programId = renderer->createProgram(vertexShader, fragmentShader);
 
     return true;
   }
 
-  bool loadGeometry(ca::RenderContext* renderContext) {
+  bool loadGeometry(ca::Renderer* renderer) {
     ca::BufferDefinition def{5};
     def.addAttribute(3, ca::ComponentType::Float32);
     def.addAttribute(2, ca::ComponentType::Float32);
@@ -60,14 +60,16 @@ private:
         0.5f,  0.5f,  0.0f, 1.0f, 1.0f,  //
     };
 
-    m_geometryId = renderContext->createGeometry(def, vertices, sizeof(vertices));
+    m_geometryId = renderer->createGeometry(def, vertices, sizeof(vertices));
 
     return true;
   }
 
-  bool loadTexture(ca::RenderContext* renderContext) {
-    nu::FileInputStream imageStream{m_rootPath / "default.png"};
+  bool loadTexture(ca::Renderer* renderer) {
+    auto imagePath = m_rootPath / "default.png";
+    nu::FileInputStream imageStream{imagePath};
     if (!imageStream.openedOk()) {
+      LOG(Error) << "Could not load image: " << imagePath;
       return false;
     }
 
@@ -76,7 +78,7 @@ private:
       return false;
     }
 
-    m_textureId = renderContext->createTexture(image);
+    m_textureId = renderer->createTexture(image);
 
     return true;
   }

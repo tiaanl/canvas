@@ -2,17 +2,16 @@
 #ifndef CANVAS_WINDOWS_WINDOW_DELEGATE_H_
 #define CANVAS_WINDOWS_WINDOW_DELEGATE_H_
 
-#include <string>
-
-#include "canvas/Renderer/Renderer.h"
 #include "canvas/Utils/Size.h"
 #include "canvas/Windows/Event.h"
 #include "nucleus/Macros.h"
 #include "nucleus/Text/StaticString.h"
 
+#include <string>
+
 namespace ca {
 
-class RenderContext;
+class Renderer;
 
 class WindowDelegate {
 public:
@@ -29,7 +28,7 @@ public:
   }
 
   // Called right after the window was created.  Return false if the app creation failed.
-  virtual bool onWindowCreated(RenderContext* renderContext);
+  virtual bool onWindowCreated(Renderer* renderContext);
 
   // Called when the size of the window changed.
   virtual void onWindowResized(const Size<U32>& size);

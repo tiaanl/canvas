@@ -3,18 +3,32 @@
 #define CANVAS_RENDERER_RENDERER_H_
 
 #include "canvas/Renderer/RenderGroup.h"
+#include "canvas/Renderer/Types.h"
+#include "canvas/Utils/Size.h"
 #include "nucleus/Containers/DynamicArray.h"
 #include "nucleus/Macros.h"
 
 namespace ca {
 
+class BufferDefinition;
+class Image;
+class ShaderSource;
 class Window;
 
 class Renderer {
 public:
-  Renderer(Window* window, RenderContext* renderContext)
-    : m_window{window}, m_renderContext{renderContext} {}
+  Renderer() = default;
+
   ~Renderer() = default;
+
+  TextureId createTexture(const Image& image);
+
+  template <typename T>
+  GeometryId createGeometry(const BufferDefinition& bufferDefinition, T* data, MemSize dataSize) {
+    return createGeometryInternal(bufferDefinition, data, dataSize, sizeof(T));
+  }
+
+  ProgramId createProgram(const ShaderSource& vertexShader, const ShaderSource& fragmentShader);
 
   void beginFrame();
   void endFrame();
@@ -25,13 +39,32 @@ private:
   COPY_DELETE(Renderer);
   MOVE_DELETE(Renderer);
 
-  // The window we are rendering to.
-  Window* m_window;
+  friend class RenderGroup;
 
-  // The renderContext connected to the window.
-  RenderContext* m_renderContext;
+  struct TextureData {
+    U32 id;
+    Size<I32> size;
+  };
+
+  struct GeometryData {
+    U32 id;
+    U32 numComponents;
+  };
+
+  struct ProgramData {
+    U32 id;
+  };
+
+  GeometryId createGeometryInternal(const BufferDefinition& bufferDefinition, void* data,
+                                    MemSize dataSize, MemSize componentSize);
 
   nu::DynamicArray<RenderGroup> m_renderGroups;
+
+  nu::DynamicArray<TextureData> m_textures;
+
+  nu::DynamicArray<GeometryData> m_geometries;
+
+  nu::DynamicArray<ProgramData> m_programs;
 };
 
 }  // namespace ca

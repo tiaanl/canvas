@@ -29,9 +29,9 @@ set(canvas_HEADER_FILES
     "include/canvas/OpenGL.h"
     "include/canvas/Renderer/BufferDefinition.h"
     "include/canvas/Renderer/RenderCommand.h"
-    "include/canvas/Renderer/RenderContext.h"
     "include/canvas/Renderer/Renderer.h"
     "include/canvas/Renderer/RenderGroup.h"
+    "include/canvas/Renderer/Types.h"
     "include/canvas/Rendering/Font.h"
     "include/canvas/Utils/Color.h"
     "include/canvas/Utils/GLCheck.h"
@@ -39,6 +39,7 @@ set(canvas_HEADER_FILES
     "include/canvas/Utils/Pos.h"
     "include/canvas/Utils/Rect.h"
     "include/canvas/Utils/ScopedOpenGLEnable.h"
+    "include/canvas/Utils/ShaderSource.h"
     "include/canvas/Utils/Size.h"
     "include/canvas/Windows/Event.h"
     "include/canvas/Windows/Keyboard.h"
@@ -47,20 +48,18 @@ set(canvas_HEADER_FILES
     "include/canvas/Windows/Window.h"
     "include/canvas/Windows/WindowDelegate.h"
     "include/canvas/Windows/WindowStyle.h"
-    "include/canvas/Utils/ShaderSource.h"
     )
 
 set(canvas_SOURCE_FILES
     "src/Renderer/BufferDefinition.cpp"
-    "src/Renderer/RenderContext.cpp"
     "src/Renderer/Renderer.cpp"
     "src/Renderer/RenderGroup.cpp"
     "src/Rendering/Font.cpp"
     "src/Utils/GLCheck.cpp"
     "src/Utils/Image.cpp"
+    "src/Utils/ShaderSource.cpp"
     "src/Windows/Window.cpp"
     "src/Windows/WindowDelegate.cpp"
-    "src/Utils/ShaderSource.cpp"
     )
 
 add_library(canvas STATIC ${canvas_HEADER_FILES} ${canvas_SOURCE_FILES})

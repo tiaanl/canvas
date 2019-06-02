@@ -2,7 +2,7 @@
 #ifndef CANVAS_RENDERER_RENDER_COMMAND_H_
 #define CANVAS_RENDERER_RENDER_COMMAND_H_
 
-#include "canvas/Renderer/RenderContext.h"
+#include "canvas/Renderer/Types.h"
 #include "canvas/Utils/Color.h"
 
 namespace ca {

@@ -3,13 +3,13 @@
 
 #include "canvas/OpenGL.h"
 #include "canvas/Renderer/RenderCommand.h"
-#include "canvas/Renderer/RenderContext.h"
+#include "canvas/Renderer/Renderer.h"
 #include "canvas/Utils/GLCheck.h"
 #include "nucleus/Logging.h"
 
 namespace ca {
 
-void RenderGroup::render(RenderContext* renderContext) {
+void RenderGroup::render(Renderer* renderContext) {
   setUpMatrices();
 
   for (auto& command : m_commands) {
@@ -64,16 +64,16 @@ void RenderGroup::setUpMatrices() {
 }
 
 // static
-void RenderGroup::processData(RenderContext*, ClearColorBufferData* data) {
+void RenderGroup::processData(Renderer*, ClearColorBufferData* data) {
   glClearColor(data->color.r, data->color.g, data->color.b, data->color.a);
   glClear(GL_COLOR_BUFFER_BIT);
 }
 
 // static
-void RenderGroup::processData(RenderContext* renderContext, RenderGeometryData* data) {
-  auto& programData = renderContext->getProgramData(data->programId);
-  auto& geometryData = renderContext->getGeometryData(data->geometryId);
-  auto& textureData = renderContext->getTextureData(data->textureId);
+void RenderGroup::processData(Renderer* renderer, RenderGeometryData* data) {
+  auto& programData = renderer->m_programs[data->programId];
+  auto& geometryData = renderer->m_geometries[data->geometryId];
+  auto& textureData = renderer->m_textures[data->textureId];
 
   GL_CHECK(glUseProgram(programData.id));
   GL_CHECK(glBindTexture(GL_TEXTURE_2D, textureData.id));

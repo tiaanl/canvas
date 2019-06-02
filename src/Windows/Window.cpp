@@ -341,7 +341,7 @@ nu::ScopedPtr<Window> Window::create(WindowDelegate* delegate, const nu::StringV
   LOG(Info) << "Supported GLSL is " << glGetString(GL_SHADING_LANGUAGE_VERSION);
 
   // Let the delegate know we were just created.
-  bool success = delegate->onWindowCreated(&newWindow->m_renderContext);
+  bool success = delegate->onWindowCreated(&newWindow->m_renderer);
   if (!success) {
     return {};
   }
@@ -389,7 +389,7 @@ void Window::paint() {
 }
 
 Window::Window(WindowDelegate* delegate)
-  : m_delegate{delegate}, m_window{nullptr}, m_renderer{this, &m_renderContext} {}
+  : m_delegate{delegate}, m_window{nullptr}, m_renderer{} {}
 
 // static
 void Window::frameBufferSizeCallback(GLFWwindow* window, int width, int height) {
