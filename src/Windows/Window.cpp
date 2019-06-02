@@ -301,7 +301,7 @@ nu::ScopedPtr<Window> Window::create(WindowDelegate* delegate, const nu::StringV
                                          delegate->getTitle().getData(), nullptr, nullptr);
   if (!newWindow->m_window) {
     LOG(Error) << "Could not create window.";
-    return nu::ScopedPtr<Window>{};
+    return {};
   }
 
   // Center the window on the screen.
@@ -341,7 +341,10 @@ nu::ScopedPtr<Window> Window::create(WindowDelegate* delegate, const nu::StringV
   LOG(Info) << "Supported GLSL is " << glGetString(GL_SHADING_LANGUAGE_VERSION);
 
   // Let the delegate know we were just created.
-  delegate->onWindowCreated(&newWindow->m_renderContext);
+  bool success = delegate->onWindowCreated(&newWindow->m_renderContext);
+  if (!success) {
+    return {};
+  }
 
   // We send a window resized to the delegate as well so that it can do any
   // setup needed.

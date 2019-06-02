@@ -10,7 +10,7 @@ namespace ca {
 
 namespace {
 
-static U32 kComponentTypeMap[] = {
+U32 kComponentTypeMap[] = {
     GL_FLOAT,           // Float32
     GL_BYTE,            // Signed8
     GL_UNSIGNED_BYTE,   // Unsigned8

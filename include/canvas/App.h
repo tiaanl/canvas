@@ -28,6 +28,9 @@ public:
   void run() {
     // Set up the window.
     m_window = std::move(Window::create(&m_delegate, m_delegate.getTitle()));
+    if (!m_window.get()) {
+      return;
+    }
 
     while (m_window->processEvents()) {
       m_window->paint();
