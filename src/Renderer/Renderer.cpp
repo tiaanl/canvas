@@ -2,7 +2,7 @@
 #include "canvas/Renderer/Renderer.h"
 
 #include "canvas/OpenGL.h"
-#include "canvas/Renderer/BufferDefinition.h"
+#include "canvas/Renderer/VertexDefinition.h"
 #include "canvas/Utils/GLCheck.h"
 #include "canvas/Utils/Image.h"
 #include "canvas/Utils/ShaderSource.h"
@@ -135,14 +135,14 @@ ProgramId Renderer::createProgram(const ShaderSource& vertexShader,
   return m_programs.getSize() - 1;
 }
 
-GeometryId Renderer::createGeometryInternal(const BufferDefinition& bufferDefinition, void* data,
-                                            MemSize dataSize, MemSize componentSize) {
-#if BUILD(DEBUG)
+GeometryId Renderer::createGeometry(const VertexDefinition& vertexDefinition, void* data,
+                                    MemSize dataSize) {
+#if BUILD(DEBUG) && 0
   U32 totalComponents = 0;
-  for (auto& attr : bufferDefinition.getAttributes()) {
+  for (auto& attr : vertexDefinition.getAttributes()) {
     totalComponents += attr.numberOfComponents;
   }
-  DCHECK(totalComponents == bufferDefinition.getComponentsPerVertex());
+  DCHECK(totalComponents == vertexDefinition.getComponentsPerVertex());
 #endif  // BUILD(DEBUG)
 
   GeometryData result;
@@ -157,9 +157,9 @@ GeometryId Renderer::createGeometryInternal(const BufferDefinition& bufferDefini
   GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, bufferId));
   GL_CHECK(glBufferData(GL_ARRAY_BUFFER, dataSize, data, GL_STATIC_DRAW));
 
+#if 0
   // Create each attribute.
-  const auto& attributes = bufferDefinition.getAttributes();
-  MemSize stride = bufferDefinition.getComponentsPerVertex() * componentSize;
+  MemSize stride = vertexDefinition.getComponentsPerVertex() * componentSize;
   MemSize offset = 0;
   for (MemSize i = 0; i < attributes.getSize(); ++i) {
     const auto& attribute = attributes[i];
@@ -171,6 +171,7 @@ GeometryId Renderer::createGeometryInternal(const BufferDefinition& bufferDefini
 
     offset += attribute.numberOfComponents * componentSize;
   }
+#endif  // 0
 
   // Reset the current VAO bind.
   GL_CHECK(glBindVertexArray(0));
@@ -178,7 +179,9 @@ GeometryId Renderer::createGeometryInternal(const BufferDefinition& bufferDefini
   // We can delete the buffer here, because the VAO is holding a reference to it.
   glDeleteBuffers(1, &bufferId);
 
+#if 0
   result.numComponents = U32(dataSize / componentSize);
+#endif  // 0
 
   m_geometries.pushBack(result);
   return m_geometries.getSize() - 1;

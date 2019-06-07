@@ -3,14 +3,14 @@
 #define CANVAS_RENDERER_RENDERER_H_
 
 #include "canvas/Renderer/RenderGroup.h"
-#include "canvas/Renderer/Types.h"
+#include "canvas/Renderer/VertexDefinition.h"
 #include "canvas/Utils/Size.h"
 #include "nucleus/Containers/DynamicArray.h"
 #include "nucleus/Macros.h"
 
 namespace ca {
 
-class BufferDefinition;
+class VertexDefinition;
 class Image;
 class ShaderSource;
 class Window;
@@ -23,10 +23,7 @@ public:
 
   TextureId createTexture(const Image& image);
 
-  template <typename T>
-  GeometryId createGeometry(const BufferDefinition& bufferDefinition, T* data, MemSize dataSize) {
-    return createGeometryInternal(bufferDefinition, data, dataSize, sizeof(T));
-  }
+  GeometryId createGeometry(const VertexDefinition& bufferDefinition, void* data, MemSize dataSize);
 
   ProgramId createProgram(const ShaderSource& vertexShader, const ShaderSource& fragmentShader);
 
@@ -55,15 +52,9 @@ private:
     U32 id;
   };
 
-  GeometryId createGeometryInternal(const BufferDefinition& bufferDefinition, void* data,
-                                    MemSize dataSize, MemSize componentSize);
-
   nu::DynamicArray<RenderGroup> m_renderGroups;
-
   nu::DynamicArray<TextureData> m_textures;
-
   nu::DynamicArray<GeometryData> m_geometries;
-
   nu::DynamicArray<ProgramData> m_programs;
 };
 

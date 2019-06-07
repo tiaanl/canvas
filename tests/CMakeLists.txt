@@ -5,6 +5,7 @@ set(canvas_TEST_FILES
     "Math/Vec2Tests.cpp"
     "Math/Vec3Tests.cpp"
     "Math/Vec4Tests.cpp"
+    "Renderer/VertexDefinitionTests.cpp"
     "Rendering/FontTests.cpp"
 )
 

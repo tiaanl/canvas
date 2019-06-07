@@ -1,7 +1,6 @@
 
 #include "canvas/App.h"
 
-#include "canvas/Renderer/BufferDefinition.h"
 #include "canvas/Utils/Image.h"
 #include "canvas/Utils/ShaderSource.h"
 #include "nucleus/FilePath.h"
@@ -49,9 +48,9 @@ private:
   }
 
   bool loadGeometry(ca::Renderer* renderer) {
-    ca::BufferDefinition def{5};
-    def.addAttribute(3, ca::ComponentType::Float32);
-    def.addAttribute(2, ca::ComponentType::Float32);
+    ca::VertexDefinition def;
+    def.addAttribute(ca::AttributeType::Position, ca::ComponentType::Float32, 3);
+    def.addAttribute(ca::AttributeType::TextureCoordinates, ca::ComponentType::Float32, 2);
 
     static F32 vertices[] = {
         -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,  //

@@ -8,7 +8,7 @@ project("canvas")
 
 # Options
 
-option(CANVAS_BUILD_EXAMPLES "Build canvas examples?")
+option(CANVAS_BUILD_EXAMPLES "Build canvas examples?" ON)
 set(CMAKE_CXX_STANDARD 14)
 
 # Dependencies
@@ -27,11 +27,11 @@ set(canvas_HEADER_FILES
     "include/canvas/Math/Vec3.h"
     "include/canvas/Math/Vec4.h"
     "include/canvas/OpenGL.h"
-    "include/canvas/Renderer/BufferDefinition.h"
     "include/canvas/Renderer/RenderCommand.h"
     "include/canvas/Renderer/Renderer.h"
     "include/canvas/Renderer/RenderGroup.h"
     "include/canvas/Renderer/Types.h"
+    "include/canvas/Renderer/VertexDefinition.h"
     "include/canvas/Rendering/Font.h"
     "include/canvas/Utils/Color.h"
     "include/canvas/Utils/GLCheck.h"
@@ -51,9 +51,9 @@ set(canvas_HEADER_FILES
     )
 
 set(canvas_SOURCE_FILES
-    "src/Renderer/BufferDefinition.cpp"
     "src/Renderer/Renderer.cpp"
     "src/Renderer/RenderGroup.cpp"
+    "src/Renderer/VertexDefinition.cpp"
     "src/Rendering/Font.cpp"
     "src/Utils/GLCheck.cpp"
     "src/Utils/Image.cpp"
