@@ -50,7 +50,7 @@ set(canvas_HEADER_FILES
     )
 
 set(canvas_SOURCE_FILES
-    "src/Math2/Mat4.cpp"
+    "src/Math/Mat4.cpp"
     "src/Renderer/Renderer.cpp"
     "src/Renderer/RenderGroup.cpp"
     "src/Renderer/VertexDefinition.cpp"
