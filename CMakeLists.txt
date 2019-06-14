@@ -20,9 +20,8 @@ add_subdirectory(third_party "third_party")
 
 set(canvas_HEADER_FILES
     "include/canvas/App.h"
+    "include/canvas/Math/Common.h"
     "include/canvas/Math/Mat4.h"
-    "include/canvas/Math/Ray.h"
-    "include/canvas/Math/Transform.h"
     "include/canvas/Math/Vec2.h"
     "include/canvas/Math/Vec3.h"
     "include/canvas/Math/Vec4.h"
@@ -51,6 +50,7 @@ set(canvas_HEADER_FILES
     )
 
 set(canvas_SOURCE_FILES
+    "src/Math2/Mat4.cpp"
     "src/Renderer/Renderer.cpp"
     "src/Renderer/RenderGroup.cpp"
     "src/Renderer/VertexDefinition.cpp"

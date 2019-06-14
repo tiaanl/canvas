@@ -33,8 +33,7 @@ public:
   RenderGroup* addRenderGroup(RenderGroupProjection projection);
 
 private:
-  COPY_DELETE(Renderer);
-  MOVE_DELETE(Renderer);
+  DELETE_COPY_AND_MOVE(Renderer);
 
   friend class RenderGroup;
 

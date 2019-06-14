@@ -6,7 +6,6 @@
 
 #include "WindowDelegate.h"
 #include "canvas/Renderer/Renderer.h"
-#include "nucleus/Allocators/Allocated.h"
 #include "nucleus/Allocators/Allocator.h"
 #include "nucleus/Macros.h"
 #include "nucleus/Memory/ScopedPtr.h"
@@ -18,9 +17,6 @@ namespace ca {
 
 class Window {
 public:
-  COPY_DELETE(Window);
-  MOVE_DELETE(Window);
-
   // Factory function to create a window with the specified delegate.
   static nu::ScopedPtr<Window> create(WindowDelegate* delegate, const nu::StringView& title);
 
@@ -43,6 +39,8 @@ public:
   void paint();
 
 private:
+  DELETE_COPY_AND_MOVE(Window);
+
   template <typename T, typename... Args>
   friend nu::ScopedPtr<T> nu::makeScopedPtr(Args&&...);
 

@@ -14,7 +14,7 @@ namespace ca {
 
 class Image {
 public:
-  COPY_DELETE(Image);
+  DELETE_COPY(Image);
 
   using DataType = nu::DynamicArray<U8>;
 

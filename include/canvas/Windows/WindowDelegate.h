@@ -15,9 +15,6 @@ class Renderer;
 
 class WindowDelegate {
 public:
-  COPY_DELETE(WindowDelegate);
-  MOVE_DELETE(WindowDelegate);
-
   explicit WindowDelegate(const nu::StringView& title) : m_title(title) {}
 
   virtual ~WindowDelegate() = default;
@@ -46,6 +43,9 @@ public:
 protected:
   // The title that appears in the window title bar.
   nu::StaticString<128> m_title;
+
+private:
+  DELETE_COPY_AND_MOVE(WindowDelegate);
 };
 
 }  // namespace ca
