@@ -22,6 +22,7 @@ DECLARE_RESOURCE_ID(Program);
 DECLARE_RESOURCE_ID(VertexBuffer);
 DECLARE_RESOURCE_ID(IndexBuffer);
 DECLARE_RESOURCE_ID(Texture);
+DECLARE_RESOURCE_ID(Uniform);
 
 enum class ComponentType : U32 {
   Float32 = 0,

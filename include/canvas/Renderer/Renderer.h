@@ -9,9 +9,6 @@
 #include "canvas/Utils/ShaderSource.h"
 #include "canvas/Utils/Size.h"
 #include "nucleus/Containers/DynamicArray.h"
-#include "nucleus/Macros.h"
-
-#include <limits>
 
 namespace ca {
 
@@ -34,9 +31,8 @@ public:
 private:
   DELETE_COPY_AND_MOVE(Renderer);
 
-  struct TextureData {
+  struct ProgramData {
     U32 id;
-    Size<I32> size;
   };
 
   struct VertexBufferData {
@@ -48,8 +44,9 @@ private:
     ComponentType componentType;
   };
 
-  struct ProgramData {
+  struct TextureData {
     U32 id;
+    Size<I32> size;
   };
 
   void processCommand(const ClearBuffersData& data);
