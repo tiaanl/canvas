@@ -39,7 +39,8 @@ void parseRGBA(const Size<I32> size, U8* outPtr, const png_structp& png, const p
 
 }  // namespace
 
-Image::Image(Image&& other) noexcept : m_size(std::move(other.m_size)), m_data(std::move(other.m_data)) {}
+Image::Image(Image&& other) noexcept
+  : m_size(std::move(other.m_size)), m_data(std::move(other.m_data)) {}
 
 Image& Image::operator=(Image&& other) noexcept {
   m_size = std::move(other.m_size);
@@ -60,10 +61,10 @@ void Image::create(const Size<I32>& size, const Color& col) {
     U8* data = m_data.getData();
     U8* end = data + m_data.getSize();
     while (data < end) {
-      *data++ = col.r;
-      *data++ = col.g;
-      *data++ = col.b;
-      *data++ = col.a;
+      *data++ = static_cast<U8>(round(col.r * 255.0f));
+      *data++ = static_cast<U8>(round(col.g * 255.0f));
+      *data++ = static_cast<U8>(round(col.b * 255.0f));
+      *data++ = static_cast<U8>(round(col.a * 255.0f));
     }
   } else {
     // Store the size and clear out the data.
@@ -107,7 +108,8 @@ bool Image::loadFromStream(nu::InputStream* stream) {
   png_uint_32 height = 0;
   int bitDepth = 0;
   int colorType = -1;
-  png_uint_32 retval = png_get_IHDR(png, info, &width, &height, &bitDepth, &colorType, NULL, NULL, NULL);
+  png_uint_32 retval =
+      png_get_IHDR(png, info, &width, &height, &bitDepth, &colorType, NULL, NULL, NULL);
 
   if (retval != 1) {
     return false;
@@ -141,10 +143,10 @@ bool Image::loadFromStream(nu::InputStream* stream) {
 
 void Image::setPixel(const Pos<I32>& pos, const Color& color) {
   U8* ptr = &m_data[pos.y * (m_size.width * 4) + (pos.x * 4)];
-  *ptr++ = color.r;
-  *ptr++ = color.g;
-  *ptr++ = color.b;
-  *ptr++ = color.a;
+  *ptr++ = static_cast<U8>(round(color.r));
+  *ptr++ = static_cast<U8>(round(color.g));
+  *ptr++ = static_cast<U8>(round(color.b));
+  *ptr++ = static_cast<U8>(round(color.a));
 }
 
 }  // namespace ca

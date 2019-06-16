@@ -2,59 +2,65 @@
 #ifndef CANVAS_RENDERER_RENDERER_H_
 #define CANVAS_RENDERER_RENDERER_H_
 
-#include "canvas/Renderer/RenderGroup.h"
+#include "canvas/Renderer/Command.h"
+#include "canvas/Renderer/Types.h"
 #include "canvas/Renderer/VertexDefinition.h"
+#include "canvas/Utils/Image.h"
+#include "canvas/Utils/ShaderSource.h"
 #include "canvas/Utils/Size.h"
 #include "nucleus/Containers/DynamicArray.h"
 #include "nucleus/Macros.h"
 
-namespace ca {
+#include <limits>
 
-class VertexDefinition;
-class Image;
-class ShaderSource;
-class Window;
+namespace ca {
 
 class Renderer {
 public:
   Renderer() = default;
-
   ~Renderer() = default;
 
+  ProgramId createProgram(const ShaderSource& vertexShader, const ShaderSource& fragmentShader);
+  VertexBufferId createVertexBuffer(const VertexDefinition& bufferDefinition, void* data,
+                                    MemSize dataSize);
+  IndexBufferId createIndexBuffer(ComponentType componentType, void* data, MemSize dataSize);
   TextureId createTexture(const Image& image);
 
-  GeometryId createGeometry(const VertexDefinition& bufferDefinition, void* data, MemSize dataSize);
-
-  ProgramId createProgram(const ShaderSource& vertexShader, const ShaderSource& fragmentShader);
+  void pushCommand(const Command& command);
 
   void beginFrame();
   void endFrame();
 
-  RenderGroup* addRenderGroup(RenderGroupProjection projection);
-
 private:
   DELETE_COPY_AND_MOVE(Renderer);
-
-  friend class RenderGroup;
 
   struct TextureData {
     U32 id;
     Size<I32> size;
   };
 
-  struct GeometryData {
+  struct VertexBufferData {
     U32 id;
-    U32 numComponents;
+  };
+
+  struct IndexBufferData {
+    U32 id;
+    ComponentType componentType;
   };
 
   struct ProgramData {
     U32 id;
   };
 
-  nu::DynamicArray<RenderGroup> m_renderGroups;
+  void processCommand(const ClearBuffersData& data);
+  void processCommand(const DrawData& data);
+
   nu::DynamicArray<TextureData> m_textures;
-  nu::DynamicArray<GeometryData> m_geometries;
+  nu::DynamicArray<VertexBufferData> m_vertexBuffers;
+  nu::DynamicArray<IndexBufferData> m_indexBuffers;
   nu::DynamicArray<ProgramData> m_programs;
+
+  nu::DynamicArray<Command> m_commands;
 };
 
 }  // namespace ca

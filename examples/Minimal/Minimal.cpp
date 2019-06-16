@@ -1,10 +1,10 @@
 
 #include "canvas/App.h"
 
+#include "canvas/Renderer/Encoder.h"
 #include "canvas/Utils/Image.h"
 #include "canvas/Utils/ShaderSource.h"
 #include "nucleus/FilePath.h"
-#include "nucleus/Optional.h"
 #include "nucleus/Streams/FileInputStream.h"
 
 class MinimalWindow : public ca::WindowDelegate {
@@ -15,17 +15,31 @@ public:
   // Override: ca::WindowDelegate
   bool onWindowCreated(ca::Renderer* renderer) override {
     LOG(Info) << "Root path: " << m_rootPath;
-    return loadProgram(renderer) && loadGeometry(renderer) && loadTexture(renderer);
+    return loadProgram(renderer) && loadVertexBuffer(renderer) && loadTexture(renderer);
   }
 
   void onRender(ca::Renderer* renderer) override {
-    auto renderGroup = renderer->addRenderGroup(ca::RenderGroupProjection::Perspective);
-    renderGroup->clearColorBuffer(ca::color(0.125f, 0.25f, 0.33f, 1.0f));
-    renderGroup->renderGeometry(m_geometryId, m_textureId, m_programId);
+    ca::Encoder encoder{renderer};
+
+    encoder.clearBuffers().color(ca::Color{0.0f, 0.1f, 0.2f}).submit();
+
+    encoder.draw()
+        .programId(m_programId)
+        .vertexBufferId(m_vertexBufferId)
+        .indexBufferId(m_indexBufferId)
+        .textureId(m_textureId)
+        .drawType(ca::DrawType::Triangles)
+        .numIndices(6)
+        .submit();
+
+#if 0
+    encoder.draw(m_programId, m_vertexBufferId, m_indexBufferId, m_textureId,
+                 ca::DrawType::Triangles, 6);
+#endif  // 0
   }
 
 private:
-  DISALLOW_COPY_AND_ASSIGN(MinimalWindow);
+  DELETE_COPY_AND_MOVE(MinimalWindow);
 
   bool loadProgram(ca::Renderer* renderer) {
     nu::FileInputStream* vs = new nu::FileInputStream{m_rootPath / "default.vs"};
@@ -44,13 +58,13 @@ private:
 
     m_programId = renderer->createProgram(vertexShader, fragmentShader);
 
-    return true;
+    return isValid(m_programId);
   }
 
-  bool loadGeometry(ca::Renderer* renderer) {
-    ca::VertexDefinition def;
-    def.addAttribute(ca::AttributeType::Position, ca::ComponentType::Float32, 3);
-    def.addAttribute(ca::AttributeType::TextureCoordinates, ca::ComponentType::Float32, 2);
+  bool loadVertexBuffer(ca::Renderer* renderer) {
+    auto def = ca::VertexDefinition{}
+                   .addAttribute(ca::ComponentType::Float32, ca::ComponentCount::Three, "position")
+                   .addAttribute(ca::ComponentType::Float32, ca::ComponentCount::Two, "texCoords");
 
     static F32 vertices[] = {
         -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,  //
@@ -59,7 +73,21 @@ private:
         0.5f,  0.5f,  0.0f, 1.0f, 1.0f,  //
     };
 
-    m_geometryId = renderer->createGeometry(def, vertices, sizeof(vertices));
+    m_vertexBufferId = renderer->createVertexBuffer(def, vertices, sizeof(vertices));
+    if (!isValid(m_vertexBufferId)) {
+      return false;
+    }
+
+    static U16 indices[] = {
+        0, 1, 2, 2, 3, 0,
+    };
+
+    m_indexBufferId =
+        renderer->createIndexBuffer(ca::ComponentType::Unsigned16, indices, sizeof(indices));
+
+    if (!isValid(m_indexBufferId)) {
+      return false;
+    }
 
     return true;
   }
@@ -79,14 +107,15 @@ private:
 
     m_textureId = renderer->createTexture(image);
 
-    return true;
+    return isValid(m_textureId);
   }
 
   nu::FilePath m_rootPath;
 
-  ca::ProgramId m_programId = 0;
-  ca::GeometryId m_geometryId = 0;
-  ca::TextureId m_textureId = 0;
+  ca::ProgramId m_programId;
+  ca::VertexBufferId m_vertexBufferId;
+  ca::IndexBufferId m_indexBufferId;
+  ca::TextureId m_textureId;
 };
 
 CANVAS_APP(MinimalWindow)

@@ -12,24 +12,24 @@ TEST_CASE("create empty vertex definition") {
 
 TEST_CASE("add single vertex attribute") {
   VertexDefinition vd;
-  vd.addAttribute(ComponentType::Float32, 3, "position");
-  vd.addAttribute(ComponentType::Unsigned32, 2, "something");
+  vd.addAttribute(ComponentType::Float32, ComponentCount::Three, "position");
+  vd.addAttribute(ComponentType::Unsigned32, ComponentCount::Two, "something");
 
   auto& attributes = vd.getAttributes();
 
   CHECK(attributes[0].getType() == ComponentType::Float32);
-  CHECK(attributes[0].getComponentCount() == 3);
+  CHECK(attributes[0].getComponentCount() == ComponentCount::Three);
   CHECK(attributes[0].getName() == "position");
 
   CHECK(attributes[1].getType() == ComponentType::Unsigned32);
-  CHECK(attributes[1].getComponentCount() == 2);
+  CHECK(attributes[1].getComponentCount() == ComponentCount::Two);
   CHECK(attributes[1].getName() == "something");
 }
 
 TEST_CASE("build correct shader source") {
   VertexDefinition vd;
-  vd.addAttribute(ComponentType::Float32, 3, "position");
-  vd.addAttribute(ComponentType::Unsigned32, 2, "something");
+  vd.addAttribute(ComponentType::Float32, ComponentCount::Three, "position");
+  vd.addAttribute(ComponentType::Unsigned32, ComponentCount::Two, "something");
 
   nu::DynamicString text = vd.buildShaderSource();
   LOG(Info) << text.getData();

@@ -11,15 +11,34 @@ namespace ca {
 
 namespace {
 
-U32 kComponentTypeMap[] = {
-    GL_FLOAT,           // Float32
-    GL_BYTE,            // Signed8
-    GL_UNSIGNED_BYTE,   // Unsigned8
-    GL_SHORT,           // Signed16
-    GL_UNSIGNED_SHORT,  // Unsigned16
-    GL_INT,             // Signed32
-    GL_UNSIGNED_INT,    // Unsigned32
-};
+U32 getOglType(ComponentType type) {
+  switch (type) {
+    case ComponentType::Float32:
+      return GL_FLOAT;
+
+    case ComponentType::Signed8:
+      return GL_BYTE;
+
+    case ComponentType::Unsigned8:
+      return GL_UNSIGNED_BYTE;
+
+    case ComponentType::Signed16:
+      return GL_SHORT;
+
+    case ComponentType::Unsigned16:
+      return GL_UNSIGNED_SHORT;
+
+    case ComponentType::Signed32:
+      return GL_INT;
+
+    case ComponentType::Unsigned32:
+      return GL_UNSIGNED_INT;
+
+    default:
+      DCHECK(false) << "Invalid component type.";
+      return 0;
+  }
+}
 
 bool compileShaderSource(const ShaderSource& source, U32 shaderType, U32* idOut) {
   U32 id = glCreateShader(shaderType);
@@ -54,34 +73,6 @@ bool compileShaderSource(const ShaderSource& source, U32 shaderType, U32* idOut)
 
 }  // namespace
 
-TextureId Renderer::createTexture(const Image& image) {
-  TextureData result;
-
-  GL_CHECK(glGenTextures(1, &result.id));
-
-  result.size = image.getSize();
-
-  // Bind the texture.
-  GL_CHECK(glBindTexture(GL_TEXTURE_2D, result.id));
-
-  // Upload the image data.
-  GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, result.size.width, result.size.height, 0,
-                        GL_RGBA, GL_UNSIGNED_BYTE, image.getData().getData()));
-
-  // Set the texture clamping.
-  const bool smooth = false;
-  GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, smooth ? GL_LINEAR : GL_NEAREST));
-  GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, smooth ? GL_LINEAR : GL_NEAREST));
-
-  // Unbind the texture we were working on.
-  GL_CHECK(glBindTexture(GL_TEXTURE_2D, 0));
-
-  // Create the texture in the buffer.
-  m_textures.pushBack(result);
-
-  return m_textures.getSize() - 1;
-}
-
 ProgramId Renderer::createProgram(const ShaderSource& vertexShader,
                                   const ShaderSource& fragmentShader) {
   ProgramData result;
@@ -92,11 +83,11 @@ ProgramId Renderer::createProgram(const ShaderSource& vertexShader,
   U32 vertexShaderId, fragmentShaderId;
 
   if (!compileShaderSource(vertexShader, GL_VERTEX_SHADER, &vertexShaderId)) {
-    return 0;
+    return ProgramId{kInvalidResourceId};
   }
 
   if (!compileShaderSource(fragmentShader, GL_FRAGMENT_SHADER, &fragmentShaderId)) {
-    return 0;
+    return ProgramId{kInvalidResourceId};
   }
 
   // Attach the shaders.
@@ -125,27 +116,19 @@ ProgramId Renderer::createProgram(const ShaderSource& vertexShader,
       if (infoLength) {
         LOG(Error) << buffer;
       }
-      return false;
+      return ProgramId{kInvalidResourceId};
     } else {
       LOG(Warning) << "Program not linked and no information available!";
     }
   }
 
   m_programs.pushBack(result);
-  return m_programs.getSize() - 1;
+  return ProgramId{m_programs.getSize() - 1};
 }
 
-GeometryId Renderer::createGeometry(const VertexDefinition& vertexDefinition, void* data,
-                                    MemSize dataSize) {
-#if BUILD(DEBUG) && 0
-  U32 totalComponents = 0;
-  for (auto& attr : vertexDefinition.getAttributes()) {
-    totalComponents += attr.numberOfComponents;
-  }
-  DCHECK(totalComponents == vertexDefinition.getComponentsPerVertex());
-#endif  // BUILD(DEBUG)
-
-  GeometryData result;
+VertexBufferId Renderer::createVertexBuffer(const VertexDefinition& vertexDefinition, void* data,
+                                            MemSize dataSize) {
+  VertexBufferData result;
 
   // Create a vertex array object and bind it.
   GL_CHECK(glGenVertexArrays(1, &result.id));
@@ -157,21 +140,18 @@ GeometryId Renderer::createGeometry(const VertexDefinition& vertexDefinition, vo
   GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, bufferId));
   GL_CHECK(glBufferData(GL_ARRAY_BUFFER, dataSize, data, GL_STATIC_DRAW));
 
-#if 0
   // Create each attribute.
-  MemSize stride = vertexDefinition.getComponentsPerVertex() * componentSize;
-  MemSize offset = 0;
-  for (MemSize i = 0; i < attributes.getSize(); ++i) {
-    const auto& attribute = attributes[i];
 
-    glVertexAttribPointer((GLuint)i, attribute.numberOfComponents,
-                          kComponentTypeMap[static_cast<U32>(attribute.componentType)], GL_FALSE,
-                          (GLsizei)stride, (GLvoid*)offset);
-    glEnableVertexAttribArray((GLuint)i);
+  U32 componentNumber = 0;
+  U32 offset = 0;
+  for (const auto& attr : vertexDefinition.getAttributes()) {
+    glVertexAttribPointer(componentNumber, U32(attr.getCount()), getOglType(attr.getType()),
+                          GL_FALSE, vertexDefinition.getStride(), (GLvoid*)((U8*)0 + offset));
+    glEnableVertexAttribArray(componentNumber);
 
-    offset += attribute.numberOfComponents * componentSize;
+    ++componentNumber;
+    offset += attr.getSizeInBytes();
   }
-#endif  // 0
 
   // Reset the current VAO bind.
   GL_CHECK(glBindVertexArray(0));
@@ -183,25 +163,113 @@ GeometryId Renderer::createGeometry(const VertexDefinition& vertexDefinition, vo
   result.numComponents = U32(dataSize / componentSize);
 #endif  // 0
 
-  m_geometries.pushBack(result);
-  return m_geometries.getSize() - 1;
+  m_vertexBuffers.pushBack(result);
+  return VertexBufferId{m_vertexBuffers.getSize() - 1};
 }
 
-void Renderer::beginFrame() {}
+IndexBufferId Renderer::createIndexBuffer(ComponentType componentType, void* data,
+                                          MemSize dataSize) {
+  GLuint bufferId;
+  GL_CHECK(glGenBuffers(1, &bufferId));
+  GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferId));
+  GL_CHECK(glBufferData(GL_ELEMENT_ARRAY_BUFFER, dataSize, data, GL_STATIC_DRAW));
+
+  m_indexBuffers.emplaceBack(bufferId, componentType);
+  return IndexBufferId{m_indexBuffers.getSize() - 1};
+}
+
+TextureId Renderer::createTexture(const Image& image) {
+  TextureData result;
+
+  GL_CHECK(glGenTextures(1, &result.id));
+
+  result.size = image.getSize();
+
+  // Bind the texture.
+  GL_CHECK(glBindTexture(GL_TEXTURE_2D, result.id));
+
+  // Upload the image data.
+  GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, result.size.width, result.size.height, 0,
+                        GL_RGBA, GL_UNSIGNED_BYTE, image.getData().getData()));
+
+  // Set the texture clamping.
+  const bool smooth = false;
+  GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, smooth ? GL_LINEAR : GL_NEAREST));
+  GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, smooth ? GL_LINEAR : GL_NEAREST));
+
+  // Unbind the texture we were working on.
+  GL_CHECK(glBindTexture(GL_TEXTURE_2D, 0));
+
+  // Create the texture in the buffer.
+  m_textures.pushBack(result);
+
+  return TextureId{m_textures.getSize() - 1};
+}
+
+void Renderer::pushCommand(const Command& command) {
+  m_commands.pushBack(command);
+}
+
+void Renderer::beginFrame() {
+  m_commands.clear();
+}
 
 void Renderer::endFrame() {
-  for (auto& renderGroup : m_renderGroups) {
-    renderGroup.render(this);
-  }
+  for (auto& command : m_commands) {
+    switch (command.type) {
+      case CommandType::ClearBuffers:
+        processCommand(command.clearBuffersData);
+        break;
 
-  m_renderGroups.clear();
+      case CommandType::Draw:
+        processCommand(command.drawData);
+        break;
+    }
+  }
 }
 
-RenderGroup* Renderer::addRenderGroup(RenderGroupProjection projection) {
-  m_renderGroups.emplaceBack(projection);
-  RenderGroup* result = &m_renderGroups.last();
+void Renderer::processCommand(const ClearBuffersData& data) {
+  GL_CHECK(glClearColor(data.color.r, data.color.g, data.color.b, data.color.a));
+  GL_CHECK(glClear(GL_COLOR_BUFFER_BIT));
+}
 
-  return result;
+void Renderer::processCommand(const DrawData& data) {
+  auto& programData = m_programs[data.programId.id];
+  GL_CHECK(glUseProgram(programData.id));
+
+  auto& vertexBufferData = m_vertexBuffers[data.vertexBufferId.id];
+  GL_CHECK(glBindVertexArray(vertexBufferData.id));
+
+  auto& indexBufferData = m_indexBuffers[data.indexBufferId.id];
+  GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferData.id));
+
+  if (isValid(data.textureId)) {
+    auto& textureData = m_textures[data.textureId.id];
+    GL_CHECK(glBindTexture(GL_TEXTURE_2D, textureData.id));
+  }
+
+  U32 oglType = getOglType(indexBufferData.componentType);
+
+  U32 drawType = GL_TRIANGLES;
+  switch (data.drawType) {
+    case DrawType::Triangles:
+      drawType = GL_TRIANGLES;
+      break;
+
+    case DrawType::TriangleStrip:
+      drawType = GL_TRIANGLE_FAN;
+      break;
+
+    case DrawType::TriangleFan:
+      drawType = GL_TRIANGLE_FAN;
+      break;
+
+    default:
+      DCHECK(false) << "Invalid draw type";
+      break;
+  }
+
+  GL_CHECK(glDrawElements(drawType, data.numIndices, oglType, nullptr));
 }
 
 }  // namespace ca

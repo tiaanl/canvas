@@ -4,7 +4,6 @@
 
 #include "canvas/Windows/Window.h"
 #include "canvas/Windows/WindowDelegate.h"
-#include "nucleus/Allocators/Allocated.h"
 #include "nucleus/Allocators/DefaultAllocator.h"
 #include "nucleus/Config.h"
 #include "nucleus/Macros.h"
@@ -16,9 +15,6 @@ namespace ca {
 template <typename T>
 class App {
 public:
-  COPY_DELETE(App);
-  MOVE_DELETE(App);
-
   using DelegateType = T;
 
   // Construct a new app with the specified delegate that will control the app.
@@ -38,6 +34,8 @@ public:
   }
 
 private:
+  DELETE_COPY_AND_MOVE(App);
+
   DelegateType m_delegate;
 
   // The single window we are managing.
@@ -58,14 +56,14 @@ private:
 #define MEMORY_DUMP
 #endif
 
-#define CANVAS_APP(DelegateType)                                                                                       \
-  MAIN_HEADER {                                                                                                        \
-    {                                                                                                                  \
-      ca::App<DelegateType> app;                                                                                       \
-      app.run();                                                                                                       \
-    }                                                                                                                  \
-    MEMORY_DUMP                                                                                                        \
-    return 0;                                                                                                          \
+#define CANVAS_APP(DelegateType)                                                                   \
+  MAIN_HEADER {                                                                                    \
+    {                                                                                              \
+      ca::App<DelegateType> app;                                                                   \
+      app.run();                                                                                   \
+    }                                                                                              \
+    MEMORY_DUMP                                                                                    \
+    return 0;                                                                                      \
   }
 
 #endif  // CANVAS_APP_H_

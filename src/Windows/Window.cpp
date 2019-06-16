@@ -275,7 +275,7 @@ void glfwErrorCallback(int error, const char* description) {
 }  // namespace
 
 // static
-nu::ScopedPtr<Window> Window::create(WindowDelegate* delegate, const nu::StringView& title) {
+nu::ScopedPtr<Window> Window::create(WindowDelegate* delegate, const nu::StringView&) {
   DCHECK(delegate) << "Can't create a window with no delegate.";
 
   nu::ScopedPtr<Window> newWindow = nu::makeScopedPtr<Window>(delegate);
@@ -417,6 +417,8 @@ void Window::cursorPositionCallback(GLFWwindow* window, double xPos, double yPos
 
 // static
 void Window::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+  mods = mods;
+
   Window* windowPtr = getUserPointer(window);
 
   double xPos, yPos;
@@ -467,6 +469,9 @@ void Window::scrollCallback(GLFWwindow* window, double xOffset, double yOffset) 
 
 // static
 void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+  scancode = scancode;
+  mods = mods;
+
   // We don't care for repeats.
   if (action == GLFW_REPEAT) {
     return;

@@ -11,6 +11,10 @@ namespace ca {
 constexpr F32 kPi = 3.1415926535897932384626433832795f;
 constexpr F32 kNearZero = 1.0f / static_cast<F32>(1 << 28);
 
+inline F32 round(F32 x) {
+  return std::roundf(x);
+}
+
 inline F32 squareRoot(F32 x) {
   return std::sqrtf(x);
 }
