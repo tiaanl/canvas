@@ -5,6 +5,8 @@
 
 #include "png.h"
 
+#include <cmath>
+
 #include "nucleus/MemoryDebug.h"
 
 namespace ca {
@@ -26,13 +28,13 @@ void readDataFromInputStream(png_structp png, png_bytep outBytes, png_size_t byt
   }
 }
 
-void parseRGBA(const Size<I32> size, U8* outPtr, const png_structp& png, const png_infop& info) {
-  const U32 width = size.width;
-  const U32 height = size.height;
+void parseRGBA(const Size size, U8* outPtr, const png_structp& png, const png_infop& info) {
+  const I32 width = size.width;
+  const I32 height = size.height;
 
   const png_size_t bytesPerRow = png_get_rowbytes(png, info);
 
-  for (U32 rowIdx = 0; rowIdx < height; ++rowIdx) {
+  for (I32 rowIdx = 0; rowIdx < height; ++rowIdx) {
     png_read_row(png, static_cast<png_bytep>(outPtr + rowIdx * bytesPerRow), NULL);
   }
 }
@@ -49,7 +51,7 @@ Image& Image::operator=(Image&& other) noexcept {
   return *this;
 }
 
-void Image::create(const Size<I32>& size, const Color& col) {
+void Image::create(const Size& size, const Color& col) {
   if (size.width && size.height) {
     // Store the size of the image.
     m_size = size;
@@ -61,10 +63,10 @@ void Image::create(const Size<I32>& size, const Color& col) {
     U8* data = m_data.getData();
     U8* end = data + m_data.getSize();
     while (data < end) {
-      *data++ = static_cast<U8>(round(col.r * 255.0f));
-      *data++ = static_cast<U8>(round(col.g * 255.0f));
-      *data++ = static_cast<U8>(round(col.b * 255.0f));
-      *data++ = static_cast<U8>(round(col.a * 255.0f));
+      *data++ = static_cast<U8>(std::round(col.r * 255.0f));
+      *data++ = static_cast<U8>(std::round(col.g * 255.0f));
+      *data++ = static_cast<U8>(std::round(col.b * 255.0f));
+      *data++ = static_cast<U8>(std::round(col.a * 255.0f));
     }
   } else {
     // Store the size and clear out the data.
@@ -116,7 +118,7 @@ bool Image::loadFromStream(nu::InputStream* stream) {
   }
 
   // Prepare the data storage.
-  m_size = Size<I32>(width, height);
+  m_size = Size(width, height);
 
   switch (colorType) {
 #if 0
@@ -141,7 +143,7 @@ bool Image::loadFromStream(nu::InputStream* stream) {
   return true;
 }
 
-void Image::setPixel(const Pos<I32>& pos, const Color& color) {
+void Image::setPixel(const Pos& pos, const Color& color) {
   U8* ptr = &m_data[pos.y * (m_size.width * 4) + (pos.x * 4)];
   *ptr++ = static_cast<U8>(round(color.r));
   *ptr++ = static_cast<U8>(round(color.g));

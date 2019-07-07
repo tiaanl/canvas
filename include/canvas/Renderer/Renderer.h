@@ -22,14 +22,19 @@ public:
                                     MemSize dataSize);
   IndexBufferId createIndexBuffer(ComponentType componentType, void* data, MemSize dataSize);
   TextureId createTexture(const Image& image);
+  UniformId createUniform(const nu::StringView& name, ComponentType componentType,
+                          MemSize componentCount);
 
   void pushCommand(const Command& command);
+  void pushEncodedCommand(void* data, MemSize dataSize);
 
   void beginFrame();
   void endFrame();
 
 private:
   DELETE_COPY_AND_MOVE(Renderer);
+
+  friend class NewEncoder;
 
   struct ProgramData {
     U32 id;
@@ -46,7 +51,13 @@ private:
 
   struct TextureData {
     U32 id;
-    Size<I32> size;
+    Size size;
+  };
+
+  struct UniformData {
+    nu::StaticString<128> name;
+    ComponentType componentType;
+    MemSize componentCount;
   };
 
   void processCommand(const ClearBuffersData& data);
@@ -56,8 +67,10 @@ private:
   nu::DynamicArray<VertexBufferData> m_vertexBuffers;
   nu::DynamicArray<IndexBufferData> m_indexBuffers;
   nu::DynamicArray<ProgramData> m_programs;
+  nu::DynamicArray<UniformData> m_uniforms;
 
   nu::DynamicArray<Command> m_commands;
+  nu::DynamicArray<U8> m_commandBuffer;
 };
 
 }  // namespace ca

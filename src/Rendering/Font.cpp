@@ -187,7 +187,7 @@ bool Font::setCurrentSize(U32 characterSize) const {
 Font::Page::Page() : nextRow(3) {
   // Make sure that the texture is initialized by default.
   Image image;
-  image.create(Size<I32>{128, 128}, Color{255, 255, 255, 0});
+  image.create(Size{128, 128}, Color{255, 255, 255, 0});
 
   // Create the texture.
   texture.createFromImage(image);
@@ -270,10 +270,10 @@ Font::Glyph Font::loadGlyph(U32 codePoint, U32 characterSize, bool bold) const {
     Page& page = m_pages[characterSize];
 
     // Get the texture size.
-    Size<I32> textureSize = page.texture.getSize();
+    Size textureSize = page.texture.getSize();
 
     // Find a good position for the new glyph in the texture.
-    Rect<I32> glyphRect = findGlyphRect(page, Size<I32>{width + 2 * padding, height + 2 * padding});
+    Rect glyphRect = findGlyphRect(page, Size{width + 2 * padding, height + 2 * padding});
 
     // Make sure the texture data is positioned in the center of the allocated texture rectangle.
     glyphRect.pos.x += padding;
@@ -326,7 +326,7 @@ Font::Glyph Font::loadGlyph(U32 codePoint, U32 characterSize, bool bold) const {
   return result;
 }
 
-Rect<I32> Font::findGlyphRect(Page& page, const Size<I32>& size) const {
+Rect Font::findGlyphRect(Page& page, const Size& size) const {
   // Find a row that will fit the glyph.
   Row* bestRow = nullptr;
   F32 bestRatio = 0.f;
@@ -355,10 +355,10 @@ Rect<I32> Font::findGlyphRect(Page& page, const Size<I32>& size) const {
   if (!bestRow) {
     I32 rowHeight = size.height + size.height / 10;
 
-    Size<I32> textureSize{page.texture.getSize()};
+    Size textureSize{page.texture.getSize()};
     if ((page.nextRow + rowHeight >= textureSize.height) || (size.width >= textureSize.width)) {
       NOTREACHED() << "Texture is too small!";
-      return Rect<I32>{};
+      return Rect{};
     }
 
     // We can now create the new row.
@@ -370,7 +370,7 @@ Rect<I32> Font::findGlyphRect(Page& page, const Size<I32>& size) const {
   DCHECK(bestRow);
 
   // Find the glyph's rectangle on the selected row.
-  Rect<I32> rect{static_cast<I32>(bestRow->width), static_cast<I32>(bestRow->top), static_cast<I32>(size.width),
+  Rect rect{static_cast<I32>(bestRow->width), static_cast<I32>(bestRow->top), static_cast<I32>(size.width),
                  static_cast<I32>(size.height)};
 
   // Update the row's width.

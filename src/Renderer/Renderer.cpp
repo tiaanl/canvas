@@ -206,6 +206,13 @@ TextureId Renderer::createTexture(const Image& image) {
   return TextureId{m_textures.getSize() - 1};
 }
 
+UniformId Renderer::createUniform(const nu::StringView& name, ComponentType componentType,
+                                  MemSize componentCount) {
+  UniformData uniformData = {name, componentType, componentCount};
+  m_uniforms.pushBack(uniformData);
+  return UniformId{m_uniforms.getSize() - 1};
+}
+
 void Renderer::pushCommand(const Command& command) {
   m_commands.pushBack(command);
 }
@@ -249,6 +256,13 @@ void Renderer::processCommand(const DrawData& data) {
   }
 
   U32 oglType = getOglType(indexBufferData.componentType);
+
+  // Process uniforms.
+  for (const auto& uniformEntry : data.uniforms) {
+    const auto& uniformData = m_uniforms[uniformEntry.uniformId.id];
+    U32 location = glGetUniformLocation(programData.id, uniformData.name.getData());
+    GL_CHECK(glUniform1fv(location, uniformEntry.values.getSize(), uniformEntry.values.getData()));
+  }
 
   U32 drawType = GL_TRIANGLES;
   switch (data.drawType) {

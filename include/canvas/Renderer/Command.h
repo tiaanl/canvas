@@ -22,6 +22,13 @@ struct DrawData {
   TextureId textureId;
   DrawType drawType;
   U32 numIndices;
+
+  struct UniformEntry {
+      UniformId uniformId;
+      nu::DynamicArray<F32> values;
+  };
+
+  nu::DynamicArray<UniformEntry> uniforms;
 };
 
 struct Command {

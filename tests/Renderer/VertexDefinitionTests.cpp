@@ -18,11 +18,11 @@ TEST_CASE("add single vertex attribute") {
   auto& attributes = vd.getAttributes();
 
   CHECK(attributes[0].getType() == ComponentType::Float32);
-  CHECK(attributes[0].getComponentCount() == ComponentCount::Three);
+  CHECK(attributes[0].getCount() == ComponentCount::Three);
   CHECK(attributes[0].getName() == "position");
 
   CHECK(attributes[1].getType() == ComponentType::Unsigned32);
-  CHECK(attributes[1].getComponentCount() == ComponentCount::Two);
+  CHECK(attributes[1].getCount() == ComponentCount::Two);
   CHECK(attributes[1].getName() == "something");
 }
 

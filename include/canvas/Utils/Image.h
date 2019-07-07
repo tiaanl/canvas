@@ -25,7 +25,7 @@ public:
   Image& operator=(Image&& other) noexcept;
 
   // Get the size of the image.
-  const Size<I32> getSize() const {
+  const Size& getSize() const {
     return m_size;
   }
 
@@ -35,17 +35,17 @@ public:
   }
 
   // Create a blank image with the specified color.
-  void create(const Size<I32>& size, const Color& col = Color{});
+  void create(const Size& size, const Color& col = Color{});
 
   // Load the image data from a stream.
   bool loadFromStream(nu::InputStream* stream);
 
   // Set the color of a single pixel in the image.
-  void setPixel(const Pos<I32>& pos, const Color& color);
+  void setPixel(const Pos& pos, const Color& color);
 
 private:
   // The dimensions of the image.
-  Size<I32> m_size;
+  Size m_size;
 
   // The buffer that holds the pixel data.
   DataType m_data;

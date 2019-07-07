@@ -5,10 +5,15 @@
 #include "canvas/Renderer/Types.h"
 #include "canvas/Utils/Color.h"
 #include "nucleus/Macros.h"
+#include "nucleus/Streams/WrappedDynamicArrayOutputStream.h"
 
 namespace ca {
 
+class Mat4;
 class Renderer;
+class Vec2;
+class Vec3;
+class Vec4;
 
 class CommandBuilder {
 public:
@@ -90,6 +95,40 @@ private:
 
   Renderer* m_renderer;
 };
+
+#if 0
+class NewEncoder {
+public:
+  explicit NewEncoder(Renderer* renderer);
+
+  NewEncoder& program(ProgramId programId);
+  NewEncoder& vertexBuffer(VertexBufferId vertexBufferId);
+  NewEncoder& indexBuffer(IndexBufferId indexBufferId);
+  NewEncoder& texture(TextureId textureId);
+  NewEncoder& uniform(UniformId uniformId, F32 value);
+  NewEncoder& uniform(UniformId uniformId, const Vec2& value);
+  NewEncoder& uniform(UniformId uniformId, const Vec3& value);
+  NewEncoder& uniform(UniformId uniformId, const Vec4& value);
+  NewEncoder& uniform(UniformId uniformId, const Mat4& value);
+
+  void submit();
+
+private:
+  DELETE_COPY_AND_MOVE(NewEncoder);
+
+  nu::WrappedDynamicArrayOutputStream m_stream;
+
+  ProgramId m_programId;
+  VertexBufferId m_vertexBufferId;
+  IndexBufferId m_indexBufferId;
+  TextureId m_textureId;
+
+  U32 m_uniformCount;
+  nu::DynamicArray<U8> m_uniformCommandBuffer;
+  nu::WrappedDynamicArrayOutputStream m_uniformCommandBufferStream;
+  void reset();
+};
+#endif  // 0
 
 }  // namespace ca
 

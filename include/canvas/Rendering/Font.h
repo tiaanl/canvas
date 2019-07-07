@@ -24,7 +24,7 @@ public:
 
   struct Glyph {
     F32 advance{0.f};
-    Rect<I32> bounds;
+    Rect bounds;
     Rect<F32> textureRect;
   };
 
@@ -88,7 +88,7 @@ private:
   Glyph loadGlyph(U32 codePoint, U32 characterSize, bool bold) const;
 
   // Find a suitable rectangle within the texture for a glyph.
-  Rect<I32> findGlyphRect(Page& page, const Size<I32>& size) const;
+  Rect findGlyphRect(Page& page, const Size& size) const;
 
   // Make sure that the given size is the current one.
   bool setCurrentSize(U32 characterSize) const;

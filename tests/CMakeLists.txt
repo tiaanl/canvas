@@ -1,6 +1,7 @@
 
 set(canvas_TEST_FILES
     "Math/Mat4Tests.cpp"
+    "Math/TransformTests.cpp"
     "Math/Vec2Tests.cpp"
     "Math/Vec3Tests.cpp"
     "Math/Vec4Tests.cpp"

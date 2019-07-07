@@ -1,6 +1,7 @@
 #ifndef CANVAS_RENDERER_TYPES_H_
 #define CANVAS_RENDERER_TYPES_H_
 
+#include "nucleus/Streams/OutputStream.h"
 #include "nucleus/Types.h"
 
 #include <limits>
@@ -18,11 +19,11 @@ constexpr MemSize kInvalidResourceId = std::numeric_limits<MemSize>::max();
     return resource.id != kInvalidResourceId;                                                      \
   }
 
-DECLARE_RESOURCE_ID(Program);
-DECLARE_RESOURCE_ID(VertexBuffer);
-DECLARE_RESOURCE_ID(IndexBuffer);
-DECLARE_RESOURCE_ID(Texture);
-DECLARE_RESOURCE_ID(Uniform);
+DECLARE_RESOURCE_ID(Program)
+DECLARE_RESOURCE_ID(VertexBuffer)
+DECLARE_RESOURCE_ID(IndexBuffer)
+DECLARE_RESOURCE_ID(Texture)
+DECLARE_RESOURCE_ID(Uniform)
 
 enum class ComponentType : U32 {
   Float32 = 0,

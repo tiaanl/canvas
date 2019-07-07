@@ -28,7 +28,7 @@ public:
   virtual bool onWindowCreated(Renderer* renderContext);
 
   // Called when the size of the window changed.
-  virtual void onWindowResized(const Size<U32>& size);
+  virtual void onWindowResized(const Size& size);
 
   virtual void onRender(Renderer* renderer) = 0;
 
