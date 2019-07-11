@@ -1,7 +1,6 @@
 
 #include "canvas/App.h"
 
-#include "canvas/Renderer/Encoder.h"
 #include "canvas/Utils/Image.h"
 #include "canvas/Utils/ShaderSource.h"
 #include "nucleus/FilePath.h"
@@ -9,33 +8,42 @@
 
 class MinimalWindow : public ca::WindowDelegate {
 public:
-  MinimalWindow() : ca::WindowDelegate("Minimal"), m_rootPath(nu::getCurrentWorkingDirectory()) {}
+  MinimalWindow()
+    : ca::WindowDelegate("ElasticDemo"), m_rootPath(nu::getCurrentWorkingDirectory()) {}
   ~MinimalWindow() override = default;
 
   // Override: ca::WindowDelegate
   bool onWindowCreated(ca::Renderer* renderer) override {
     LOG(Info) << "Root path: " << m_rootPath;
-    return loadProgram(renderer) && loadVertexBuffer(renderer) && loadTexture(renderer);
+
+    if (!loadProgram(renderer)) {
+      LOG(Error) << "Could not create program";
+      return false;
+    }
+
+    if (!loadVertexBuffer(renderer)) {
+      LOG(Error) << "Could not create vertex buffer and index buffer.";
+      return false;
+    }
+
+    if (!loadTexture(renderer)) {
+      LOG(Error) << "Could not create texture.";
+        return false;
+    }
+
+    m_scaleUniform = renderer->createUniform("uScale", ca::ComponentType::Float32, 1);
+
+    return true;
   }
 
   void onRender(ca::Renderer* renderer) override {
-    ca::Encoder encoder{renderer};
+    renderer->clear(ca::Color{0.0f, 0.1f, 0.2f});
 
-    encoder.clearBuffers().color(ca::Color{0.0f, 0.1f, 0.2f}).submit();
+    ca::UniformBuffer uniforms;
+    uniforms.set(m_scaleUniform, 0.5f);
 
-    encoder.draw()
-        .programId(m_programId)
-        .vertexBufferId(m_vertexBufferId)
-        .indexBufferId(m_indexBufferId)
-        .textureId(m_textureId)
-        .drawType(ca::DrawType::Triangles)
-        .numIndices(6)
-        .submit();
-
-#if 0
-    encoder.draw(m_programId, m_vertexBufferId, m_indexBufferId, m_textureId,
-                 ca::DrawType::Triangles, 6);
-#endif  // 0
+    renderer->draw(ca::DrawType::Triangles, 6, m_programId, m_vertexBufferId, m_indexBufferId,
+                   m_textureId, uniforms);
   }
 
 private:
@@ -169,6 +177,7 @@ private:
   ca::VertexBufferId m_vertexBufferId;
   ca::IndexBufferId m_indexBufferId;
   ca::TextureId m_textureId;
+  ca::UniformId m_scaleUniform;
 };
 
 CANVAS_APP(MinimalWindow)

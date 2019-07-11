@@ -73,6 +73,10 @@ bool compileShaderSource(const ShaderSource& source, U32 shaderType, U32* idOut)
 
 }  // namespace
 
+Renderer::Renderer() = default;
+
+Renderer::~Renderer() = default;
+
 ProgramId Renderer::createProgram(const ShaderSource& vertexShader,
                                   const ShaderSource& fragmentShader) {
   ProgramData result;
@@ -206,76 +210,111 @@ TextureId Renderer::createTexture(const Image& image) {
   return TextureId{m_textures.getSize() - 1};
 }
 
-UniformId Renderer::createUniform(const nu::StringView& name, ComponentType componentType,
-                                  MemSize componentCount) {
-  UniformData uniformData = {name, componentType, componentCount};
+UniformId Renderer::createUniform(const nu::StringView& name) {
+  UniformData uniformData = {name};
   m_uniforms.pushBack(uniformData);
   return UniformId{m_uniforms.getSize() - 1};
 }
 
-void Renderer::pushCommand(const Command& command) {
-  m_commands.pushBack(command);
+void Renderer::resize(const Size& size) {
+  m_size = size;
+  GL_CHECK(glViewport(0, 0, size.width, size.height));
 }
 
 void Renderer::beginFrame() {
-  m_commands.clear();
+  glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
+  glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void Renderer::endFrame() {
-  for (auto& command : m_commands) {
-    switch (command.type) {
-      case CommandType::ClearBuffers:
-        processCommand(command.clearBuffersData);
-        break;
+void Renderer::endFrame() {}
 
-      case CommandType::Draw:
-        processCommand(command.drawData);
-        break;
-    }
-  }
-}
-
-void Renderer::processCommand(const ClearBuffersData& data) {
-  GL_CHECK(glClearColor(data.color.r, data.color.g, data.color.b, data.color.a));
+void Renderer::clear(const Color& color) {
+  GL_CHECK(glClearColor(color.r, color.g, color.b, color.a));
   GL_CHECK(glClear(GL_COLOR_BUFFER_BIT));
 }
 
-void Renderer::processCommand(const DrawData& data) {
-  auto& programData = m_programs[data.programId.id];
+void Renderer::draw(DrawType drawType, U32 indexCount, ProgramId programId,
+                    VertexBufferId vertexBufferId, IndexBufferId indexBufferId, TextureId textureId,
+                    const UniformBuffer& uniforms) {
+  if (!isValid(programId)) {
+    LOG(Error) << "Draw command without program.";
+    return;
+  }
+
+  if (!isValid(vertexBufferId)) {
+    LOG(Error) << "Draw command without vertex buffer.";
+    return;
+  }
+
+  if (!isValid(indexBufferId)) {
+    LOG(Error) << "Draw command without index buffer.";
+    return;
+  }
+
+  auto& programData = m_programs[programId.id];
   GL_CHECK(glUseProgram(programData.id));
 
-  auto& vertexBufferData = m_vertexBuffers[data.vertexBufferId.id];
+  auto& vertexBufferData = m_vertexBuffers[vertexBufferId.id];
   GL_CHECK(glBindVertexArray(vertexBufferData.id));
 
-  auto& indexBufferData = m_indexBuffers[data.indexBufferId.id];
+  auto& indexBufferData = m_indexBuffers[indexBufferId.id];
   GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferData.id));
 
-  if (isValid(data.textureId)) {
-    auto& textureData = m_textures[data.textureId.id];
+  if (isValid(textureId)) {
+    auto& textureData = m_textures[textureId.id];
     GL_CHECK(glBindTexture(GL_TEXTURE_2D, textureData.id));
   }
 
   U32 oglType = getOglType(indexBufferData.componentType);
 
   // Process uniforms.
-  for (const auto& uniformEntry : data.uniforms) {
-    const auto& uniformData = m_uniforms[uniformEntry.uniformId.id];
-    U32 location = glGetUniformLocation(programData.id, uniformData.name.getData());
-    GL_CHECK(glUniform1fv(location, uniformEntry.values.getSize(), uniformEntry.values.getData()));
-  }
+  uniforms.apply([&](UniformId uniformId, U32 count, const F32* values) {
+    const auto& uniformData = m_uniforms[uniformId.id];
+    I32 location = glGetUniformLocation(programData.id, uniformData.name.getData());
+    if (location == -1) {
+      LOG(Warning) << "Could not get location for uniform: " << uniformData.name.getData();
+      return;
+    }
 
-  U32 drawType = GL_TRIANGLES;
-  switch (data.drawType) {
+    switch (count) {
+      case 1:
+        GL_CHECK(glUniform1fv(location, 1, values));
+        break;
+
+      case 2:
+        GL_CHECK(glUniform2fv(location, 1, values));
+        break;
+
+      case 3:
+        GL_CHECK(glUniform3fv(location, 1, values));
+        break;
+
+      case 4:
+        GL_CHECK(glUniform4fv(location, 1, values));
+        break;
+
+      case 16:
+        glUniformMatrix4fv(location, 1, GL_FALSE, values);
+        break;
+
+      default:
+        DCHECK(false) << "Invalid uniform size.";
+        break;
+    }
+  });
+
+  U32 mode = GL_TRIANGLES;
+  switch (drawType) {
     case DrawType::Triangles:
-      drawType = GL_TRIANGLES;
+      mode = GL_TRIANGLES;
       break;
 
     case DrawType::TriangleStrip:
-      drawType = GL_TRIANGLE_FAN;
+      mode = GL_TRIANGLE_FAN;
       break;
 
     case DrawType::TriangleFan:
-      drawType = GL_TRIANGLE_FAN;
+      mode = GL_TRIANGLE_FAN;
       break;
 
     default:
@@ -283,7 +322,7 @@ void Renderer::processCommand(const DrawData& data) {
       break;
   }
 
-  GL_CHECK(glDrawElements(drawType, data.numIndices, oglType, nullptr));
+  GL_CHECK(glDrawElements(mode, indexCount, oglType, nullptr));
 }
 
 }  // namespace ca

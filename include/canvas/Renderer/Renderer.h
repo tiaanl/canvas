@@ -1,9 +1,11 @@
 
+
 #ifndef CANVAS_RENDERER_RENDERER_H_
 #define CANVAS_RENDERER_RENDERER_H_
 
 #include "canvas/Renderer/Command.h"
 #include "canvas/Renderer/Types.h"
+#include "canvas/Renderer/UniformBuffer.h"
 #include "canvas/Renderer/VertexDefinition.h"
 #include "canvas/Utils/Image.h"
 #include "canvas/Utils/ShaderSource.h"
@@ -14,27 +16,33 @@ namespace ca {
 
 class Renderer {
 public:
-  Renderer() = default;
-  ~Renderer() = default;
+  Renderer();
+  ~Renderer();
 
   ProgramId createProgram(const ShaderSource& vertexShader, const ShaderSource& fragmentShader);
   VertexBufferId createVertexBuffer(const VertexDefinition& bufferDefinition, void* data,
                                     MemSize dataSize);
   IndexBufferId createIndexBuffer(ComponentType componentType, void* data, MemSize dataSize);
   TextureId createTexture(const Image& image);
-  UniformId createUniform(const nu::StringView& name, ComponentType componentType,
-                          MemSize componentCount);
+  UniformId createUniform(const nu::StringView& name);
 
-  void pushCommand(const Command& command);
-  void pushEncodedCommand(void* data, MemSize dataSize);
+  const ca::Size& getSize() const {
+    return m_size;
+  }
+
+  // Resize the rendering area. Typically called when the window is resized.
+  void resize(const Size& size);
 
   void beginFrame();
   void endFrame();
 
+  void clear(const Color& color);
+
+  void draw(DrawType drawType, U32 indexCount, ProgramId programId, VertexBufferId vertexBufferId,
+            IndexBufferId indexBufferId, TextureId textureId, const UniformBuffer& uniforms);
+
 private:
   DELETE_COPY_AND_MOVE(Renderer);
-
-  friend class NewEncoder;
 
   struct ProgramData {
     U32 id;
@@ -56,21 +64,15 @@ private:
 
   struct UniformData {
     nu::StaticString<128> name;
-    ComponentType componentType;
-    MemSize componentCount;
   };
 
-  void processCommand(const ClearBuffersData& data);
-  void processCommand(const DrawData& data);
+  Size m_size;
 
-  nu::DynamicArray<TextureData> m_textures;
+  nu::DynamicArray<ProgramData> m_programs;
   nu::DynamicArray<VertexBufferData> m_vertexBuffers;
   nu::DynamicArray<IndexBufferData> m_indexBuffers;
-  nu::DynamicArray<ProgramData> m_programs;
+  nu::DynamicArray<TextureData> m_textures;
   nu::DynamicArray<UniformData> m_uniforms;
-
-  nu::DynamicArray<Command> m_commands;
-  nu::DynamicArray<U8> m_commandBuffer;
 };
 
 }  // namespace ca

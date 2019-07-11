@@ -23,12 +23,14 @@ struct DrawData {
   DrawType drawType;
   U32 numIndices;
 
+#if 0
   struct UniformEntry {
       UniformId uniformId;
       nu::DynamicArray<F32> values;
   };
 
   nu::DynamicArray<UniformEntry> uniforms;
+#endif  // 0
 };
 
 struct Command {

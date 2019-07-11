@@ -274,16 +274,18 @@ void glfwErrorCallback(int error, const char* description) {
 
 }  // namespace
 
-// static
-nu::ScopedPtr<Window> Window::create(WindowDelegate* delegate, const nu::StringView&) {
+Window::Window() = default;
+
+bool Window::initialize(WindowDelegate* delegate) {
   DCHECK(delegate) << "Can't create a window with no delegate.";
 
-  nu::ScopedPtr<Window> newWindow = nu::makeScopedPtr<Window>(delegate);
+  m_delegate = delegate;
 
   // Initialize GLFW.
   if (!glfwInit()) {
     LOG(Error) << "Could not initialize glfw.";
-    return nu::ScopedPtr<Window>{};
+    m_delegate = nullptr;
+    return false;
   }
 
   glfwSetErrorCallback(glfwErrorCallback);
@@ -297,11 +299,12 @@ nu::ScopedPtr<Window> Window::create(WindowDelegate* delegate, const nu::StringV
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
   // Create the window.
-  newWindow->m_window = glfwCreateWindow(clientSize.width, clientSize.height,
-                                         delegate->getTitle().getData(), nullptr, nullptr);
-  if (!newWindow->m_window) {
+  m_window = glfwCreateWindow(clientSize.width, clientSize.height, m_delegate->getTitle().getData(),
+                              nullptr, nullptr);
+  if (!m_window) {
     LOG(Error) << "Could not create window.";
-    return {};
+    m_delegate = nullptr;
+    return false;
   }
 
   // Center the window on the screen.
@@ -309,22 +312,22 @@ nu::ScopedPtr<Window> Window::create(WindowDelegate* delegate, const nu::StringV
   if (currentMonitor) {
     const GLFWvidmode* videoMode = glfwGetVideoMode(currentMonitor);
     int currentWidth, currentHeight;
-    glfwGetWindowSize(newWindow->m_window, &currentWidth, &currentHeight);
+    glfwGetWindowSize(m_window, &currentWidth, &currentHeight);
 
-    glfwSetWindowPos(newWindow->m_window, (videoMode->width - currentWidth) / 2,
+    glfwSetWindowPos(m_window, (videoMode->width - currentWidth) / 2,
                      (videoMode->height - currentHeight) / 2);
   }
 
   // Set up the callbacks for the window.
-  glfwSetWindowUserPointer(newWindow->m_window, newWindow.get());
-  glfwSetFramebufferSizeCallback(newWindow->m_window, frameBufferSizeCallback);
-  glfwSetCursorPosCallback(newWindow->m_window, cursorPositionCallback);
-  glfwSetMouseButtonCallback(newWindow->m_window, mouseButtonCallback);
-  glfwSetScrollCallback(newWindow->m_window, scrollCallback);
-  glfwSetKeyCallback(newWindow->m_window, keyCallback);
+  glfwSetWindowUserPointer(m_window, this);
+  glfwSetFramebufferSizeCallback(m_window, frameBufferSizeCallback);
+  glfwSetCursorPosCallback(m_window, cursorPositionCallback);
+  glfwSetMouseButtonCallback(m_window, mouseButtonCallback);
+  glfwSetScrollCallback(m_window, scrollCallback);
+  glfwSetKeyCallback(m_window, keyCallback);
 
   // Make the new window the current context.
-  glfwMakeContextCurrent(newWindow->m_window);
+  glfwMakeContextCurrent(m_window);
 
   // Enable v-sync.
   glfwSwapInterval(1);
@@ -332,25 +335,27 @@ nu::ScopedPtr<Window> Window::create(WindowDelegate* delegate, const nu::StringV
   // Initialize glad, so we can use GL extensions.
   gladLoadGL();
 
-  int major = glfwGetWindowAttrib(newWindow->m_window, GLFW_CONTEXT_VERSION_MAJOR);
-  int minor = glfwGetWindowAttrib(newWindow->m_window, GLFW_CONTEXT_VERSION_MINOR);
-  int rev = glfwGetWindowAttrib(newWindow->m_window, GLFW_CONTEXT_REVISION);
+  int major = glfwGetWindowAttrib(m_window, GLFW_CONTEXT_VERSION_MAJOR);
+  int minor = glfwGetWindowAttrib(m_window, GLFW_CONTEXT_VERSION_MINOR);
+  int rev = glfwGetWindowAttrib(m_window, GLFW_CONTEXT_REVISION);
 
   LOG(Info) << "OpenGL version: " << major << "." << minor << "." << rev;
   LOG(Info) << "Supported OpenGL is " << glGetString(GL_VERSION);
   LOG(Info) << "Supported GLSL is " << glGetString(GL_SHADING_LANGUAGE_VERSION);
 
+  m_renderer.resize(clientSize);
+
   // Let the delegate know we were just created.
-  bool success = delegate->onWindowCreated(&newWindow->m_renderer);
+  bool success = delegate->onWindowCreated(&m_renderer);
   if (!success) {
-    return {};
+    m_delegate = nullptr;
+    return false;
   }
 
-  // We send a window resized to the delegate as well so that it can do any
-  // setup needed.
+  // We send a window resized to the delegate as well so that it can do any setup needed.
   delegate->onWindowResized(clientSize);
 
-  return newWindow;
+  return true;
 }
 
 Window::~Window() {
@@ -388,17 +393,12 @@ void Window::paint() {
   glfwSwapBuffers(m_window);
 }
 
-Window::Window(WindowDelegate* delegate)
-  : m_delegate{delegate}, m_window{nullptr}, m_renderer{} {}
-
 // static
 void Window::frameBufferSizeCallback(GLFWwindow* window, int width, int height) {
   Window* windowPtr = getUserPointer(window);
 
-  // We set up the viewport for the window before letting the delegate
-  // know the
-  // size changed.
-  glViewport(0, 0, width, height);
+  // Resize our renderer.
+  windowPtr->m_renderer.resize({width, height});
 
   Size windowSize(static_cast<U32>(width), static_cast<U32>(height));
   windowPtr->m_delegate->onWindowResized(windowSize);
@@ -461,8 +461,7 @@ void Window::scrollCallback(GLFWwindow* window, double xOffset, double yOffset) 
   glfwGetCursorPos(window, &xPos, &yPos);
   Pos mousePos{static_cast<I32>(std::round(xPos)), static_cast<I32>(std::round(yPos))};
 
-  Pos scrollOffset{static_cast<I32>(std::lround(xOffset)),
-                        static_cast<I32>(std::lround(yOffset))};
+  Pos scrollOffset{static_cast<I32>(std::lround(xOffset)), static_cast<I32>(std::lround(yOffset))};
   MouseWheelEvent evt{Event::MouseWheel, mousePos, scrollOffset};
   windowPtr->m_delegate->onMouseWheel(evt);
 }

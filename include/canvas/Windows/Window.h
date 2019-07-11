@@ -17,19 +17,17 @@ namespace ca {
 
 class Window {
 public:
-  // Factory function to create a window with the specified delegate.
-  static nu::ScopedPtr<Window> create(WindowDelegate* delegate, const nu::StringView& title);
-
-  Window() = delete;
-
-  // Cleanup.
+  Window();
   ~Window();
+
+  // Creates the window and initializes the renderer.
+  bool initialize(WindowDelegate* delegate);
 
   // Get the client size of the window.
   ca::Size getClientSize() const;
 
-  // Process any pending events for this window.  Returns false if the window
-  // should stop processing messages.
+  // Process any pending events for this window.  Returns false if the window should stop processing
+  // messages.
   bool processEvents();
 
   // Activate this window's rendering context.
@@ -51,14 +49,11 @@ private:
   static void scrollCallback(GLFWwindow* window, double xOffset, double yOffset);
   static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
-  // Construct a new window with the specified delegate.
-  explicit Window(WindowDelegate* delegate);
-
   // The window delegate we pass events to.
-  WindowDelegate* m_delegate;
+  WindowDelegate* m_delegate = nullptr;
 
   // Our internal pointer to the window's implementation.
-  GLFWwindow* m_window;
+  GLFWwindow* m_window = nullptr;
 
   // The renderer we use to render anything to this window.
   Renderer m_renderer;

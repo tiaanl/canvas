@@ -18,28 +18,30 @@ public:
   using DelegateType = T;
 
   // Construct a new app with the specified delegate that will control the app.
-  App() {}
+  App() = default;
 
   // Run the application and only return once all the windows are closed.
-  void run() {
-    // Set up the window.
-    m_window = std::move(Window::create(&m_delegate, m_delegate.getTitle()));
-    if (!m_window.get()) {
-      return;
+  I32 run() {
+    if (!m_window.initialize(&m_delegate)) {
+      LOG(Error) << "Could not set up window.";
+      return 1;
     }
 
-    while (m_window->processEvents()) {
-      m_window->paint();
+    while (m_window.processEvents()) {
+      m_window.paint();
     }
+
+    return 0;
   }
 
 private:
   DELETE_COPY_AND_MOVE(App);
 
-  DelegateType m_delegate;
-
   // The single window we are managing.
-  nu::ScopedPtr<Window> m_window;
+  Window m_window;
+
+  // The delegate that processes window state events.
+  DelegateType m_delegate;
 };
 
 }  // namespace ca
@@ -58,12 +60,10 @@ private:
 
 #define CANVAS_APP(DelegateType)                                                                   \
   MAIN_HEADER {                                                                                    \
-    {                                                                                              \
-      ca::App<DelegateType> app;                                                                   \
-      app.run();                                                                                   \
-    }                                                                                              \
+    ca::App<DelegateType> app;                                                                     \
+    I32 result = app.run();                                                                        \
     MEMORY_DUMP                                                                                    \
-    return 0;                                                                                      \
+    return result;                                                                                 \
   }
 
 #endif  // CANVAS_APP_H_

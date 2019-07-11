@@ -34,7 +34,7 @@ public:
 
   // Mouse events.
   virtual void onMouseMoved(const MouseEvent& evt);
-  virtual void onMousePressed(const MouseEvent& evt);
+  virtual bool onMousePressed(const MouseEvent& evt);
   virtual void onMouseReleased(const MouseEvent& evt);
   virtual void onMouseWheel(const MouseWheelEvent& evt);
   virtual void onKeyPressed(const KeyEvent& evt);

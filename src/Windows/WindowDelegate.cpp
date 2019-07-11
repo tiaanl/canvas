@@ -13,7 +13,9 @@ void WindowDelegate::onWindowResized(const Size&) {}
 
 void WindowDelegate::onMouseMoved(const MouseEvent&) {}
 
-void WindowDelegate::onMousePressed(const MouseEvent&) {}
+bool WindowDelegate::onMousePressed(const MouseEvent&) {
+  return true;
+}
 
 void WindowDelegate::onMouseReleased(const MouseEvent&) {}
 
