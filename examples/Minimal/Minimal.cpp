@@ -6,15 +6,18 @@
 #include "nucleus/FilePath.h"
 #include "nucleus/Streams/FileInputStream.h"
 
-class MinimalWindow : public ca::WindowDelegate {
+class Minimal : public ca::WindowDelegate {
 public:
-  MinimalWindow()
+  Minimal()
     : ca::WindowDelegate("ElasticDemo"), m_rootPath(nu::getCurrentWorkingDirectory()) {}
-  ~MinimalWindow() override = default;
+
+  ~Minimal() override = default;
 
   // Override: ca::WindowDelegate
-  bool onWindowCreated(ca::Renderer* renderer) override {
+  bool onWindowCreated(ca::Window* window) override {
     LOG(Info) << "Root path: " << m_rootPath;
+
+    ca::Renderer* renderer = window->getRenderer();
 
     if (!loadProgram(renderer)) {
       LOG(Error) << "Could not create program";
@@ -28,10 +31,10 @@ public:
 
     if (!loadTexture(renderer)) {
       LOG(Error) << "Could not create texture.";
-        return false;
+      return false;
     }
 
-    m_scaleUniform = renderer->createUniform("uScale", ca::ComponentType::Float32, 1);
+    m_scaleUniform = renderer->createUniform("uScale");
 
     return true;
   }
@@ -47,7 +50,7 @@ public:
   }
 
 private:
-  DELETE_COPY_AND_MOVE(MinimalWindow);
+  DELETE_COPY_AND_MOVE(Minimal);
 
   bool loadProgram(ca::Renderer* renderer) {
     nu::FileInputStream* vs = new nu::FileInputStream{m_rootPath / "default.vs"};
@@ -180,4 +183,4 @@ private:
   ca::UniformId m_scaleUniform;
 };
 
-CANVAS_APP(MinimalWindow)
+CANVAS_APP(Minimal)

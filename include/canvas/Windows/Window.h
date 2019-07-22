@@ -2,8 +2,6 @@
 #ifndef CANVAS_WINDOWS_WINDOW_H_
 #define CANVAS_WINDOWS_WINDOW_H_
 
-#include <memory>
-
 #include "WindowDelegate.h"
 #include "canvas/Renderer/Renderer.h"
 #include "nucleus/Allocators/Allocator.h"
@@ -24,7 +22,13 @@ public:
   bool initialize(WindowDelegate* delegate);
 
   // Get the client size of the window.
-  ca::Size getClientSize() const;
+  const ca::Size& getClientSize() const {
+    return m_clientSize;
+  }
+
+  Renderer* getRenderer() const {
+    return const_cast<Renderer*>(&m_renderer);
+  }
 
   // Process any pending events for this window.  Returns false if the window should stop processing
   // messages.
@@ -38,9 +42,6 @@ public:
 
 private:
   DELETE_COPY_AND_MOVE(Window);
-
-  template <typename T, typename... Args>
-  friend nu::ScopedPtr<T> nu::makeScopedPtr(Args&&...);
 
   // Callbacks
   static void frameBufferSizeCallback(GLFWwindow* window, int width, int height);
@@ -57,6 +58,9 @@ private:
 
   // The renderer we use to render anything to this window.
   Renderer m_renderer;
+
+  // Size of the client area of the window.
+  Size m_clientSize;
 };
 
 }  // namespace ca

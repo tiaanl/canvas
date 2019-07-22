@@ -12,6 +12,7 @@
 namespace ca {
 
 class Renderer;
+class Window;
 
 class WindowDelegate {
 public:
@@ -25,7 +26,7 @@ public:
   }
 
   // Called right after the window was created.  Return false if the app creation failed.
-  virtual bool onWindowCreated(Renderer* renderContext);
+  virtual bool onWindowCreated(Window* window);
 
   // Called when the size of the window changed.
   virtual void onWindowResized(const Size& size);

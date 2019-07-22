@@ -8,6 +8,7 @@
 #include "nucleus/Logging.h"
 
 #include "GLFW/glfw3.h"
+#include "GLFW/glfw3native.h"
 
 #include "nucleus/MemoryDebug.h"
 
@@ -290,7 +291,7 @@ bool Window::initialize(WindowDelegate* delegate) {
 
   glfwSetErrorCallback(glfwErrorCallback);
 
-  const Size clientSize{1600, 900};
+  m_clientSize = {1600, 900};
 
   // Set up our hints.
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -299,8 +300,8 @@ bool Window::initialize(WindowDelegate* delegate) {
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
   // Create the window.
-  m_window = glfwCreateWindow(clientSize.width, clientSize.height, m_delegate->getTitle().getData(),
-                              nullptr, nullptr);
+  m_window = glfwCreateWindow(m_clientSize.width, m_clientSize.height,
+                              m_delegate->getTitle().getData(), nullptr, nullptr);
   if (!m_window) {
     LOG(Error) << "Could not create window.";
     m_delegate = nullptr;
@@ -343,17 +344,17 @@ bool Window::initialize(WindowDelegate* delegate) {
   LOG(Info) << "Supported OpenGL is " << glGetString(GL_VERSION);
   LOG(Info) << "Supported GLSL is " << glGetString(GL_SHADING_LANGUAGE_VERSION);
 
-  m_renderer.resize(clientSize);
+  m_renderer.resize(m_clientSize);
 
   // Let the delegate know we were just created.
-  bool success = delegate->onWindowCreated(&m_renderer);
+  bool success = delegate->onWindowCreated(this);
   if (!success) {
     m_delegate = nullptr;
     return false;
   }
 
   // We send a window resized to the delegate as well so that it can do any setup needed.
-  delegate->onWindowResized(clientSize);
+  delegate->onWindowResized(m_clientSize);
 
   return true;
 }
@@ -362,12 +363,6 @@ Window::~Window() {
   glfwDestroyWindow(m_window);
 
   glfwTerminate();
-}
-
-ca::Size Window::getClientSize() const {
-  I32 width, height;
-  glfwGetFramebufferSize(m_window, &width, &height);
-  return ca::Size{width, height};
 }
 
 bool Window::processEvents() {
@@ -397,11 +392,13 @@ void Window::paint() {
 void Window::frameBufferSizeCallback(GLFWwindow* window, int width, int height) {
   Window* windowPtr = getUserPointer(window);
 
+  windowPtr->m_clientSize = {width, height};
+
   // Resize our renderer.
-  windowPtr->m_renderer.resize({width, height});
+  windowPtr->m_renderer.resize(windowPtr->m_clientSize);
 
   Size windowSize(static_cast<U32>(width), static_cast<U32>(height));
-  windowPtr->m_delegate->onWindowResized(windowSize);
+  windowPtr->m_delegate->onWindowResized(windowPtr->m_clientSize);
 }
 
 // static
