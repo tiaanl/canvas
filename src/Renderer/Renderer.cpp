@@ -201,6 +201,10 @@ TextureId Renderer::createTexture(const Image& image) {
       LOG(Error) << "Unknown image format.";
       return {};
 
+    case ImageFormat::RGBA:
+      format = GL_RGBA;
+      break;
+
     case ImageFormat::RGB:
       format = GL_RGB;
       break;
@@ -339,7 +343,12 @@ void Renderer::draw(DrawType drawType, U32 indexCount, ProgramId programId,
       break;
   }
 
+  GL_CHECK(glEnable(GL_BLEND));
+  GL_CHECK(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+
   GL_CHECK(glDrawElements(mode, indexCount, oglType, nullptr));
+
+  GL_CHECK(glDisable(GL_BLEND));
 }
 
 }  // namespace ca

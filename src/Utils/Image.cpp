@@ -144,6 +144,7 @@ bool Image::loadFromStream(nu::InputStream* stream) {
 #endif  // 0
 
     case PNG_COLOR_TYPE_RGB_ALPHA:
+      m_format = ImageFormat::RGBA;
       m_data.resize(m_size.width * m_size.height * 4);
       parseRGBA(m_size, m_data.getData(), png, info);
       break;
