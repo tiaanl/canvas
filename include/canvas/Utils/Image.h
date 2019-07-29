@@ -12,17 +12,27 @@
 
 namespace ca {
 
+enum class ImageFormat : U32 {
+  Unknown,
+  Alpha,
+  RGB,
+  RGBA,
+};
+
 class Image {
 public:
-  DELETE_COPY(Image);
+  // Create a blank alpha image.
+  static Image createAlpha(const Size& size, U8 intensity = 0);
 
-  using DataType = nu::DynamicArray<U8>;
+  Image();
+  Image(Image&& other);
+  ~Image();
 
-  Image() = default;
-  Image(Image&& other) noexcept;
-  ~Image() = default;
+  Image& operator=(Image&& other);
 
-  Image& operator=(Image&& other) noexcept;
+  ImageFormat getFormat() const {
+    return m_format;
+  }
 
   // Get the size of the image.
   const Size& getSize() const {
@@ -30,10 +40,9 @@ public:
   }
 
   // Get the pixel data for the image.
-  const DataType& getData() const {
-    return m_data;
+  U8* getData() const {
+    return const_cast<U8*>(m_data.getData());
   }
-
   // Create a blank image with the specified color.
   void create(const Size& size, const Color& col = Color{});
 
@@ -44,11 +53,16 @@ public:
   void setPixel(const Pos& pos, const Color& color);
 
 private:
+  DELETE_COPY(Image);
+
+  // Format of the data is stored in.
+  ImageFormat m_format = ImageFormat::Unknown;
+
   // The dimensions of the image.
   Size m_size;
 
   // The buffer that holds the pixel data.
-  DataType m_data;
+  nu::DynamicArray<U8> m_data;
 };
 
 }  // namespace ca

@@ -68,7 +68,7 @@ set(canvas_SOURCE_FILES
     )
 
 add_library(canvas STATIC ${canvas_HEADER_FILES} ${canvas_SOURCE_FILES})
-target_link_libraries(canvas nucleus glfw glad freetype libpng zlib)
+target_link_libraries(canvas nucleus glfw glad libpng zlib)
 target_include_directories(canvas PUBLIC "${canvas_SOURCE_DIR}/include")
 target_compile_definitions(canvas PUBLIC "-DUNICODE")
 set_target_properties(canvas PROPERTIES

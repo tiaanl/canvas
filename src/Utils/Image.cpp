@@ -41,10 +41,25 @@ void parseRGBA(const Size size, U8* outPtr, const png_structp& png, const png_in
 
 }  // namespace
 
-Image::Image(Image&& other) noexcept
-  : m_size(std::move(other.m_size)), m_data(std::move(other.m_data)) {}
+// static
+Image Image::createAlpha(const Size& size, U8 intensity) {
+  Image result;
 
-Image& Image::operator=(Image&& other) noexcept {
+  result.m_format = ImageFormat::Alpha;
+  result.m_size = size;
+  result.m_data.resize(size.width * size.height, intensity);
+
+  return result;
+}
+
+Image::Image() = default;
+
+Image::~Image() = default;
+
+Image::Image(Image&& other) : m_format{std::move(other.m_format)}, m_size(std::move(other.m_size)), m_data(std::move(other.m_data)) {}
+
+Image& Image::operator=(Image&& other) {
+  m_format = std::move(other.m_format);
   m_size = std::move(other.m_size);
   m_data = std::move(other.m_data);
 
@@ -57,7 +72,8 @@ void Image::create(const Size& size, const Color& col) {
     m_size = size;
 
     // Resize the buffer to hold the image.
-    m_data.resize(size.width * size.height * 4);
+    auto bufferSize = size.width * size.height * 4;
+    m_data.resize(bufferSize);
 
     // Fill the image with the specified color.
     U8* data = m_data.getData();

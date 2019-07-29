@@ -192,9 +192,26 @@ TextureId Renderer::createTexture(const Image& image) {
   // Bind the texture.
   GL_CHECK(glBindTexture(GL_TEXTURE_2D, result.id));
 
+  GLint internalFormat = GL_RGBA;
+  GLint format;
+
   // Upload the image data.
-  GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, result.size.width, result.size.height, 0,
-                        GL_RGBA, GL_UNSIGNED_BYTE, image.getData().getData()));
+  switch (image.getFormat()) {
+    case ImageFormat::Unknown:
+      LOG(Error) << "Unknown image format.";
+      return {};
+
+    case ImageFormat::RGB:
+      format = GL_RGB;
+      break;
+
+    case ImageFormat::Alpha:
+      format = GL_RED;
+      break;
+  }
+
+  GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, result.size.width, result.size.height, 0,
+                        format, GL_UNSIGNED_BYTE, image.getData()));
 
   // Set the texture clamping.
   const bool smooth = false;
