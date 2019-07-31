@@ -11,5 +11,5 @@ set(canvas_TEST_FILES
 )
 
 add_executable(canvasTests ${canvas_TEST_FILES})
-target_link_libraries(canvasTests canvas nucleus testing)
+target_link_libraries(canvasTests canvas testing)
 set_property(TARGET canvasTests PROPERTY FOLDER canvas)

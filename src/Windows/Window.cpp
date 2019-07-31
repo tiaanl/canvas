@@ -8,7 +8,6 @@
 #include "nucleus/Logging.h"
 
 #include "GLFW/glfw3.h"
-#include "GLFW/glfw3native.h"
 
 #include "nucleus/MemoryDebug.h"
 
@@ -414,8 +413,6 @@ void Window::cursorPositionCallback(GLFWwindow* window, double xPos, double yPos
 
 // static
 void Window::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
-  mods = mods;
-
   Window* windowPtr = getUserPointer(window);
 
   double xPos, yPos;
@@ -465,9 +462,6 @@ void Window::scrollCallback(GLFWwindow* window, double xOffset, double yOffset) 
 
 // static
 void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-  scancode = scancode;
-  mods = mods;
-
   // We don't care for repeats.
   if (action == GLFW_REPEAT) {
     return;
