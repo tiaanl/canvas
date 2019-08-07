@@ -1,7 +1,7 @@
 
 #include "canvas/Windows/WindowDelegate.h"
 
-#include "nucleus/MemoryDebug.h"
+#include "nucleus/Logging.h"
 
 namespace ca {
 
@@ -9,6 +9,9 @@ class Window;
 
 bool WindowDelegate::onWindowCreated(Window*) {
   return true;
+}
+
+void WindowDelegate::tick(F32 delta) {
 }
 
 void WindowDelegate::onWindowResized(const Size&) {}

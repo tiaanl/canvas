@@ -59,7 +59,7 @@ set(canvas_SOURCE_FILES
     "src/Renderer/VertexDefinition.cpp"
     "src/Rendering/Font.cpp"
     "src/Utils/Color.cpp"
-    "src/Utils/Geometry.cpp"
+    "src/Utils/Entity.cpp"
     "src/Utils/GLCheck.cpp"
     "src/Utils/Image.cpp"
     "src/Utils/ShaderSource.cpp"

@@ -6,6 +6,7 @@
 #include "canvas/Windows/WindowDelegate.h"
 #include "nucleus/Allocators/DefaultAllocator.h"
 #include "nucleus/Config.h"
+#include "nucleus/HighPerformanceTimer.h"
 #include "nucleus/Macros.h"
 #include "nucleus/Memory/ScopedPtr.h"
 #include "nucleus/Win/WindowsMixin.h"
@@ -27,7 +28,12 @@ public:
       return 1;
     }
 
+    auto tick = nu::getCurrentHighPerformanceTick();
     while (m_window.processEvents()) {
+      auto now = nu::getCurrentHighPerformanceTick();
+      m_delegate.tick(static_cast<F32>(1000000.0 / 60.0 / (now - tick)));
+      tick = now;
+
       m_window.paint();
     }
 

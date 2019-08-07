@@ -31,6 +31,9 @@ public:
   // Called when the size of the window changed.
   virtual void onWindowResized(const Size& size);
 
+  // Called on every frame, delta being the ratio to get to 60 fps.
+  virtual void tick(F32 delta);
+
   virtual void onRender(Renderer* renderer) = 0;
 
   // Mouse events.
