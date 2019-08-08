@@ -12,6 +12,7 @@ Mat4 scaleMatrix(const Vec3& scale);
 Mat4 translationMatrix(const Vec3& translate);
 
 Mat4 orthographicProjection(F32 left, F32 right, F32 top, F32 bottom, F32 near, F32 far);
+Mat4 perspectiveProjection(F32 fieldOfView, F32 aspectRatio, F32 near, F32 far);
 
 }  // namespace ca
 
