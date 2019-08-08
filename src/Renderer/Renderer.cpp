@@ -150,7 +150,7 @@ VertexBufferId Renderer::createVertexBuffer(const VertexDefinition& vertexDefini
   U32 offset = 0;
   for (const auto& attr : vertexDefinition.getAttributes()) {
     glVertexAttribPointer(componentNumber, U32(attr.getCount()), getOglType(attr.getType()),
-                          GL_FALSE, vertexDefinition.getStride(), (GLvoid*)((U8*)0 + offset));
+                          GL_FALSE, vertexDefinition.getStride(), (GLvoid*)(static_cast<MemSize>(offset)));
     glEnableVertexAttribArray(componentNumber);
 
     ++componentNumber;

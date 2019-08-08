@@ -412,7 +412,7 @@ void Window::cursorPositionCallback(GLFWwindow* window, double xPos, double yPos
 }
 
 // static
-void Window::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+void Window::mouseButtonCallback(GLFWwindow* window, int button, int action, int UNUSED(mods)) {
   Window* windowPtr = getUserPointer(window);
 
   double xPos, yPos;
@@ -461,7 +461,8 @@ void Window::scrollCallback(GLFWwindow* window, double xOffset, double yOffset) 
 }
 
 // static
-void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+void Window::keyCallback(GLFWwindow* window, int key, int UNUSED(scancode), int action,
+                         int UNUSED(mods)) {
   // We don't care for repeats.
   if (action == GLFW_REPEAT) {
     return;

@@ -29,7 +29,7 @@ void readDataFromInputStream(png_structp png, png_bytep outBytes, png_size_t byt
 }
 
 void parseRGBA(const Size size, U8* outPtr, const png_structp& png, const png_infop& info) {
-  const I32 width = size.width;
+  // const I32 width = size.width;
   const I32 height = size.height;
 
   const png_size_t bytesPerRow = png_get_rowbytes(png, info);
