@@ -1,6 +1,7 @@
 #ifndef CANVAS_MATH_VEC4_H_
 #define CANVAS_MATH_VEC4_H_
 
+#include "canvas/Math/Vec2.h"
 #include "canvas/Math/Vec3.h"
 #include "nucleus/Types.h"
 
@@ -13,6 +14,7 @@ struct Vec4 {
   F32 w;
 
   Vec4(F32 x, F32 y, F32 z, F32 w) : x{x}, y{y}, z{z}, w{w} {}
+  Vec4(const Vec2& xy, F32 z, F32 w) : x{xy.x}, y{xy.y}, z{z}, w{w} {}
   Vec4(const Vec3& xyz, F32 w) : x{xyz.x}, y{xyz.y}, z{xyz.z}, w{w} {}
 
   Vec4& operator+=(const Vec4& right) {
