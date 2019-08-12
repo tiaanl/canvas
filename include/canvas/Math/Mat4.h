@@ -13,8 +13,9 @@ struct Mat4 {
   Mat4(const Vec4& col1, const Vec4& col2, const Vec4& col3, const Vec4& col4)
     : col{col1, col2, col3, col4} {}
 
-  Mat4(const Vec3& right, const Vec3& up, const Vec3& forward)
-    : col{{right, 0.0f}, {up, 0.0f}, {forward, 0.0f}, {0.0f, 0.0f, 0.0f, 1.0f}} {}
+  Mat4(const Vec3& forward, const Vec3& up, const Vec3& right,
+       const Vec3& position = {0.0f, 0.0f, 0.0f})
+    : col{{forward, 0.0f}, {up, 0.0f}, {right, 0.0f}, {position, 1.0f}} {}
 };
 
 Mat4 operator*(const Mat4& left, const Mat4& right);
