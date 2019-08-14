@@ -5,6 +5,8 @@
 #include "canvas/Math/Vec2.h"
 #include "nucleus/Types.h"
 
+#include <ostream>
+
 namespace ca {
 
 struct Vec3 {
@@ -87,6 +89,11 @@ inline F32 length(const Vec3& vec) {
 
 inline Vec3 normalize(const Vec3& vec) {
   return vec * (1.0f / length(vec));
+}
+
+inline std::ostream& operator<<(std::ostream& os, const Vec3& value) {
+  os << "{" << value.x << ", " << value.y << ", " << value.z << "}";
+  return os;
 }
 
 }  // namespace ca

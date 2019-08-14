@@ -22,6 +22,42 @@ Mat4 translationMatrix(const Vec3& translate) {
   return result;
 }
 
+Mat4 rotationMatrix(const Vec3& axis, F32 degrees) {
+  const auto normalizedAxis = normalize(axis);
+
+  const F32 radians = degreesToRadians(degrees);
+  const F32 sinTheta = sine(radians);
+  const F32 cosTheta = cosine(radians);
+  const F32 cosValue = 1.0f - cosTheta;
+
+  return {
+      {
+          (normalizedAxis.x * normalizedAxis.x * cosValue) + cosTheta,
+          (normalizedAxis.x * normalizedAxis.y * cosValue) + (normalizedAxis.z * sinTheta),
+          (normalizedAxis.x * normalizedAxis.z * cosValue) - (normalizedAxis.y * sinTheta),
+          0.0f,
+      },
+      {
+          (normalizedAxis.y * normalizedAxis.x * cosValue) - (normalizedAxis.z * sinTheta),
+          (normalizedAxis.y * normalizedAxis.y * cosValue) + cosTheta,
+          (normalizedAxis.y * normalizedAxis.z * cosValue) + (normalizedAxis.x * sinTheta),
+          0.0f,
+      },
+      {
+          (normalizedAxis.z * normalizedAxis.x * cosValue) + (normalizedAxis.y * sinTheta),
+          (normalizedAxis.z * normalizedAxis.y * cosValue) - (normalizedAxis.x * sinTheta),
+          (normalizedAxis.z * normalizedAxis.z * cosValue) + cosTheta,
+          0.0f,
+      },
+      {
+          0.0f,
+          0.0f,
+          0.0f,
+          1.0f,
+      },
+  };
+}
+
 Mat4 orthographicProjection(F32 left, F32 right, F32 top, F32 bottom, F32 near, F32 far) {
   auto col1 = Vec4{2.0f / (right - left), 0.0f, 0.0f, 0.0f};
 

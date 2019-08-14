@@ -3,6 +3,8 @@
 
 #include "nucleus/Types.h"
 
+#include <ostream>
+
 namespace ca {
 
 struct Vec2 {
@@ -54,6 +56,11 @@ inline Vec2 operator*(const Vec2& left, F32 right) {
 
 inline Vec2 operator/(const Vec2& left, F32 right) {
   return Vec2{left.x / right, left.y / right};
+}
+
+inline std::ostream& operator<<(std::ostream& os, const Vec2& value) {
+  os << "{" << value.x << ", " << value.y << "}";
+  return os;
 }
 
 }  // namespace ca

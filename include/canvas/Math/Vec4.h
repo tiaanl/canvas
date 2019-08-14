@@ -5,6 +5,8 @@
 #include "canvas/Math/Vec3.h"
 #include "nucleus/Types.h"
 
+#include <ostream>
+
 namespace ca {
 
 struct Vec4 {
@@ -68,6 +70,11 @@ inline Vec4 operator*(const Vec4& left, F32 right) {
 
 inline Vec4 operator/(const Vec4& left, F32 right) {
   return Vec4{left.x / right, left.y / right, left.z / right, left.w / right};
+}
+
+inline std::ostream& operator<<(std::ostream& os, const Vec4& value) {
+  os << "{" << value.x << ", " << value.y << ", " << value.z << ", " << value.w << "}";
+  return os;
 }
 
 }  // namespace ca

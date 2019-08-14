@@ -21,7 +21,10 @@ add_subdirectory(third_party "third_party")
 set(canvas_HEADER_FILES
     "include/canvas/App.h"
     "include/canvas/Math/Common.h"
+    "include/canvas/Math/Intersection.h"
     "include/canvas/Math/Mat4.h"
+    "include/canvas/Math/Plane.h"
+    "include/canvas/Math/Ray.h"
     "include/canvas/Math/Transform.h"
     "include/canvas/Math/Vec2.h"
     "include/canvas/Math/Vec3.h"
