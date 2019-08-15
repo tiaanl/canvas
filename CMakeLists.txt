@@ -31,6 +31,7 @@ set(canvas_HEADER_FILES
     "include/canvas/Math/Vec4.h"
     "include/canvas/OpenGL.h"
     "include/canvas/Renderer/Command.h"
+    "include/canvas/Renderer/LineRenderer.h"
     "include/canvas/Renderer/Renderer.h"
     "include/canvas/Renderer/Types.h"
     "include/canvas/Renderer/UniformBuffer.h"
@@ -57,6 +58,7 @@ set(canvas_HEADER_FILES
 set(canvas_SOURCE_FILES
     "src/Math/Mat4.cpp"
     "src/Math/Transform.cpp"
+    "src/Renderer/LineRenderer.cpp"
     "src/Renderer/Renderer.cpp"
     "src/Renderer/UniformBuffer.cpp"
     "src/Renderer/VertexDefinition.cpp"

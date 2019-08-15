@@ -150,7 +150,8 @@ VertexBufferId Renderer::createVertexBuffer(const VertexDefinition& vertexDefini
   U32 offset = 0;
   for (const auto& attr : vertexDefinition.getAttributes()) {
     glVertexAttribPointer(componentNumber, U32(attr.getCount()), getOglType(attr.getType()),
-                          GL_FALSE, vertexDefinition.getStride(), (GLvoid*)(static_cast<MemSize>(offset)));
+                          GL_FALSE, vertexDefinition.getStride(),
+                          (GLvoid*)(static_cast<MemSize>(offset)));
     glEnableVertexAttribArray(componentNumber);
 
     ++componentNumber;
@@ -163,12 +164,10 @@ VertexBufferId Renderer::createVertexBuffer(const VertexDefinition& vertexDefini
   // We can delete the buffer here, because the VAO is holding a reference to it.
   glDeleteBuffers(1, &bufferId);
 
-#if 0
-  result.numComponents = U32(dataSize / componentSize);
-#endif  // 0
+  auto pushBackResult =
+      m_vertexBuffers.pushBack([&result](VertexBufferData* storage) { *storage = result; });
 
-  m_vertexBuffers.pushBack(result);
-  return VertexBufferId{m_vertexBuffers.getSize() - 1};
+  return {pushBackResult.index()};
 }
 
 IndexBufferId Renderer::createIndexBuffer(ComponentType componentType, void* data,
@@ -178,8 +177,13 @@ IndexBufferId Renderer::createIndexBuffer(ComponentType componentType, void* dat
   GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferId));
   GL_CHECK(glBufferData(GL_ELEMENT_ARRAY_BUFFER, dataSize, data, GL_STATIC_DRAW));
 
-  m_indexBuffers.emplaceBack(bufferId, componentType);
-  return IndexBufferId{m_indexBuffers.getSize() - 1};
+  auto pushBackResult =
+      m_indexBuffers.pushBack([&bufferId, &componentType](IndexBufferData* storage) {
+        storage->id = bufferId;
+        storage->componentType = componentType;
+      });
+
+  return {pushBackResult.index()};
 }
 
 TextureId Renderer::createTexture(const Image& image) {
