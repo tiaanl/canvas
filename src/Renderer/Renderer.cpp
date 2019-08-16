@@ -162,12 +162,25 @@ VertexBufferId Renderer::createVertexBuffer(const VertexDefinition& vertexDefini
   GL_CHECK(glBindVertexArray(0));
 
   // We can delete the buffer here, because the VAO is holding a reference to it.
-  glDeleteBuffers(1, &bufferId);
+  // GL_CHECK(glDeleteBuffers(1, &bufferId));
 
   auto pushBackResult =
       m_vertexBuffers.pushBack([&result](VertexBufferData* storage) { *storage = result; });
 
   return {pushBackResult.index()};
+}
+
+void Renderer::vertexBufferData(VertexBufferId id, void* data, MemSize dataSize) {
+  auto vertexBufferData = m_vertexBuffers[id.id];
+
+  GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, vertexBufferData.id));
+  GL_CHECK(glBufferData(GL_ARRAY_BUFFER, dataSize, data, GL_STATIC_DRAW));
+}
+
+void Renderer::deleteVertexBuffer(VertexBufferId id) {
+  auto data = m_vertexBuffers[id.id];
+
+  GL_CHECK(glDeleteVertexArrays(1, &data.id));
 }
 
 IndexBufferId Renderer::createIndexBuffer(ComponentType componentType, void* data,
@@ -184,6 +197,19 @@ IndexBufferId Renderer::createIndexBuffer(ComponentType componentType, void* dat
       });
 
   return {pushBackResult.index()};
+}
+
+void Renderer::indexBufferData(IndexBufferId id, void* data, MemSize dataSize) {
+  auto indexBufferData = m_indexBuffers[id.id];
+
+  GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferData.id));
+  GL_CHECK(glBufferData(GL_ELEMENT_ARRAY_BUFFER, dataSize, data, GL_STATIC_DRAW));
+}
+
+void Renderer::deleteIndexBuffer(IndexBufferId id) {
+  auto indexBufferData = m_indexBuffers[id.id];
+
+  GL_CHECK(glDeleteBuffers(1, &indexBufferData.id));
 }
 
 TextureId Renderer::createTexture(const Image& image) {
@@ -340,6 +366,10 @@ void Renderer::draw(DrawType drawType, U32 indexCount, ProgramId programId,
 
     case DrawType::TriangleFan:
       mode = GL_TRIANGLE_FAN;
+      break;
+
+    case DrawType::Lines:
+      mode = GL_LINES;
       break;
 
     default:

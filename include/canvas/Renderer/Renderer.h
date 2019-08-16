@@ -20,10 +20,18 @@ public:
   ~Renderer();
 
   ProgramId createProgram(const ShaderSource& vertexShader, const ShaderSource& fragmentShader);
+
   VertexBufferId createVertexBuffer(const VertexDefinition& bufferDefinition, void* data,
                                     MemSize dataSize);
+  void vertexBufferData(VertexBufferId id, void* data, MemSize dataSize);
+  void deleteVertexBuffer(VertexBufferId id);
+
   IndexBufferId createIndexBuffer(ComponentType componentType, void* data, MemSize dataSize);
+  void indexBufferData(IndexBufferId id, void* data, MemSize dataSize);
+  void deleteIndexBuffer(IndexBufferId id);
+
   TextureId createTexture(const Image& image);
+
   UniformId createUniform(const nu::StringView& name);
 
   const ca::Size& getSize() const {

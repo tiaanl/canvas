@@ -290,7 +290,7 @@ bool Window::initialize(WindowDelegate* delegate) {
 
   glfwSetErrorCallback(glfwErrorCallback);
 
-  m_clientSize = {1600, 900};
+  m_clientSize = {900, 900};
 
   // Set up our hints.
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);

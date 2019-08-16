@@ -46,6 +46,7 @@ enum class DrawType : U32 {
   Triangles,
   TriangleStrip,
   TriangleFan,
+  Lines,
 };
 
 }  // namespace ca
