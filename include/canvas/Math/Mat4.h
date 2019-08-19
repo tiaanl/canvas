@@ -1,6 +1,7 @@
 #ifndef CANVAS_MATH_MAT4_H_
 #define CANVAS_MATH_MAT4_H_
 
+#include "canvas/Math/Mat3.h"
 #include "canvas/Math/Vec4.h"
 
 namespace ca {
@@ -17,6 +18,14 @@ struct Mat4 {
   Mat4(const Vec3& right, const Vec3& up, const Vec3& forward,
        const Vec3& position = {0.0f, 0.0f, 0.0f})
     : col{{right, 0.0f}, {up, 0.0f}, {forward, 0.0f}, {position, 1.0f}} {}
+
+  Mat4(const Mat3& m)
+    : col{
+          {m.col[0], 0.0f},
+          {m.col[1], 0.0f},
+          {m.col[2], 0.0f},
+          {0.0f, 0.0f, 0.0f, 1.0f},
+      } {}
 };
 
 Mat4 operator*(const Mat4& left, const Mat4& right);

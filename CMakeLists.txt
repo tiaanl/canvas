@@ -20,10 +20,13 @@ add_subdirectory(third_party "third_party")
 
 set(canvas_HEADER_FILES
     "include/canvas/App.h"
+    "include/canvas/Math/Angle.h"
     "include/canvas/Math/Common.h"
     "include/canvas/Math/Intersection.h"
+    "include/canvas/Math/Mat3.h"
     "include/canvas/Math/Mat4.h"
     "include/canvas/Math/Plane.h"
+    "include/canvas/Math/Quaternion.h"
     "include/canvas/Math/Ray.h"
     "include/canvas/Math/Transform.h"
     "include/canvas/Math/Vec2.h"
@@ -56,8 +59,11 @@ set(canvas_HEADER_FILES
     )
 
 set(canvas_SOURCE_FILES
+    "src/Math/Mat3.cpp"
     "src/Math/Mat4.cpp"
+    "src/Math/Quaternion.cpp"
     "src/Math/Transform.cpp"
+    "src/Math/Vec3.cpp"
     "src/Renderer/LineRenderer.cpp"
     "src/Renderer/Renderer.cpp"
     "src/Renderer/UniformBuffer.cpp"

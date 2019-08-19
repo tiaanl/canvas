@@ -10,12 +10,23 @@
 namespace ca {
 
 struct Vec3 {
+  static Vec3 zero;
+
+  // OpenGL normalized device coordinates.
+  static Vec3 right;
+  static Vec3 up;
+  static Vec3 forward;
+
   F32 x;
   F32 y;
   F32 z;
 
   Vec3(F32 x, F32 y, F32 z) : x{x}, y{y}, z{z} {}
   Vec3(const Vec2& xy, F32 z) : x{xy.x}, y{xy.y}, z{z} {}
+
+  Vec2 xy() const {
+    return {x, y};
+  }
 
   Vec3 operator-() const {
     return Vec3{-x, -y, -z};
@@ -89,6 +100,10 @@ inline F32 length(const Vec3& vec) {
 
 inline Vec3 normalize(const Vec3& vec) {
   return vec * (1.0f / length(vec));
+}
+
+inline Vec3 lerp(const Vec3& a, const Vec3& b, F32 t) {
+  return a + (b - a) * t;
 }
 
 inline std::ostream& operator<<(std::ostream& os, const Vec3& value) {

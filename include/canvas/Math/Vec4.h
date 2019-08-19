@@ -19,6 +19,14 @@ struct Vec4 {
   Vec4(const Vec2& xy, F32 z, F32 w) : x{xy.x}, y{xy.y}, z{z}, w{w} {}
   Vec4(const Vec3& xyz, F32 w) : x{xyz.x}, y{xyz.y}, z{xyz.z}, w{w} {}
 
+  Vec3 xyz() const {
+    return {x, y, z};
+  }
+
+  Vec2 xy() const {
+    return {x, y};
+  }
+
   Vec4& operator+=(const Vec4& right) {
     x += right.x;
     y += right.y;

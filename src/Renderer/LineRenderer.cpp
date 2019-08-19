@@ -101,8 +101,8 @@ void LineRenderer::render(const ca::Mat4& transform) {
   ca::UniformBuffer uniformBuffer;
   uniformBuffer.set(m_transformUniformId, transform);
 
-  m_renderer->draw(ca::DrawType::Lines, m_lines.getSize() * 2, m_programId, m_vertexBufferId,
-                   m_indexBufferId, {}, uniformBuffer);
+  m_renderer->draw(ca::DrawType::Lines, static_cast<U32>(m_lines.getSize() * 2), m_programId,
+                   m_vertexBufferId, m_indexBufferId, {}, uniformBuffer);
 }
 
 }  // namespace ca
