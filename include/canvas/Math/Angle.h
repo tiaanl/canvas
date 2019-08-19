@@ -35,6 +35,14 @@ private:
   F32 m_radians;
 };
 
+inline Angle degrees(F32 degrees) {
+  return Angle::fromDegrees(degrees);
+}
+
+inline Angle radians(F32 radians) {
+  return Angle::fromRadians(radians);
+}
+
 }  // namespace ca
 
 #endif  // CANVAS_MATH_ANGLE_H_

@@ -15,7 +15,7 @@ public:
 
   // Override: ca::WindowDelegate
   bool onWindowCreated(ca::Window* window) override {
-    LOG(Info) << "Root path: " << m_rootPath;
+    // LOG(Info) << "Root path: " << m_rootPath.getPath();
 
     ca::Renderer* renderer = window->getRenderer();
 
@@ -160,7 +160,7 @@ private:
     auto imagePath = m_rootPath / "default.png";
     nu::FileInputStream imageStream{imagePath};
     if (!imageStream.openedOk()) {
-      LOG(Error) << "Could not load image: " << imagePath;
+      // LOG(Error) << "Could not load image: " << imagePath;
       return false;
     }
 

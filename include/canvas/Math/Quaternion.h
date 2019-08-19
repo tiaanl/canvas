@@ -17,7 +17,7 @@ struct AxisAngle {
 struct Quaternion {
   static const Quaternion identity;
 
-  static Quaternion fromEulerAngles(F32 yaw, F32 pitch, F32 roll) {
+  static Quaternion fromEulerAngles(F32 UNUSED(yaw), F32 UNUSED(pitch), F32 UNUSED(roll)) {
     return {};
   }
 
