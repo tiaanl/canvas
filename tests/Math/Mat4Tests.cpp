@@ -174,25 +174,25 @@ TEST_CASE("Mat4 inverse") {
 
   auto result = inverse(m);
 
-  CHECK(result.col[0].x == 30.0f / 89.0f);
-  CHECK(result.col[0].y == -52.0f / 89.0f);
-  CHECK(result.col[0].z == 39.0f / 89.0f);
-  CHECK(result.col[0].w == 3.0f / 89.0f);
+  CHECK(nearZero(result.col[0].x - 30.0f / 89.0f));
+  CHECK(nearZero(result.col[0].y - -52.0f / 89.0f));
+  CHECK(nearZero(result.col[0].z - 39.0f / 89.0f));
+  CHECK(nearZero(result.col[0].w - 3.0f / 89.0f));
 
-  CHECK(result.col[1].x == 59.0f / 89.0f);
-  CHECK(result.col[1].y == -126.0f / 89.0f);
-  CHECK(result.col[1].z == 50.0f / 89.0f);
-  CHECK(result.col[1].w == -3.0f / 89.0f);
+  CHECK(nearZero(result.col[1].x - 59.0f / 89.0f));
+  CHECK(nearZero(result.col[1].y - -126.0f / 89.0f));
+  CHECK(nearZero(result.col[1].z - 50.0f / 89.0f));
+  CHECK(nearZero(result.col[1].w - -3.0f / 89.0f));
 
-  CHECK(result.col[2].x == 10.0f / 89.0f);
-  CHECK(result.col[2].y == -47.0f / 89.0f);
-  CHECK(result.col[2].z == 13.0f / 89.0f);
-  CHECK(result.col[2].w == 1.0f / 89.0f);
+  CHECK(nearZero(result.col[2].x - 10.0f / 89.0f));
+  CHECK(nearZero(result.col[2].y - -47.0f / 89.0f));
+  CHECK(nearZero(result.col[2].z - 13.0f / 89.0f));
+  CHECK(nearZero(result.col[2].w - 1.0f / 89.0f));
 
-  CHECK(result.col[3].x == -27.0f / 89.0f);
-  CHECK(result.col[3].y == 118.0f / 89.0f);
-  CHECK(result.col[3].z == -44.0f / 89.0f);
-  CHECK(result.col[3].w == 24.0f / 89.0f);
+  CHECK(nearZero(result.col[3].x - -27.0f / 89.0f));
+  CHECK(nearZero(result.col[3].y - 118.0f / 89.0f));
+  CHECK(nearZero(result.col[3].z - -44.0f / 89.0f));
+  CHECK(nearZero(result.col[3].w - 24.0f / 89.0f));
 }
 
 }  // namespace ca

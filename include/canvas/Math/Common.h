@@ -9,7 +9,7 @@
 namespace ca {
 
 constexpr F32 kPi = 3.1415926535897932384626433832795f;
-constexpr F32 kNearZero = 1.0f / static_cast<F32>(1U << 28U);
+constexpr F32 kNearZero = 0.00001f;  // 1.0f / static_cast<F32>(1U << 16U);
 
 inline F32 sine(F32 radians) {
   return std::sinf(radians);

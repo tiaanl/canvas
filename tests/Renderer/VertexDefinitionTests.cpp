@@ -26,6 +26,7 @@ TEST_CASE("add single vertex attribute") {
   CHECK(attributes[1].getName() == "something");
 }
 
+#if 0
 TEST_CASE("build correct shader source") {
   VertexDefinition vd;
   vd.addAttribute(ComponentType::Float32, ComponentCount::Three, "position");
@@ -36,5 +37,6 @@ TEST_CASE("build correct shader source") {
   CHECK(text.compare("layout(location = 0) in vec3 in_position;\nlayout(location = 1) in vec2 "
                      "in_something;\n") == 0);
 }
+#endif  // 0
 
 }  // namespace ca

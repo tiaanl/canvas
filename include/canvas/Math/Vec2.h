@@ -43,19 +43,23 @@ struct Vec2 {
 };
 
 inline Vec2 operator+(const Vec2& left, const Vec2& right) {
-  return Vec2{left.x + right.x, left.y + right.y};
+  return {left.x + right.x, left.y + right.y};
 }
 
 inline Vec2 operator-(const Vec2& left, const Vec2& right) {
-  return Vec2{left.x - right.x, left.y - right.y};
+  return {left.x - right.x, left.y - right.y};
 }
 
 inline Vec2 operator*(const Vec2& left, F32 right) {
-  return Vec2{left.x * right, left.y * right};
+  return {left.x * right, left.y * right};
 }
 
 inline Vec2 operator/(const Vec2& left, F32 right) {
-  return Vec2{left.x / right, left.y / right};
+  return {left.x / right, left.y / right};
+}
+
+inline Vec2 operator/(const Vec2& left, const Vec2& right) {
+  return {left.x / right.x, left.y / right.y};
 }
 
 inline std::ostream& operator<<(std::ostream& os, const Vec2& value) {

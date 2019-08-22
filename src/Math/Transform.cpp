@@ -58,19 +58,6 @@ Mat4 rotationMatrix(const Vec3& axis, F32 degrees) {
   };
 }
 
-Mat4 orthographicProjection(F32 left, F32 right, F32 top, F32 bottom, F32 near, F32 far) {
-  auto col1 = Vec4{2.0f / (right - left), 0.0f, 0.0f, 0.0f};
-
-  auto col2 = Vec4{0.0f, 2.0f / (top - bottom), 0.0f, 0.0f};
-
-  auto col3 = Vec4{0.0f, 0.0f, -2.0f / (far - near), 0.0f};
-
-  auto col4 = Vec4{-(right + left) / (right - left), -(top + bottom) / (top - bottom),
-                   -(far + near) / (far - near), 1.0f};
-
-  return Mat4{col1, col2, col3, col4};
-}
-
 Mat4 frustumMatrix(F32 left, F32 right, F32 bottom, F32 top, F32 near, F32 far) {
   F32 dx = right - left;
   F32 dy = top - bottom;
@@ -102,22 +89,37 @@ Mat4 frustumMatrix(F32 left, F32 right, F32 bottom, F32 top, F32 near, F32 far) 
           }};
 }
 
-Mat4 perspectiveProjection(F32 fieldOfView, F32 aspectRatio, F32 near, F32 far) {
-  F32 t = std::tan(fieldOfView / 2.0f);
+Mat4 orthographicProjection(F32 left, F32 right, F32 top, F32 bottom, F32 near, F32 far) {
+  auto col1 = Vec4{2.0f / (right - left), 0.0f, 0.0f, 0.0f};
+
+  auto col2 = Vec4{0.0f, 2.0f / (top - bottom), 0.0f, 0.0f};
+
+  auto col3 = Vec4{0.0f, 0.0f, -2.0f / (far - near), 0.0f};
+
+  auto col4 = Vec4{-(right + left) / (right - left), -(top + bottom) / (top - bottom),
+                   -(far + near) / (far - near), 1.0f};
+
+  return Mat4{col1, col2, col3, col4};
+}
+
+Mat4 perspectiveProjection(Angle fieldOfView, F32 aspectRatio, F32 near, F32 far) {
+  F32 t = tangent(fieldOfView.degrees() / 2.0f);
   F32 height = near * t;
   F32 width = height * aspectRatio;
 
   return frustumMatrix(-width, width, -height, height, near, far);
+}
 
-#if 0
-    F32 right = near * tangent(degreesToRadians(fieldOfView / 2.0f));
-    F32 left = -right;
+Mat4 createViewMatrix(const Vec3& position, const Quaternion& orientation) {
+  Mat3 rot = orientation.toRotationMatrix();
 
-    F32 bottom = left / aspectRatio;
-    F32 top = right / aspectRatio;
+  Mat3 rotT = transpose(rot);
+  Vec3 trans = -rotT * position;
 
-    return frustumMatrix(left, right, bottom, top, near, far);
-#endif
+  Mat4 viewMatrix = Mat4{rotT};
+  viewMatrix.col[3] = Vec4{trans, 1.0f};
+
+  return viewMatrix;
 }
 
 }  // namespace ca

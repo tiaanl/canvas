@@ -17,8 +17,23 @@ struct AxisAngle {
 struct Quaternion {
   static const Quaternion identity;
 
-  static Quaternion fromEulerAngles(F32 UNUSED(yaw), F32 UNUSED(pitch), F32 UNUSED(roll)) {
-    return {};
+  static Quaternion fromEulerAngles(ca::Angle pitch, ca::Angle yaw, ca::Angle roll) {
+    // pitch = x
+    // yaw = y
+    // roll = z
+
+    Vec3 c{cosine(pitch.radians() * 0.5f), cosine(yaw.radians() * 0.5f),
+           cosine(roll.radians() * 0.5f)};
+    Vec3 s{sine(pitch.radians() * 0.5f), sine(yaw.radians() * 0.5f), sine(roll.radians() * 0.5f)};
+
+    return {
+        c.x * c.y * c.z + s.x * s.y * s.z,
+        {
+            s.x * c.y * c.z - c.x * s.y * s.z,
+            c.x * s.y * c.z + s.x * c.y * s.z,
+            c.x * c.y * s.z - s.x * s.y * c.z,
+        },
+    };
   }
 
   F32 w;
