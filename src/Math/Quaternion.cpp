@@ -12,7 +12,7 @@ Quaternion fromAxisAngle(const ca::Vec3& axis, const Angle& angle) {
 }
 
 Quaternion fromRotationMatrix(const Mat3& UNUSED(rotationMatrix)) {
-  return {};
+  return Quaternion::identity;
 }
 
 Quaternion inverse(const Quaternion& q) {

@@ -44,7 +44,7 @@ public:
     return const_cast<U8*>(m_data.getData());
   }
   // Create a blank image with the specified color.
-  void create(const Size& size, const Color& col = Color{});
+  void create(const Size& size, const Color& col = ca::Color::black);
 
   // Load the image data from a stream.
   bool loadFromStream(nu::InputStream* stream);

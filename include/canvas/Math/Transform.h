@@ -12,7 +12,7 @@ Mat4 scaleMatrix(F32 scale);
 Mat4 scaleMatrix(const Vec3& scale);
 
 Mat4 translationMatrix(const Vec3& translate);
-Mat4 rotationMatrix(const Vec3& axis, F32 degrees);
+Mat4 rotationMatrix(const Vec3& axis, Angle angle);
 
 Mat4 frustumMatrix(F32 left, F32 right, F32 bottom, F32 top, F32 near, F32 far);
 
@@ -22,6 +22,9 @@ Mat4 perspectiveProjection(Angle fieldOfView, F32 aspectRatio, F32 near, F32 far
 Mat4 lookAt(const Vec3& eye, const Vec3& target, const Vec3& worldUp);
 
 Mat4 createViewMatrix(const Vec3& position, const Quaternion& orientation);
+
+Mat4 createModelMatrix(const ca::Mat4& translation, const ca::Mat4& rotation,
+                       const ca::Mat4& scale);
 
 }  // namespace ca
 

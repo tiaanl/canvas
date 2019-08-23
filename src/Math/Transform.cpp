@@ -22,12 +22,11 @@ Mat4 translationMatrix(const Vec3& translate) {
   return result;
 }
 
-Mat4 rotationMatrix(const Vec3& axis, F32 degrees) {
+Mat4 rotationMatrix(const Vec3& axis, Angle angle) {
   const auto normalizedAxis = normalize(axis);
 
-  const F32 radians = degreesToRadians(degrees);
-  const F32 sinTheta = sine(radians);
-  const F32 cosTheta = cosine(radians);
+  const F32 sinTheta = sine(angle);
+  const F32 cosTheta = cosine(angle);
   const F32 cosValue = 1.0f - cosTheta;
 
   return {
@@ -111,15 +110,20 @@ Mat4 perspectiveProjection(Angle fieldOfView, F32 aspectRatio, F32 near, F32 far
 }
 
 Mat4 createViewMatrix(const Vec3& position, const Quaternion& orientation) {
-  Mat3 rot = orientation.toRotationMatrix();
+  Mat3 rotation = orientation.toRotationMatrix();
 
-  Mat3 rotT = transpose(rot);
-  Vec3 trans = -rotT * position;
+  Mat3 transposedRotation = transpose(rotation);
+  Vec3 trans = -transposedRotation * position;
 
-  Mat4 viewMatrix = Mat4{rotT};
+  Mat4 viewMatrix = Mat4{transposedRotation};
   viewMatrix.col[3] = Vec4{trans, 1.0f};
 
   return viewMatrix;
+}
+
+Mat4 createModelMatrix(const ca::Mat4& translation, const ca::Mat4& rotation,
+                       const ca::Mat4& scale) {
+  return translation * rotation * scale;
 }
 
 }  // namespace ca

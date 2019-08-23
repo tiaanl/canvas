@@ -4,6 +4,9 @@
 namespace ca {
 
 // static
+Color Color::black{0.0f, 0.0f, 0.0f};
+
+// static
 Color Color::white{1.0f, 1.0f, 1.0f};
 
 // static

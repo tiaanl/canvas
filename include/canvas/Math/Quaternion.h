@@ -22,9 +22,8 @@ struct Quaternion {
     // yaw = y
     // roll = z
 
-    Vec3 c{cosine(pitch.radians() * 0.5f), cosine(yaw.radians() * 0.5f),
-           cosine(roll.radians() * 0.5f)};
-    Vec3 s{sine(pitch.radians() * 0.5f), sine(yaw.radians() * 0.5f), sine(roll.radians() * 0.5f)};
+    Vec3 c{cosine(pitch * 0.5f), cosine(yaw * 0.5f), cosine(roll * 0.5f)};
+    Vec3 s{sine(pitch * 0.5f), sine(yaw * 0.5f), sine(roll * 0.5f)};
 
     return {
         c.x * c.y * c.z + s.x * s.y * s.z,
@@ -39,7 +38,6 @@ struct Quaternion {
   F32 w;
   Vec3 v;
 
-  Quaternion() : w{1.0f}, v{Vec3::zero} {}
   Quaternion(F32 w, const Vec3& v) : w{w}, v{v} {}
 
   Quaternion operator*(F32 scale) const {

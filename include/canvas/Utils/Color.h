@@ -7,19 +7,18 @@
 namespace ca {
 
 struct Color {
+  static Color black;
   static Color white;
   static Color red;
   static Color green;
   static Color blue;
 
-  F32 r = 0.0f;
-  F32 g = 0.0f;
-  F32 b = 0.0f;
-  F32 a = 1.0f;
+  F32 r;
+  F32 g;
+  F32 b;
+  F32 a;
 
-  Color() = default;
-  Color(F32 r, F32 g, F32 b) : r{r}, g{g}, b{b}, a{1.0f} {}
-  Color(F32 r, F32 g, F32 b, F32 a) : r{r}, g{g}, b{b}, a{a} {}
+  Color(F32 r, F32 g, F32 b, F32 a = 1.0f) : r{r}, g{g}, b{b}, a{a} {}
 };
 
 }  // namespace ca

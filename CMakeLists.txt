@@ -59,6 +59,7 @@ set(canvas_HEADER_FILES
     )
 
 set(canvas_SOURCE_FILES
+    "src/Math/Angle.cpp"
     "src/Math/Mat3.cpp"
     "src/Math/Mat4.cpp"
     "src/Math/Quaternion.cpp"
