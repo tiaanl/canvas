@@ -8,10 +8,11 @@ namespace ca {
 
 struct Color {
   static Color black;
-  static Color white;
   static Color red;
+  static Color yellow;
   static Color green;
   static Color blue;
+  static Color white;
 
   F32 r;
   F32 g;
