@@ -2,6 +2,7 @@
 #define CANVAS_RENDERER_LINE_RENDERER_H_
 
 #include "canvas/Math/Mat4.h"
+#include "canvas/Math/Plane.h"
 #include "canvas/Math/Vec3.h"
 #include "canvas/Renderer/Types.h"
 #include "canvas/Utils/Color.h"
@@ -18,7 +19,11 @@ public:
 
   bool initialize(ca::Renderer* renderer);
   void beginFrame();
+
   void renderLine(const ca::Vec3& p1, const ca::Vec3& p2, const ca::Color& color);
+  void renderGrid(const ca::Plane& plane, const ca::Vec3& worldUp, const ca::Color& color,
+                  I32 numBlocks, F32 blockSize);
+
   void render(const ca::Mat4& transform);
 
 private:

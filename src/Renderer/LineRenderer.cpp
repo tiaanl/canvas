@@ -90,6 +90,34 @@ void LineRenderer::renderLine(const ca::Vec3& p1, const ca::Vec3& p2, const ca::
   m_lineIndices.pushBack(static_cast<U16>(m_lineIndices.getSize()));
 }
 
+void LineRenderer::renderGrid(const ca::Plane& plane, const ca::Vec3& worldUp,
+                              const ca::Color& color, I32 numBlocks, F32 blockSize) {
+  ca::Vec3 center = plane.normal * plane.distance;
+  ca::Vec3 right = ca::crossProduct(plane.normal, worldUp);
+  ca::Vec3 forward = ca::crossProduct(plane.normal, right);
+
+//  renderLine(plane.normal * plane.distance, plane.normal * plane.distance + plane.normal * 100.0f,
+//             ca::Color::red);
+//  renderLine(plane.normal * plane.distance, plane.normal * plane.distance + right * 100.0f,
+//             ca::Color::green);
+//  renderLine(plane.normal * plane.distance, plane.normal * plane.distance + forward * 100.0f,
+//             ca::Color::blue);
+
+  F32 max = static_cast<F32>(numBlocks) * blockSize;
+
+  for (I32 x = -numBlocks; x <= numBlocks; ++x) {
+    ca::Vec3 p1 = center + right * static_cast<F32>(x) * blockSize + forward * +max;
+    ca::Vec3 p2 = center + right * static_cast<F32>(x) * blockSize + forward * -max;
+    renderLine(p1, p2, color);
+  }
+
+  for (I32 y = -numBlocks; y <= numBlocks; ++y) {
+    ca::Vec3 p1 = center + forward * static_cast<F32>(y) * blockSize + right * +max;
+    ca::Vec3 p2 = center + forward * static_cast<F32>(y) * blockSize + right * -max;
+    renderLine(p1, p2, color);
+  }
+}
+
 void LineRenderer::render(const ca::Mat4& transform) {
   // Upload the new data.
   m_renderer->vertexBufferData(m_vertexBufferId, m_lines.getData(),
