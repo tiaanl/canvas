@@ -20,12 +20,7 @@ struct Mat4 {
     : col{{right, 0.0f}, {up, 0.0f}, {forward, 0.0f}, {position, 1.0f}} {}
 
   Mat4(const Mat3& m)
-    : col{
-          {m.col[0], 0.0f},
-          {m.col[1], 0.0f},
-          {m.col[2], 0.0f},
-          {0.0f, 0.0f, 0.0f, 1.0f},
-      } {}
+    : col{{m.col[0], 0.0f}, {m.col[1], 0.0f}, {m.col[2], 0.0f}, {0.0f, 0.0f, 0.0f, 1.0f}} {}
 };
 
 Mat4 operator*(const Mat4& left, const Mat4& right);

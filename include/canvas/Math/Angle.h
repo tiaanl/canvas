@@ -44,9 +44,8 @@ public:
     return *this;
   }
 
-  Angle& operator+=(F32 right) {
-    m_radians += right;
-    return *this;
+  friend Angle operator-(Angle left, Angle right) {
+    return Angle{left.m_radians - right.m_radians};
   }
 
   friend Angle operator*(Angle left, F32 right) {

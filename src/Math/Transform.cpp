@@ -102,7 +102,8 @@ Mat4 orthographicProjection(F32 left, F32 right, F32 top, F32 bottom, F32 near, 
 }
 
 Mat4 perspectiveProjection(Angle fieldOfView, F32 aspectRatio, F32 near, F32 far) {
-  F32 t = tangent(fieldOfView.degrees() / 2.0f);
+  F32 t = tangent(fieldOfView / 2.0f);
+
   F32 height = near * t;
   F32 width = height * aspectRatio;
 
