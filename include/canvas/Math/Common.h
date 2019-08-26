@@ -3,6 +3,7 @@
 #define CANVAS_MATH_COMMON_H_
 
 #include "canvas/Math/Angle.h"
+#include "nucleus/Logging.h"
 #include "nucleus/Types.h"
 
 #include <cmath>
@@ -81,6 +82,12 @@ inline F32 absolute(F32 x) {
 
 inline bool nearZero(F32 x) {
   return absolute(x) < kNearZero;
+}
+
+inline F32 clamp(F32 value, F32 min, F32 max) {
+  DCHECK(min < max) << "min value should be less than max value";
+
+  return std::min(max, std::max(value, min));
 }
 
 }  // namespace ca
