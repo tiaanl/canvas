@@ -1,11 +1,12 @@
 
 #include "canvas/Renderer/Renderer.h"
+#include <canvas/Windows/Keyboard.h>
 
 #include "canvas/OpenGL.h"
 #include "canvas/Renderer/VertexDefinition.h"
 #include "canvas/Utils/GLCheck.h"
-#include "canvas/Utils/Image.h"
 #include "canvas/Utils/ShaderSource.h"
+#include "nucleus/Logging.h"
 
 namespace ca {
 
@@ -87,11 +88,11 @@ ProgramId Renderer::createProgram(const ShaderSource& vertexShader,
   U32 vertexShaderId, fragmentShaderId;
 
   if (!compileShaderSource(vertexShader, GL_VERTEX_SHADER, &vertexShaderId)) {
-    return ProgramId{kInvalidResourceId};
+    return {};
   }
 
   if (!compileShaderSource(fragmentShader, GL_FRAGMENT_SHADER, &fragmentShaderId)) {
-    return ProgramId{kInvalidResourceId};
+    return {};
   }
 
   // Attach the shaders.
@@ -120,7 +121,7 @@ ProgramId Renderer::createProgram(const ShaderSource& vertexShader,
       if (infoLength) {
         LOG(Error) << buffer;
       }
-      return ProgramId{kInvalidResourceId};
+      return {};
     } else {
       LOG(Warning) << "Program not linked and no information available!";
     }
@@ -164,8 +165,12 @@ VertexBufferId Renderer::createVertexBuffer(const VertexDefinition& vertexDefini
   // We can delete the buffer here, because the VAO is holding a reference to it.
   // GL_CHECK(glDeleteBuffers(1, &bufferId));
 
+#if 0
   auto pushBackResult =
-      m_vertexBuffers.pushBack([&result](VertexBufferData* storage) { *storage = result; });
+      m_vertexBuffers.constructBack([&result](VertexBufferData* storage) { *storage = result; });
+#else
+  auto pushBackResult = m_vertexBuffers.emplaceBack(result);
+#endif
 
   return {pushBackResult.index()};
 }
@@ -190,11 +195,15 @@ IndexBufferId Renderer::createIndexBuffer(ComponentType componentType, void* dat
   GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferId));
   GL_CHECK(glBufferData(GL_ELEMENT_ARRAY_BUFFER, dataSize, data, GL_STATIC_DRAW));
 
+#if 0
   auto pushBackResult =
-      m_indexBuffers.pushBack([&bufferId, &componentType](IndexBufferData* storage) {
+      m_indexBuffers.constructBack([&bufferId, &componentType](IndexBufferData* storage) {
         storage->id = bufferId;
         storage->componentType = componentType;
       });
+#else
+  auto pushBackResult = m_indexBuffers.emplaceBack(bufferId, componentType);
+#endif
 
   return {pushBackResult.index()};
 }
@@ -212,43 +221,60 @@ void Renderer::deleteIndexBuffer(IndexBufferId id) {
   GL_CHECK(glDeleteBuffers(1, &indexBufferData.id));
 }
 
-TextureId Renderer::createTexture(const Image& image) {
+TextureId Renderer::createTexture(TextureFormat format, const Size& size, const U8* data,
+                                  MemSize dataSize, bool smooth) {
+  if (format == TextureFormat::Unknown) {
+    LOG(Warning) << "Can not create texture from image with unknown format.";
+    return {};
+  }
+
   TextureData result;
 
-  GL_CHECK(glGenTextures(1, &result.id));
+  result.size = size;
 
-  result.size = image.getSize();
+  const GLint internalFormat = GL_RGBA;
+
+  GLint glFormat;
+  U32 components;
+
+  // Upload the image data.
+  switch (format) {
+    case TextureFormat::Unknown:
+      components = 0;
+      NOTREACHED();
+      break;
+
+    case TextureFormat::RGB:
+      glFormat = GL_RGB;
+      components = 3;
+      break;
+
+    case TextureFormat::RGBA:
+      glFormat = GL_RGBA;
+      components = 4;
+      break;
+
+    case TextureFormat::Alpha:
+      glFormat = GL_RED;
+      components = 1;
+      break;
+  }
+
+  if (components * size.width * size.height > dataSize) {
+    LOG(Info) << "The provided data is not enough to fill the texture rectangle. (size = " << size
+              << ", dataSize = " << dataSize << ")";
+    return {};
+  }
+
+  GL_CHECK(glGenTextures(1, &result.id));
 
   // Bind the texture.
   GL_CHECK(glBindTexture(GL_TEXTURE_2D, result.id));
 
-  GLint internalFormat = GL_RGBA;
-  GLint format;
-
-  // Upload the image data.
-  switch (image.getFormat()) {
-    case ImageFormat::Unknown:
-      LOG(Error) << "Unknown image format.";
-      return {};
-
-    case ImageFormat::RGBA:
-      format = GL_RGBA;
-      break;
-
-    case ImageFormat::RGB:
-      format = GL_RGB;
-      break;
-
-    case ImageFormat::Alpha:
-      format = GL_RED;
-      break;
-  }
-
   GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, result.size.width, result.size.height, 0,
-                        format, GL_UNSIGNED_BYTE, image.getData()));
+                        glFormat, GL_UNSIGNED_BYTE, data));
 
   // Set the texture clamping.
-  const bool smooth = false;
   GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, smooth ? GL_LINEAR : GL_NEAREST));
   GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, smooth ? GL_LINEAR : GL_NEAREST));
 
@@ -256,9 +282,16 @@ TextureId Renderer::createTexture(const Image& image) {
   GL_CHECK(glBindTexture(GL_TEXTURE_2D, 0));
 
   // Create the texture in the buffer.
-  m_textures.pushBack(result);
+#if 0
+  auto r = m_textures.constructBack([&result](TextureData* storage) {
+    storage->id = result.id;
+    storage->size = result.size;
+  });
+#else
+  auto r = m_textures.emplaceBack(result.id, result.size);
+#endif  // 0
 
-  return TextureId{m_textures.getSize() - 1};
+  return {r.index()};
 }
 
 UniformId Renderer::createUniform(const nu::StringView& name) {

@@ -12,11 +12,29 @@ constexpr MemSize kInvalidResourceId = std::numeric_limits<MemSize>::max();
 
 #define DECLARE_RESOURCE_ID(Name)                                                                  \
   struct Name##Id {                                                                                \
-    MemSize id = kInvalidResourceId;                                                               \
+    MemSize id;                                                                                    \
+    bool isValid() const {                                                                         \
+      return id != kInvalidResourceId;                                                             \
+    }                                                                                              \
+    Name##Id() : id(kInvalidResourceId) {}                                                         \
+    Name##Id(MemSize id) : id{id} {}                                                               \
+    Name##Id(const Name##Id& other) : id{other.id} {}                                              \
+    Name##Id& operator=(const Name##Id& other) {                                                   \
+      id = other.id;                                                                               \
+      return *this;                                                                                \
+    }                                                                                              \
+    Name##Id(Name##Id&& other) noexcept : id{other.id} {                                           \
+      other.id = kInvalidResourceId;                                                               \
+    }                                                                                              \
+    Name##Id& operator=(Name##Id&& other) noexcept {                                               \
+      id = other.id;                                                                               \
+      other.id = kInvalidResourceId;                                                               \
+      return *this;                                                                                \
+    }                                                                                              \
   };                                                                                               \
                                                                                                    \
   inline bool isValid(const Name##Id& resource) {                                                  \
-    return resource.id != kInvalidResourceId;                                                      \
+    return resource.isValid();                                                                     \
   }
 
 DECLARE_RESOURCE_ID(Program)
@@ -47,6 +65,13 @@ enum class DrawType : U32 {
   TriangleStrip,
   TriangleFan,
   Lines,
+};
+
+enum class TextureFormat : U32 {
+  Unknown,
+  Alpha,
+  RGB,
+  RGBA,
 };
 
 }  // namespace ca

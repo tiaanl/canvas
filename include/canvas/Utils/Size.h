@@ -4,6 +4,8 @@
 
 #include "nucleus/Types.h"
 
+#include <ostream>
+
 namespace ca {
 
 struct Size {
@@ -22,6 +24,11 @@ struct Size {
     return !(*this == right);
   }
 };
+
+inline std::ostream& operator<<(std::ostream& os, const Size& value) {
+  os << "{" << value.width << ", " << value.height << "}";
+  return os;
+}
 
 }  // namespace ca
 

@@ -79,12 +79,16 @@ void LineRenderer::beginFrame() {
 }
 
 void LineRenderer::renderLine(const ca::Vec3& p1, const ca::Vec3& p2, const ca::Color& color) {
+#if 0
   m_lines.constructBack([&p1, &p2, &color](Line* storage) {
     storage->p1 = p1;
     storage->color1 = color;
     storage->p2 = p2;
     storage->color2 = color;
   });
+#else
+  m_lines.emplaceBack(p1, color, p2, color);
+#endif
 
   m_lineIndices.pushBack(static_cast<U16>(m_lineIndices.getSize()));
   m_lineIndices.pushBack(static_cast<U16>(m_lineIndices.getSize()));

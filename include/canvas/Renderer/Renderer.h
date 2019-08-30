@@ -1,5 +1,3 @@
-
-
 #ifndef CANVAS_RENDERER_RENDERER_H_
 #define CANVAS_RENDERER_RENDERER_H_
 
@@ -7,7 +5,6 @@
 #include "canvas/Renderer/Types.h"
 #include "canvas/Renderer/UniformBuffer.h"
 #include "canvas/Renderer/VertexDefinition.h"
-#include "canvas/Utils/Image.h"
 #include "canvas/Utils/ShaderSource.h"
 #include "canvas/Utils/Size.h"
 #include "nucleus/Containers/DynamicArray.h"
@@ -30,7 +27,8 @@ public:
   void indexBufferData(IndexBufferId id, void* data, MemSize dataSize);
   void deleteIndexBuffer(IndexBufferId id);
 
-  TextureId createTexture(const Image& image);
+  TextureId createTexture(TextureFormat format, const Size& size, const U8* data, MemSize dataSize,
+                          bool smooth = false);
 
   UniformId createUniform(const nu::StringView& name);
 
