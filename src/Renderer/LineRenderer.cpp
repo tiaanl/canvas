@@ -79,7 +79,7 @@ void LineRenderer::beginFrame() {
 }
 
 void LineRenderer::renderLine(const ca::Vec3& p1, const ca::Vec3& p2, const ca::Color& color) {
-  m_lines.pushBack([&p1, &p2, &color](Line* storage) {
+  m_lines.constructBack([&p1, &p2, &color](Line* storage) {
     storage->p1 = p1;
     storage->color1 = color;
     storage->p2 = p2;
@@ -119,7 +119,7 @@ void LineRenderer::renderGrid(const ca::Plane& plane, const ca::Vec3& worldUp,
 }
 
 void LineRenderer::render(const ca::Mat4& transform) {
-  // Upload the new data.
+  // Upload the new scene.
   m_renderer->vertexBufferData(m_vertexBufferId, m_lines.getData(),
                                m_lines.getSize() * sizeof(Line));
 

@@ -6,6 +6,7 @@
 #include "nucleus/Logging.h"
 #include "nucleus/Types.h"
 
+#include <algorithm>
 #include <cmath>
 
 namespace ca {

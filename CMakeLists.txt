@@ -64,6 +64,7 @@ set(canvas_SOURCE_FILES
     "src/Math/Mat4.cpp"
     "src/Math/Quaternion.cpp"
     "src/Math/Transform.cpp"
+    "src/Math/Vec2.cpp"
     "src/Math/Vec3.cpp"
     "src/Renderer/LineRenderer.cpp"
     "src/Renderer/Renderer.cpp"

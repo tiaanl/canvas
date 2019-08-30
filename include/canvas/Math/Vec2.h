@@ -8,6 +8,8 @@
 namespace ca {
 
 struct Vec2 {
+  static Vec2 zero;
+
   F32 x;
   F32 y;
 
