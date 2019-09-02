@@ -61,9 +61,9 @@ bool compileShaderSource(const ShaderSource& source, U32 shaderType, U32* idOut)
 
     nu::DynamicArray<GLchar> log;
     log.resize(static_cast<MemSize>(logSize));
-    GL_CHECK(glGetShaderInfoLog(id, logSize, &logSize, log.getData()));
+    GL_CHECK(glGetShaderInfoLog(id, logSize, &logSize, log.data()));
 
-    LOG(Error) << log.getData();
+    LOG(Error) << log.data();
 
     return false;
   }
@@ -128,7 +128,7 @@ ProgramId Renderer::createProgram(const ShaderSource& vertexShader,
   }
 
   m_programs.pushBack(result);
-  return ProgramId{m_programs.getSize() - 1};
+  return ProgramId{m_programs.size() - 1};
 }
 
 VertexBufferId Renderer::createVertexBuffer(const VertexDefinition& vertexDefinition, void* data,
@@ -297,7 +297,7 @@ TextureId Renderer::createTexture(TextureFormat format, const Size& size, const 
 UniformId Renderer::createUniform(const nu::StringView& name) {
   UniformData uniformData = {name};
   m_uniforms.pushBack(uniformData);
-  return UniformId{m_uniforms.getSize() - 1};
+  return UniformId{m_uniforms.size() - 1};
 }
 
 void Renderer::resize(const Size& size) {

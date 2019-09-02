@@ -90,8 +90,8 @@ void LineRenderer::renderLine(const ca::Vec3& p1, const ca::Vec3& p2, const ca::
   m_lines.emplaceBack(p1, color, p2, color);
 #endif
 
-  m_lineIndices.pushBack(static_cast<U16>(m_lineIndices.getSize()));
-  m_lineIndices.pushBack(static_cast<U16>(m_lineIndices.getSize()));
+  m_lineIndices.pushBack(static_cast<U16>(m_lineIndices.size()));
+  m_lineIndices.pushBack(static_cast<U16>(m_lineIndices.size()));
 }
 
 void LineRenderer::renderGrid(const ca::Plane& plane, const ca::Vec3& worldUp,
@@ -100,12 +100,13 @@ void LineRenderer::renderGrid(const ca::Plane& plane, const ca::Vec3& worldUp,
   ca::Vec3 right = ca::crossProduct(plane.normal, worldUp);
   ca::Vec3 forward = ca::crossProduct(plane.normal, right);
 
-//  renderLine(plane.normal * plane.distance, plane.normal * plane.distance + plane.normal * 100.0f,
-//             ca::Color::red);
-//  renderLine(plane.normal * plane.distance, plane.normal * plane.distance + right * 100.0f,
-//             ca::Color::green);
-//  renderLine(plane.normal * plane.distance, plane.normal * plane.distance + forward * 100.0f,
-//             ca::Color::blue);
+  //  renderLine(plane.normal * plane.distance, plane.normal * plane.distance + plane.normal *
+  //  100.0f,
+  //             ca::Color::red);
+  //  renderLine(plane.normal * plane.distance, plane.normal * plane.distance + right * 100.0f,
+  //             ca::Color::green);
+  //  renderLine(plane.normal * plane.distance, plane.normal * plane.distance + forward * 100.0f,
+  //             ca::Color::blue);
 
   F32 max = static_cast<F32>(numBlocks) * blockSize;
 
@@ -124,16 +125,15 @@ void LineRenderer::renderGrid(const ca::Plane& plane, const ca::Vec3& worldUp,
 
 void LineRenderer::render(const ca::Mat4& transform) {
   // Upload the new scene.
-  m_renderer->vertexBufferData(m_vertexBufferId, m_lines.getData(),
-                               m_lines.getSize() * sizeof(Line));
+  m_renderer->vertexBufferData(m_vertexBufferId, m_lines.data(), m_lines.size() * sizeof(Line));
 
-  m_renderer->indexBufferData(m_indexBufferId, m_lineIndices.getData(),
-                              m_lineIndices.getSize() * 2 * sizeof(U16));
+  m_renderer->indexBufferData(m_indexBufferId, m_lineIndices.data(),
+                              m_lineIndices.size() * 2 * sizeof(U16));
 
   ca::UniformBuffer uniformBuffer;
   uniformBuffer.set(m_transformUniformId, transform);
 
-  m_renderer->draw(ca::DrawType::Lines, static_cast<U32>(m_lines.getSize() * 2), m_programId,
+  m_renderer->draw(ca::DrawType::Lines, static_cast<U32>(m_lines.size() * 2), m_programId,
                    m_vertexBufferId, m_indexBufferId, {}, uniformBuffer);
 }
 
