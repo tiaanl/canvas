@@ -6,7 +6,7 @@ namespace ca {
 // static
 ShaderSource ShaderSource::from(const nu::StringView& source) {
   nu::String data{source.getData(), source.getLength()};
-  return {std::move(data)};
+  return ShaderSource{std::move(data)};
 }
 
 ShaderSource ShaderSource::from(nu::InputStream* stream) {
@@ -25,9 +25,17 @@ ShaderSource ShaderSource::from(nu::InputStream* stream) {
     }
   }
 
-  return {std::move(data)};
+  return ShaderSource{std::move(data)};
 }
 
-ShaderSource::ShaderSource(nu::String&& source) : m_source{std::move(source)} {}
+bool ShaderSource::loadFromStream(nu::InputStream* stream) {
+  auto bytesRemaining = stream->getBytesRemaining();
+  m_source.resize(bytesRemaining);
+  stream->read(m_source.getRawBytes(), bytesRemaining);
+
+  return true;
+}
+
+ShaderSource::ShaderSource(nu::String&& source) : m_source{source} {}
 
 }  // namespace ca

@@ -13,12 +13,17 @@ public:
   static ShaderSource from(const nu::StringView& source);
   static ShaderSource from(nu::InputStream* stream);
 
+  ShaderSource() = default;
+
+  // Replace the current contents of the shader source with the contents of the given stream.
+  bool loadFromStream(nu::InputStream* stream);
+
   nu::StringView getSource() const {
     return nu::StringView{m_source.getRawBytes(), m_source.getLength()};
   }
 
 private:
-  ShaderSource(nu::String&& source);
+  explicit ShaderSource(nu::String&& source);
 
   nu::String m_source;
 };

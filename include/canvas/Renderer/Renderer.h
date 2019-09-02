@@ -44,6 +44,9 @@ public:
 
   void clear(const Color& color);
 
+  void draw(DrawType drawType, U32 vertexCount, ProgramId programId, VertexBufferId vertexBufferId,
+            TextureId textureId, const UniformBuffer& uniforms);
+
   void draw(DrawType drawType, U32 indexCount, ProgramId programId, VertexBufferId vertexBufferId,
             IndexBufferId indexBufferId, TextureId textureId, const UniformBuffer& uniforms);
 

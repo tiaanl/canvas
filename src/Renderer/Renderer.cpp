@@ -239,13 +239,8 @@ TextureId Renderer::createTexture(TextureFormat format, const Size& size, const 
 
   // Upload the image data.
   switch (format) {
-    case TextureFormat::Unknown:
-      components = 0;
-      NOTREACHED();
-      break;
-
     case TextureFormat::RGB:
-      glFormat = GL_RGB;
+      glFormat = GL_RGBA;
       components = 3;
       break;
 
@@ -257,6 +252,11 @@ TextureId Renderer::createTexture(TextureFormat format, const Size& size, const 
     case TextureFormat::Alpha:
       glFormat = GL_RED;
       components = 1;
+      break;
+
+    default:
+      components = 0;
+      NOTREACHED();
       break;
   }
 
@@ -315,6 +315,97 @@ void Renderer::endFrame() {}
 void Renderer::clear(const Color& color) {
   GL_CHECK(glClearColor(color.r, color.g, color.b, color.a));
   GL_CHECK(glClear(GL_COLOR_BUFFER_BIT));
+}
+
+void Renderer::draw(DrawType drawType, U32 vertexCount, ProgramId programId,
+                    VertexBufferId vertexBufferId, TextureId textureId,
+                    const UniformBuffer& uniforms) {
+  if (!isValid(programId)) {
+    LOG(Error) << "Draw command without program.";
+    return;
+  }
+
+  if (!isValid(vertexBufferId)) {
+    LOG(Error) << "Draw command without vertex buffer.";
+    return;
+  }
+
+  auto& programData = m_programs[programId.id];
+  GL_CHECK(glUseProgram(programData.id));
+
+  auto& vertexBufferData = m_vertexBuffers[vertexBufferId.id];
+  GL_CHECK(glBindVertexArray(vertexBufferData.id));
+
+  if (isValid(textureId)) {
+    auto& textureData = m_textures[textureId.id];
+    GL_CHECK(glBindTexture(GL_TEXTURE_2D, textureData.id));
+  }
+
+  // Process uniforms.
+  uniforms.apply([&](UniformId uniformId, U32 count, const F32* values) {
+    const auto& uniformData = m_uniforms[uniformId.id];
+    I32 location = glGetUniformLocation(programData.id, uniformData.name.getData());
+    if (location == -1) {
+      LOG(Warning) << "Could not get location for uniform: " << uniformData.name.getData();
+      return;
+    }
+
+    switch (count) {
+      case 1:
+        GL_CHECK(glUniform1fv(location, 1, values));
+        break;
+
+      case 2:
+        GL_CHECK(glUniform2fv(location, 1, values));
+        break;
+
+      case 3:
+        GL_CHECK(glUniform3fv(location, 1, values));
+        break;
+
+      case 4:
+        GL_CHECK(glUniform4fv(location, 1, values));
+        break;
+
+      case 16:
+        glUniformMatrix4fv(location, 1, GL_FALSE, values);
+        break;
+
+      default:
+        DCHECK(false) << "Invalid uniform size.";
+        break;
+    }
+  });
+
+  U32 mode = GL_TRIANGLES;
+  switch (drawType) {
+    case DrawType::Triangles:
+      mode = GL_TRIANGLES;
+      break;
+
+    case DrawType::TriangleStrip:
+      mode = GL_TRIANGLE_FAN;
+      break;
+
+    case DrawType::TriangleFan:
+      mode = GL_TRIANGLE_FAN;
+      break;
+
+    case DrawType::Lines:
+      mode = GL_LINES;
+      break;
+
+    default:
+      DCHECK(false) << "Invalid draw type";
+      break;
+  }
+
+  GL_CHECK(glEnable(GL_BLEND));
+  GL_CHECK(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+
+  GL_CHECK(glDrawArrays(mode, 0, vertexCount));
+
+  GL_CHECK(glDisable(GL_BLEND));
 }
 
 void Renderer::draw(DrawType drawType, U32 indexCount, ProgramId programId,
