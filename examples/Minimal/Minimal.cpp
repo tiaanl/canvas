@@ -1,15 +1,13 @@
 
 #include "canvas/App.h"
 
-#include "canvas/Utils/Image.h"
 #include "canvas/Utils/ShaderSource.h"
 #include "nucleus/FilePath.h"
 #include "nucleus/Streams/FileInputStream.h"
 
 class Minimal : public ca::WindowDelegate {
 public:
-  Minimal()
-    : ca::WindowDelegate("ElasticDemo"), m_rootPath(nu::getCurrentWorkingDirectory()) {}
+  Minimal() : ca::WindowDelegate("ElasticDemo"), m_rootPath(nu::getCurrentWorkingDirectory()) {}
 
   ~Minimal() override = default;
 
@@ -164,12 +162,28 @@ private:
       return false;
     }
 
-    ca::Image image;
-    if (!image.loadFromStream(&imageStream)) {
-      return false;
+    struct Pixel {
+      U8 r;
+      U8 g;
+      U8 b;
+      U8 a;
+    };
+
+    ca::Size imageSize{16, 16};
+    nu::DynamicArray<Pixel> imageData;
+    imageData.resize(imageSize.width * imageSize.height);
+    U32 c = 0;
+    for (auto& p : imageData) {
+      p.r = (c % 2) ? 255 : 0;
+      p.g = (c % 2) ? 0 : 255;
+      p.b = 0;
+      p.a = 255;
+
+      ++c;
     }
 
-    m_textureId = renderer->createTexture(image);
+    m_textureId = renderer->createTexture(ca::TextureFormat::RGBA, imageSize, (U8*)imageData.data(),
+                                          imageData.size() * sizeof(ca::Color), false);
 
     return isValid(m_textureId);
   }

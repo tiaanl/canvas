@@ -7,7 +7,6 @@ set(canvas_TEST_FILES
     "Math/Vec4Tests.cpp"
     "Renderer/UniformBufferTests.cpp"
     "Renderer/VertexDefinitionTests.cpp"
-    "Rendering/FontTests.cpp"
 )
 
 add_executable(canvasTests ${canvas_TEST_FILES})
