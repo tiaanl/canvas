@@ -3,6 +3,7 @@
 #define CANVAS_MATH_COMMON_H_
 
 #include "canvas/Math/Angle.h"
+#include "canvas/Utils/Size.h"
 #include "nucleus/Logging.h"
 #include "nucleus/Types.h"
 
@@ -89,6 +90,16 @@ inline F32 clamp(F32 value, F32 min, F32 max) {
   DCHECK(min < max) << "min value should be less than max value";
 
   return std::min(max, std::max(value, min));
+}
+
+template <typename T>
+inline auto max(const T& x, const T& y) -> T {
+  return x < y ? y : x;
+}
+
+template <>
+inline auto max<ca::Size>(const ca::Size& x, const ca::Size& y) -> ca::Size {
+  return ca::Size{max(x.width, y.width), max(x.height, y.height)};
 }
 
 }  // namespace ca

@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.2)
 
+if (TARGET canvas)
+    return()
+endif ()
+
 project(canvas)
 
 option(CANVAS_BUILD_EXAMPLES "Build canvas examples" OFF)

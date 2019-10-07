@@ -38,7 +38,7 @@ struct PositionEvent : Event {
 };
 
 struct MouseEvent : PositionEvent {
-  enum Button {
+  enum class Button : U32 {
     None,
     Left,
     Middle,
