@@ -16,8 +16,10 @@ layout(location = 1) in vec4 inColor;
 
 out vec4 vsColor;
 
+uniform mat4 uTransform;
+
 void main() {
-  gl_Position = vec4(inPosition, 1.0);
+  gl_Position = uTransform * vec4(inPosition, 1.0);
   vsColor = inColor;
 }
 )source";
@@ -38,6 +40,10 @@ void main() {
 
 ImmediateRenderer::ImmediateRenderer(Renderer* renderer) : m_renderer{renderer} {}
 
+auto ImmediateRenderer::setTransform(const Mat4& transform) -> void {
+  m_transform = transform;
+}
+
 auto ImmediateRenderer::vertex(const Vec3& position, const Color& color) -> void {
   m_vertices.emplaceBack(position, color);
 }
@@ -55,7 +61,10 @@ auto ImmediateRenderer::submit(DrawType drawType) -> void {
   auto programId = m_renderer->createProgram(ShaderSource::from(g_vertexShaderSource),
                                              ShaderSource::from(g_fragmentShaderSource));
 
+  auto transformUniformId = m_renderer->createUniform("uTransform");
+
   UniformBuffer uniforms;
+  uniforms.set(transformUniformId, m_transform);
 
   m_renderer->draw(drawType, static_cast<U32>(m_vertices.size()), programId, vertexBufferId,
                    TextureId{}, uniforms);
@@ -63,6 +72,10 @@ auto ImmediateRenderer::submit(DrawType drawType) -> void {
   // m_renderer->deleteProgram(programId);
   m_renderer->deleteVertexBuffer(vertexBufferId);
 
+  reset();
+}
+
+auto ImmediateRenderer::reset() -> void {
   m_vertices.clear();
 }
 
