@@ -69,7 +69,7 @@ set(canvas_SOURCE_FILES
     src/Windows/WindowDelegate.cpp
     )
 
-set(canvas_TESTS_SOURCE_FILES
+set(canvasTests_SOURCE_FILES
     tests/Math/Mat4Tests.cpp
     tests/Math/TransformTests.cpp
     tests/Math/Vec2Tests.cpp
@@ -83,7 +83,7 @@ nucleus_add_library(canvas ${canvas_HEADER_FILES} ${canvas_SOURCE_FILES})
 target_link_libraries(canvas nucleus glfw glad)
 target_compile_definitions(canvas PUBLIC -DUNICODE)
 
-nucleus_add_executable(canvasTests ${canvas_TESTS_SOURCE_FILES})
+nucleus_add_executable(canvasTests ${canvasTests_SOURCE_FILES})
 target_link_libraries(canvasTests canvas testing)
 
 if (CANVAS_BUILD_EXAMPLES)
