@@ -1,6 +1,6 @@
 
 #include "canvas/App.h"
-
+#include "canvas/Utils/ImmediateShapes.h"
 #include "canvas/Utils/ShaderSource.h"
 #include "nucleus/FilePath.h"
 #include "nucleus/Streams/FileInputStream.h"
@@ -13,7 +13,7 @@ public:
 
   // Override: ca::WindowDelegate
   bool onWindowCreated(ca::Window* window) override {
-    // LOG(Info) << "Root path: " << m_rootPath.getPath();
+    LOG(Info) << "Root path: " << m_rootPath.getPath();
 
     ca::Renderer* renderer = window->getRenderer();
 
@@ -33,6 +33,7 @@ public:
     }
 
     m_scaleUniform = renderer->createUniform("uScale");
+    m_uniforms.set(m_scaleUniform, 0.5f);
 
     return true;
   }
@@ -40,32 +41,31 @@ public:
   void onRender(ca::Renderer* renderer) override {
     renderer->clear(ca::Color{0.0f, 0.1f, 0.2f});
 
-    ca::UniformBuffer uniforms;
-    uniforms.set(m_scaleUniform, 0.5f);
+//    renderer->draw(ca::DrawType::Triangles, 6, m_programId, m_vertexBufferId, m_indexBufferId,
+//                   m_textureId, m_uniforms);
 
-    renderer->draw(ca::DrawType::Triangles, 6, m_programId, m_vertexBufferId, m_indexBufferId,
-                   m_textureId, uniforms);
+    ca::ImmediateRenderer immediate{renderer};
+    ca::drawRectangle(&immediate, ca::Vec3::zero, 0.7f, 0.3f, ca::Color::yellow);
+
+    ca::drawCircle(&immediate, {0.5f, 0.0f, 0.0f}, 0.5f, 64, ca::Color::red);
+    ca::drawOval(&immediate, {0.0f, 0.0f, 0.0f}, 0.1f, 1.0f, 32, ca::Color::red);
   }
 
 private:
   DELETE_COPY_AND_MOVE(Minimal);
 
   bool loadProgram(ca::Renderer* renderer) {
-    nu::FileInputStream* vs = new nu::FileInputStream{m_rootPath / "default.vs"};
-    if (!vs->openedOk()) {
+    nu::FileInputStream vs{m_rootPath / "default.vs"};
+    if (!vs.openedOk()) {
       return false;
     }
 
-    auto vertexShader = ca::ShaderSource::from(vs);
-
-    nu::FileInputStream* fs = new nu::FileInputStream{m_rootPath / "default.fs"};
-    if (!fs->openedOk()) {
+    nu::FileInputStream fs{m_rootPath / "default.fs"};
+    if (!fs.openedOk()) {
       return false;
     }
 
-    auto fragmentShader = ca::ShaderSource::from(fs);
-
-    m_programId = renderer->createProgram(vertexShader, fragmentShader);
+    m_programId = renderer->createProgram(ca::ShaderSource::from(&vs), ca::ShaderSource::from(&fs));
 
     return isValid(m_programId);
   }
@@ -195,6 +195,7 @@ private:
   ca::IndexBufferId m_indexBufferId;
   ca::TextureId m_textureId;
   ca::UniformId m_scaleUniform;
+  ca::UniformBuffer m_uniforms;
 };
 
 CANVAS_APP(Minimal)

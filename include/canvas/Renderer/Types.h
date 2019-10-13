@@ -64,7 +64,9 @@ enum class DrawType : U32 {
   Triangles,
   TriangleStrip,
   TriangleFan,
+
   Lines,
+  LineStrip,
 };
 
 enum class TextureFormat : U32 {

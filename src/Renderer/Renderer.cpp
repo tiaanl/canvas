@@ -131,6 +131,11 @@ ProgramId Renderer::createProgram(const ShaderSource& vertexShader,
   return ProgramId{m_programs.size() - 1};
 }
 
+void Renderer::deleteProgram(ProgramId programId) {
+  auto programData = m_programs[programId.id];
+  glDeleteProgram(programData.id);
+}
+
 VertexBufferId Renderer::createVertexBuffer(const VertexDefinition& vertexDefinition, void* data,
                                             MemSize dataSize) {
   VertexBufferData result;
@@ -393,6 +398,10 @@ void Renderer::draw(DrawType drawType, U32 vertexCount, ProgramId programId,
 
     case DrawType::Lines:
       mode = GL_LINES;
+      break;
+
+    case DrawType::LineStrip:
+      mode = GL_LINE_STRIP;
       break;
 
     default:

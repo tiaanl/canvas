@@ -27,6 +27,7 @@ set(canvas_HEADER_FILES
     include/canvas/Math/Vec4.h
     include/canvas/OpenGL.h
     include/canvas/Renderer/Command.h
+    include/canvas/Renderer/ImmediateRenderer.h
     include/canvas/Renderer/LineRenderer.h
     include/canvas/Renderer/Renderer.h
     include/canvas/Renderer/Types.h
@@ -35,6 +36,7 @@ set(canvas_HEADER_FILES
     include/canvas/Utils/Color.h
     include/canvas/Utils/Geometry.h
     include/canvas/Utils/GLCheck.h
+    include/canvas/Utils/ImmediateShapes.h
     include/canvas/Utils/Pos.h
     include/canvas/Utils/Rect.h
     include/canvas/Utils/ScopedOpenGLEnable.h
@@ -57,6 +59,7 @@ set(canvas_SOURCE_FILES
     src/Math/Transform.cpp
     src/Math/Vec2.cpp
     src/Math/Vec3.cpp
+    src/Renderer/ImmediateRenderer.cpp
     src/Renderer/LineRenderer.cpp
     src/Renderer/Renderer.cpp
     src/Renderer/UniformBuffer.cpp
@@ -64,6 +67,7 @@ set(canvas_SOURCE_FILES
     src/Utils/Color.cpp
     src/Utils/Geometry.cpp
     src/Utils/GLCheck.cpp
+    src/Utils/ImmediateShapes.cpp
     src/Utils/ShaderSource.cpp
     src/Windows/Window.cpp
     src/Windows/WindowDelegate.cpp

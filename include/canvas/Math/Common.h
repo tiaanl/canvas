@@ -93,13 +93,23 @@ inline F32 clamp(F32 value, F32 min, F32 max) {
 }
 
 template <typename T>
-inline auto max(const T& x, const T& y) -> T {
+inline auto minimum(const T& x, const T& y) -> T {
+  return x < y ? x : y;
+}
+
+template <>
+inline auto minimum<Size>(const Size& x, const Size& y) -> Size {
+  return Size{minimum(x.width, y.width), minimum(x.height, y.height)};
+}
+
+template <typename T>
+inline auto maximum(const T& x, const T& y) -> T {
   return x < y ? y : x;
 }
 
 template <>
-inline auto max<ca::Size>(const ca::Size& x, const ca::Size& y) -> ca::Size {
-  return ca::Size{max(x.width, y.width), max(x.height, y.height)};
+inline auto maximum<Size>(const Size& x, const Size& y) -> Size {
+  return Size{maximum(x.width, y.width), maximum(x.height, y.height)};
 }
 
 }  // namespace ca
