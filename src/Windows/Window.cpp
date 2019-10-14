@@ -4,12 +4,11 @@
 #include <cmath>
 
 #include "canvas/OpenGL.h"
+#include "canvas/StaticData/All.h"
 #include "canvas/Windows/Keyboard.h"
 #include "nucleus/Logging.h"
 
 #include "GLFW/glfw3.h"
-
-#include "nucleus/MemoryDebug.h"
 
 namespace ca {
 
@@ -380,6 +379,8 @@ void Window::paint() {
   m_renderer.beginFrame();
 
   m_delegate->onRender(&m_renderer);
+
+  m_debugInterface.render();
 
   m_renderer.endFrame();
 

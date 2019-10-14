@@ -13,6 +13,8 @@ add_subdirectory(third_party)
 
 set(canvas_HEADER_FILES
     include/canvas/App.h
+    include/canvas/Debug/DebugFont.h
+    include/canvas/Debug/DebugInterface.h
     include/canvas/Math/Angle.h
     include/canvas/Math/Common.h
     include/canvas/Math/Intersection.h
@@ -33,6 +35,7 @@ set(canvas_HEADER_FILES
     include/canvas/Renderer/Types.h
     include/canvas/Renderer/UniformBuffer.h
     include/canvas/Renderer/VertexDefinition.h
+    include/canvas/StaticData/All.h
     include/canvas/Utils/Color.h
     include/canvas/Utils/Geometry.h
     include/canvas/Utils/GLCheck.h
@@ -52,6 +55,8 @@ set(canvas_HEADER_FILES
     )
 
 set(canvas_SOURCE_FILES
+    src/Debug/DebugFont.cpp
+    src/Debug/DebugInterface.cpp
     src/Math/Angle.cpp
     src/Math/Mat3.cpp
     src/Math/Mat4.cpp
@@ -64,6 +69,7 @@ set(canvas_SOURCE_FILES
     src/Renderer/Renderer.cpp
     src/Renderer/UniformBuffer.cpp
     src/Renderer/VertexDefinition.cpp
+    src/StaticData/MonoFont.cpp
     src/Utils/Color.cpp
     src/Utils/Geometry.cpp
     src/Utils/GLCheck.cpp

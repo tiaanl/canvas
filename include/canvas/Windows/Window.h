@@ -2,8 +2,9 @@
 #ifndef CANVAS_WINDOWS_WINDOW_H_
 #define CANVAS_WINDOWS_WINDOW_H_
 
-#include "WindowDelegate.h"
+#include "canvas/Debug/DebugInterface.h"
 #include "canvas/Renderer/Renderer.h"
+#include "canvas/Windows/WindowDelegate.h"
 #include "nucleus/Allocators/Allocator.h"
 #include "nucleus/Macros.h"
 #include "nucleus/Memory/ScopedPtr.h"
@@ -58,6 +59,9 @@ private:
 
   // The renderer we use to render anything to this window.
   Renderer m_renderer;
+
+  // The debug interface we use to render details to the developer.
+  DebugInterface m_debugInterface{&m_renderer};
 
   // Size of the client area of the window.
   Size m_clientSize;
