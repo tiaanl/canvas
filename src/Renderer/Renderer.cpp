@@ -177,7 +177,7 @@ VertexBufferId Renderer::createVertexBuffer(const VertexDefinition& vertexDefini
   auto pushBackResult = m_vertexBuffers.emplaceBack(result);
 #endif
 
-  return {pushBackResult.index()};
+  return VertexBufferId{pushBackResult.index()};
 }
 
 void Renderer::vertexBufferData(VertexBufferId id, void* data, MemSize dataSize) {
@@ -210,7 +210,7 @@ IndexBufferId Renderer::createIndexBuffer(ComponentType componentType, void* dat
   auto pushBackResult = m_indexBuffers.emplaceBack(bufferId, componentType);
 #endif
 
-  return {pushBackResult.index()};
+  return IndexBufferId{pushBackResult.index()};
 }
 
 void Renderer::indexBufferData(IndexBufferId id, void* data, MemSize dataSize) {
@@ -239,7 +239,7 @@ TextureId Renderer::createTexture(TextureFormat format, const Size& size, const 
 
   const GLint internalFormat = GL_RGBA;
 
-  GLint glFormat;
+  GLint glFormat = GL_RGBA;
   U32 components;
 
   // Upload the image data.
@@ -296,7 +296,7 @@ TextureId Renderer::createTexture(TextureFormat format, const Size& size, const 
   auto r = m_textures.emplaceBack(result.id, result.size);
 #endif  // 0
 
-  return {r.index()};
+  return TextureId{r.index()};
 }
 
 UniformId Renderer::createUniform(const nu::StringView& name) {
@@ -322,7 +322,7 @@ void Renderer::clear(const Color& color) {
   GL_CHECK(glClear(GL_COLOR_BUFFER_BIT));
 }
 
-void Renderer::draw(DrawType drawType, U32 vertexCount, ProgramId programId,
+void Renderer::draw(DrawType drawType, U32 vertexOffset, U32 vertexCount, ProgramId programId,
                     VertexBufferId vertexBufferId, TextureId textureId,
                     const UniformBuffer& uniforms) {
   if (!isValid(programId)) {
@@ -389,7 +389,7 @@ void Renderer::draw(DrawType drawType, U32 vertexCount, ProgramId programId,
       break;
 
     case DrawType::TriangleStrip:
-      mode = GL_TRIANGLE_FAN;
+      mode = GL_TRIANGLE_STRIP;
       break;
 
     case DrawType::TriangleFan:
@@ -412,7 +412,7 @@ void Renderer::draw(DrawType drawType, U32 vertexCount, ProgramId programId,
   GL_CHECK(glEnable(GL_BLEND));
   GL_CHECK(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
-  GL_CHECK(glDrawArrays(mode, 0, vertexCount));
+  GL_CHECK(glDrawArrays(mode, vertexOffset, vertexCount));
 
   GL_CHECK(glDisable(GL_BLEND));
 }
@@ -494,7 +494,7 @@ void Renderer::draw(DrawType drawType, U32 indexCount, ProgramId programId,
       break;
 
     case DrawType::TriangleStrip:
-      mode = GL_TRIANGLE_FAN;
+      mode = GL_TRIANGLE_STRIP;
       break;
 
     case DrawType::TriangleFan:

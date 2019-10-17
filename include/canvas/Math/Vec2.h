@@ -14,7 +14,7 @@ struct Vec2 {
   F32 x;
   F32 y;
 
-  Vec2(F32 x, F32 y) : x{x}, y{y} {}
+  Vec2(F32 x, F32 y) noexcept : x{x}, y{y} {}
 
   Vec2& operator+=(const Vec2& right) {
     x += right.x;

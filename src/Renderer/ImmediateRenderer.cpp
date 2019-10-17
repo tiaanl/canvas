@@ -66,7 +66,7 @@ auto ImmediateRenderer::submit(DrawType drawType) -> void {
   UniformBuffer uniforms;
   uniforms.set(transformUniformId, m_transform);
 
-  m_renderer->draw(drawType, static_cast<U32>(m_vertices.size()), programId, vertexBufferId,
+  m_renderer->draw(drawType, 0, static_cast<U32>(m_vertices.size()), programId, vertexBufferId,
                    TextureId{}, uniforms);
 
   // m_renderer->deleteProgram(programId);

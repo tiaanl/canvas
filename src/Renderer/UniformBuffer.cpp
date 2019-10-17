@@ -42,7 +42,7 @@ void UniformBuffer::apply(ApplyFunc func) const {
 void UniformBuffer::addUniformData(UniformId uniformId, U32 count, const F32* values) {
   DCHECK(count <= sizeof(UniformData::values) / sizeof(F32));
 
-  UniformData data;
+  UniformData data{};
   data.uniformId = uniformId;
   data.count = count;
   std::copy(values, values + count, data.values);

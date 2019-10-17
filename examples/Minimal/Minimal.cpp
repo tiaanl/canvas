@@ -33,7 +33,8 @@
 
 class Minimal : public ca::WindowDelegate {
 public:
-  Minimal() : ca::WindowDelegate("ElasticDemo"), m_rootPath(nu::getCurrentWorkingDirectory()) {}
+  Minimal()
+    : ca::WindowDelegate("Canvas Minimal Example"), m_rootPath(nu::getCurrentWorkingDirectory()) {}
 
   ~Minimal() override = default;
 
@@ -67,8 +68,8 @@ public:
   void onRender(ca::Renderer* renderer) override {
     renderer->clear(ca::Color{0.0f, 0.1f, 0.2f});
 
-    renderer->draw(ca::DrawType::Triangles, 6, m_programId, m_vertexBufferId, m_indexBufferId,
-                   m_textureId, m_uniforms);
+    // renderer->draw(ca::DrawType::Triangles, 6, m_programId, m_vertexBufferId, m_indexBufferId,
+    //                m_textureId, m_uniforms);
 
 #if 0
     ca::ImmediateRenderer immediate{renderer};

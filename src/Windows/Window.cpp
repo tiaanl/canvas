@@ -1,14 +1,15 @@
 
 #include "canvas/Windows/Window.h"
 
-#include <cmath>
-
 #include "canvas/OpenGL.h"
 #include "canvas/StaticData/All.h"
 #include "canvas/Windows/Keyboard.h"
 #include "nucleus/Logging.h"
+#include "nucleus/Profiling.h"
 
 #include "GLFW/glfw3.h"
+
+#include <cmath>
 
 namespace ca {
 
@@ -334,15 +335,18 @@ bool Window::initialize(WindowDelegate* delegate) {
   // Initialize glad, so we can use GL extensions.
   gladLoadGL();
 
-  int major = glfwGetWindowAttrib(m_window, GLFW_CONTEXT_VERSION_MAJOR);
-  int minor = glfwGetWindowAttrib(m_window, GLFW_CONTEXT_VERSION_MINOR);
-  int rev = glfwGetWindowAttrib(m_window, GLFW_CONTEXT_REVISION);
+  I32 major = glfwGetWindowAttrib(m_window, GLFW_CONTEXT_VERSION_MAJOR);
+  I32 minor = glfwGetWindowAttrib(m_window, GLFW_CONTEXT_VERSION_MINOR);
+  I32 rev = glfwGetWindowAttrib(m_window, GLFW_CONTEXT_REVISION);
 
   LOG(Info) << "OpenGL version: " << major << "." << minor << "." << rev;
   LOG(Info) << "Supported OpenGL is " << glGetString(GL_VERSION);
   LOG(Info) << "Supported GLSL is " << glGetString(GL_SHADING_LANGUAGE_VERSION);
 
   m_renderer.resize(m_clientSize);
+
+  // Initialize the debug interface.
+  m_debugInterface.initialize();
 
   // Let the delegate know we were just created.
   bool success = delegate->onWindowCreated(this);
@@ -376,11 +380,22 @@ void Window::activateContext() {
 }
 
 void Window::paint() {
-  m_renderer.beginFrame();
+  {
+    PROFILE("frame")
+    m_renderer.beginFrame();
 
-  m_delegate->onRender(&m_renderer);
+    {
+      PROFILE("delegate paint")
+      m_delegate->onRender(&m_renderer);
+    }
+  }
 
-  m_debugInterface.render();
+  {
+    PROFILE("debug interface render")
+    m_debugInterface.render();
+  }
+
+  nu::getGlobalProfiler()->reset();
 
   m_renderer.endFrame();
 

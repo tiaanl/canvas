@@ -15,6 +15,7 @@ set(canvas_HEADER_FILES
     include/canvas/App.h
     include/canvas/Debug/DebugFont.h
     include/canvas/Debug/DebugInterface.h
+    include/canvas/Debug/ProfilePrinter.h
     include/canvas/Math/Angle.h
     include/canvas/Math/Common.h
     include/canvas/Math/Intersection.h
@@ -57,6 +58,7 @@ set(canvas_HEADER_FILES
 set(canvas_SOURCE_FILES
     src/Debug/DebugFont.cpp
     src/Debug/DebugInterface.cpp
+    src/Debug/ProfilePrinter.cpp
     src/Math/Angle.cpp
     src/Math/Mat3.cpp
     src/Math/Mat4.cpp

@@ -16,21 +16,6 @@ constexpr MemSize kInvalidResourceId = std::numeric_limits<MemSize>::max();
     bool isValid() const {                                                                         \
       return id != kInvalidResourceId;                                                             \
     }                                                                                              \
-    Name##Id() : id(kInvalidResourceId) {}                                                         \
-    Name##Id(MemSize id) : id{id} {}                                                               \
-    Name##Id(const Name##Id& other) : id{other.id} {}                                              \
-    Name##Id& operator=(const Name##Id& other) {                                                   \
-      id = other.id;                                                                               \
-      return *this;                                                                                \
-    }                                                                                              \
-    Name##Id(Name##Id&& other) noexcept : id{other.id} {                                           \
-      other.id = kInvalidResourceId;                                                               \
-    }                                                                                              \
-    Name##Id& operator=(Name##Id&& other) noexcept {                                               \
-      id = other.id;                                                                               \
-      other.id = kInvalidResourceId;                                                               \
-      return *this;                                                                                \
-    }                                                                                              \
   };                                                                                               \
                                                                                                    \
   inline bool isValid(const Name##Id& resource) {                                                  \
