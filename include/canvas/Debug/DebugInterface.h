@@ -21,8 +21,8 @@ public:
 private:
   DELETE_COPY_AND_MOVE(DebugInterface);
 
-  auto drawProfileBlock(nu::Profiler::Block* block, const Pos& position, const ca::Mat4& transform)
-      -> I32;
+  auto drawProfileBlock(nu::detail::ProfileMetrics::Block* block, const Pos& position,
+                        const ca::Mat4& transform, I32 indent = 0) -> I32;
 
   Renderer* m_renderer;
   DebugFont m_debugFont;

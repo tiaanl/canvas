@@ -1,4 +1,3 @@
-
 #ifndef CANVAS_APP_H_
 #define CANVAS_APP_H_
 
@@ -9,6 +8,7 @@
 #include "nucleus/HighPerformanceTimer.h"
 #include "nucleus/Macros.h"
 #include "nucleus/Memory/ScopedPtr.h"
+#include "nucleus/Profiling.h"
 #include "nucleus/Win/WindowsMixin.h"
 
 namespace ca {
@@ -66,8 +66,12 @@ private:
 
 #define CANVAS_APP(DelegateType)                                                                   \
   MAIN_HEADER {                                                                                    \
-    ca::App<DelegateType> app;                                                                     \
-    I32 result = app.run();                                                                        \
+    I32 result = 0;                                                                                \
+    {                                                                                              \
+      nu::Profiling profiling;                                                                     \
+      ca::App<DelegateType> app;                                                                   \
+      result = app.run();                                                                          \
+    }                                                                                              \
     MEMORY_DUMP                                                                                    \
     return result;                                                                                 \
   }

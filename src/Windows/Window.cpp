@@ -380,14 +380,13 @@ void Window::activateContext() {
 }
 
 void Window::paint() {
-  {
-    PROFILE("frame")
-    m_renderer.beginFrame();
+  m_renderer.beginFrame();
 
-    {
-      PROFILE("delegate paint")
-      m_delegate->onRender(&m_renderer);
-    }
+  PROFILE("frame")
+
+  {
+    PROFILE("delegate paint")
+    m_delegate->onRender(&m_renderer);
   }
 
   {
@@ -395,7 +394,7 @@ void Window::paint() {
     m_debugInterface.render();
   }
 
-  nu::getGlobalProfiler()->reset();
+  nu::detail::getCurrentProfileMetrics()->reset();
 
   m_renderer.endFrame();
 

@@ -14,7 +14,7 @@ class ProfilePrinter {
 public:
   ProfilePrinter(Renderer* renderer, DebugFont* debugFont, const Mat4& transform);
 
-  auto draw(nu::Profiler::Block* root, const Pos& position) -> void;
+  auto draw(nu::detail::ProfileMetrics::Block* root, const Pos& position) -> void;
 
 private:
   Renderer* m_renderer;

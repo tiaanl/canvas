@@ -66,10 +66,18 @@ public:
   }
 
   void onRender(ca::Renderer* renderer) override {
-    renderer->clear(ca::Color{0.0f, 0.1f, 0.2f});
+    PROFILE("Mininal Frame")
 
-    // renderer->draw(ca::DrawType::Triangles, 6, m_programId, m_vertexBufferId, m_indexBufferId,
-    //                m_textureId, m_uniforms);
+    {
+      PROFILE("clear")
+      renderer->clear(ca::Color{0.0f, 0.1f, 0.2f});
+    }
+
+    {
+      PROFILE("draw")
+      renderer->draw(ca::DrawType::Triangles, 6, m_programId, m_vertexBufferId, m_indexBufferId,
+                     m_textureId, m_uniforms);
+    }
 
 #if 0
     ca::ImmediateRenderer immediate{renderer};
