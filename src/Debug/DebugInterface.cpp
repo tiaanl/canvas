@@ -1,24 +1,36 @@
 #include "canvas/Debug/DebugInterface.h"
 
+#include <cstdio>
+
 #include "canvas/Math/Transform.h"
 #include "canvas/Renderer/Renderer.h"
 #include "nucleus/Profiling.h"
 
-#include <cstdio>
-
 namespace ca {
 
-DebugInterface::DebugInterface(Renderer* renderer) : m_renderer{renderer}, m_debugFont{renderer} {}
+DebugInterface::DebugInterface(Renderer* renderer, Size size)
+  : m_size{size}, m_debugFont{renderer} {}
 
 auto DebugInterface::initialize() -> bool {
   return m_debugFont.initialize();
 }
 
-auto DebugInterface::render() -> void {
-  // Set up an orthographic view projection.
-  auto projection = orthographicProjection(0.0f, 1600.0f, 0.0f, 900.0f, -1.0f, 1.0f);
+auto DebugInterface::resize(ca::Size size) -> void {
+  m_size = size;
+}
 
-  auto profiler = nu::detail::getCurrentProfileMetrics();
+auto DebugInterface::render(F32 fps) -> void {
+  // Set up an orthographic view projection.
+  auto projection = orthographicProjection(0.0f, static_cast<F32>(m_size.width), 0.0f,
+                                           static_cast<F32>(m_size.height), -1.0f, 1.0f);
+
+  char buf[64];
+  sprintf(buf, "%.1f", fps);
+  m_debugFont.drawText(projection, {10, 10}, buf);
+
+  return;
+
+  auto* profiler = nu::detail::getCurrentProfileMetrics();
 
   drawProfileBlock(profiler->root(), Pos{350, 10}, projection);
 }
@@ -32,7 +44,11 @@ auto DebugInterface::drawProfileBlock(nu::detail::ProfileMetrics::Block* block, 
     line.append(current->name);
 
     char buffer[64];
+#if OS(WIN)
     sprintf_s(buffer, sizeof(buffer), "%.2f", current->stopTime - current->startTime);
+#else
+    sprintf(buffer, "%.2f", current->stopTime - current->startTime);
+#endif
     line.append("  ");
     line.append(buffer);
 

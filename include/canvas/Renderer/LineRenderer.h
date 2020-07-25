@@ -15,6 +15,8 @@ class Renderer;
 
 class LineRenderer {
 public:
+  NU_DELETE_COPY_AND_MOVE(LineRenderer);
+
   LineRenderer();
 
   bool initialize(ca::Renderer* renderer);
@@ -27,8 +29,6 @@ public:
   void render(const ca::Mat4& transform);
 
 private:
-  DELETE_COPY_AND_MOVE(LineRenderer);
-
   struct Line {
     ca::Vec3 p1;
     ca::Color color1;

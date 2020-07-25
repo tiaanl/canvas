@@ -14,6 +14,8 @@ class Renderer;
 
 class ImmediateRenderer {
 public:
+  NU_DELETE_COPY_AND_MOVE(ImmediateRenderer);
+
   explicit ImmediateRenderer(Renderer* renderer);
 
   auto setTransform(const Mat4& transform) -> void;
@@ -23,8 +25,6 @@ public:
   auto reset() -> void;
 
 private:
-  DELETE_COPY_AND_MOVE(ImmediateRenderer);
-
   struct Vertex {
     Vec3 position;
     Color color;

@@ -13,6 +13,8 @@ namespace ca {
 
 class Renderer {
 public:
+  NU_DELETE_COPY_AND_MOVE(Renderer);
+
   Renderer();
   ~Renderer();
 
@@ -52,8 +54,6 @@ public:
             IndexBufferId indexBufferId, TextureId textureId, const UniformBuffer& uniforms);
 
 private:
-  DELETE_COPY_AND_MOVE(Renderer);
-
   struct ProgramData {
     U32 id;
   };

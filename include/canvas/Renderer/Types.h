@@ -1,10 +1,10 @@
 #ifndef CANVAS_RENDERER_TYPES_H_
 #define CANVAS_RENDERER_TYPES_H_
 
+#include <limits>
+
 #include "nucleus/Streams/OutputStream.h"
 #include "nucleus/Types.h"
-
-#include <limits>
 
 namespace ca {
 

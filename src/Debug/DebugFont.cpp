@@ -106,7 +106,7 @@ auto DebugFont::initialize() -> bool {
 
 auto DebugFont::drawText(const Mat4& transform, const Pos& position, const nu::StringView& text)
     -> void {
-  for (auto index = 0; index < text.getLength(); ++index) {
+  for (auto index = 0U; index < text.length(); ++index) {
     Vec2 offset{
         static_cast<F32>(position.x) + static_cast<F32>(index) * (kGlyphWidth),
         static_cast<F32>(position.y),

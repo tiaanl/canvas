@@ -5,7 +5,7 @@ namespace ca {
 
 // static
 ShaderSource ShaderSource::from(const nu::StringView& source) {
-  nu::String data{source.getData(), source.getLength()};
+  nu::String data{source.data(), source.length()};
   return ShaderSource{std::move(data)};
 }
 

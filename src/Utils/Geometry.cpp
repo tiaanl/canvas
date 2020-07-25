@@ -1,5 +1,6 @@
 
 #include "canvas/Utils/Geometry.h"
+
 #include "nucleus/Logging.h"
 
 namespace ca {

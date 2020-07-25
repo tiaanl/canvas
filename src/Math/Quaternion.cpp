@@ -11,7 +11,7 @@ Quaternion fromAxisAngle(const ca::Vec3& axis, const Angle& angle) {
   return {cosine(thetaOverTwo), axis * sineThetaOverTwo};
 }
 
-Quaternion fromRotationMatrix(const Mat3& UNUSED(rotationMatrix)) {
+Quaternion fromRotationMatrix(const Mat3& NU_UNUSED(rotationMatrix)) {
   return Quaternion::identity;
 }
 

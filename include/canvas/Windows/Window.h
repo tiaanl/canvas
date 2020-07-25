@@ -5,7 +5,6 @@
 #include "canvas/Debug/DebugInterface.h"
 #include "canvas/Renderer/Renderer.h"
 #include "canvas/Windows/WindowDelegate.h"
-#include "nucleus/Allocators/Allocator.h"
 #include "nucleus/Macros.h"
 #include "nucleus/Memory/ScopedPtr.h"
 #include "nucleus/Text/StringView.h"
@@ -16,6 +15,8 @@ namespace ca {
 
 class Window {
 public:
+  NU_DELETE_COPY_AND_MOVE(Window);
+
   Window();
   ~Window();
 
@@ -42,8 +43,6 @@ public:
   void paint();
 
 private:
-  DELETE_COPY_AND_MOVE(Window);
-
   // Callbacks
   static void frameBufferSizeCallback(GLFWwindow* window, int width, int height);
   static void cursorPositionCallback(GLFWwindow* window, double xpos, double ypos);
@@ -61,10 +60,13 @@ private:
   Renderer m_renderer;
 
   // The debug interface we use to render details to the developer.
-  DebugInterface m_debugInterface{&m_renderer};
+  DebugInterface m_debugInterface{&m_renderer, {1600, 900}};
 
   // Size of the client area of the window.
   Size m_clientSize;
+
+  // Last frame's FPS.
+  F32 m_lastFPS = 0.0f;
 };
 
 }  // namespace ca

@@ -3,36 +3,13 @@
 #include "canvas/StaticData/All.h"
 #include "canvas/Utils/ImmediateShapes.h"
 #include "canvas/Utils/ShaderSource.h"
-#include "nucleus/ByteOrder.h"
 #include "nucleus/FilePath.h"
 #include "nucleus/Streams/FileInputStream.h"
 
-// struct BinaryFont {
-//  U16 id;
-//  U32 imageWidth;
-//  U32 imageHeight;
-//  U32 cellWidth;
-//  U32 cellHeight;
-//  U8 bitsPerPixel;
-//  U8 startingCharacter;
-//  U8 characterWidths[254];
-//  U8 pixels[256 * 128 * 3];
-//};
-
-#if 0
-| 0    | 2        | ID - 0xBF 0xF2 (BFF Version 2)
-| 2    | 4        | Font Image width
-| 6    | 4        | Font Image height
-| 10   | 4        | Cell width
-| 14   | 4        | Cell height
-| 18   | 1        | BPP - will be 8, 24 or 32
-| 19   | 1        | Base character offset - This is the ACSII value of the first character on the font map
-| 20   | 256      | Character widths
-| 276  | Variable | Image map data
-#endif  // 0
-
 class Minimal : public ca::WindowDelegate {
 public:
+  NU_DELETE_COPY_AND_MOVE(Minimal);
+
   Minimal()
     : ca::WindowDelegate("Canvas Minimal Example"), m_rootPath(nu::getCurrentWorkingDirectory()) {}
 
@@ -89,8 +66,6 @@ public:
   }
 
 private:
-  DELETE_COPY_AND_MOVE(Minimal);
-
   bool loadProgram(ca::Renderer* renderer) {
     nu::FileInputStream vs{m_rootPath / "default.vs"};
     if (!vs.openedOk()) {

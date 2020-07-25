@@ -2,9 +2,9 @@
 #ifndef CANVAS_UTILS_SIZE_H_
 #define CANVAS_UTILS_SIZE_H_
 
-#include "nucleus/Types.h"
-
 #include <ostream>
+
+#include "nucleus/Types.h"
 
 namespace ca {
 

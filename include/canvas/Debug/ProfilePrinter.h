@@ -7,6 +7,8 @@
 
 namespace ca {
 
+#if 0
+
 class Renderer;
 class DebugFont;
 
@@ -23,6 +25,8 @@ private:
 
   Pos m_cursor;
 };
+
+#endif  // 0
 
 }  // namespace ca
 

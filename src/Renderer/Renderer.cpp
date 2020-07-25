@@ -1,6 +1,5 @@
 
 #include "canvas/Renderer/Renderer.h"
-#include <canvas/Windows/Keyboard.h>
 
 #include "canvas/OpenGL.h"
 #include "canvas/Renderer/VertexDefinition.h"
@@ -47,8 +46,8 @@ bool compileShaderSource(const ShaderSource& source, U32 shaderType, U32* idOut)
   auto s = source.getSource();
 
   // Set the source of the shader.
-  const GLchar* src = s.getData();
-  const GLint length = static_cast<const GLint>(s.getLength());
+  const GLchar* src = s.data();
+  const GLint length = static_cast<const GLint>(s.length());
   GL_CHECK(glShaderSource(id, 1, &src, &length));
   GL_CHECK(glCompileShader(id));
 
@@ -349,9 +348,12 @@ void Renderer::draw(DrawType drawType, U32 vertexOffset, U32 vertexCount, Progra
   // Process uniforms.
   uniforms.apply([&](UniformId uniformId, U32 count, const F32* values) {
     const auto& uniformData = m_uniforms[uniformId.id];
-    I32 location = glGetUniformLocation(programData.id, uniformData.name.getData());
+    char buf[64];
+    std::strncpy(buf, uniformData.name.data(), uniformData.name.length());
+    buf[uniformData.name.length()] = '\0';
+    I32 location = glGetUniformLocation(programData.id, buf);
     if (location == -1) {
-      LOG(Warning) << "Could not get location for uniform: " << uniformData.name.getData();
+      LOG(Warning) << "Could not get location for uniform: " << uniformData.name.data();
       return;
     }
 
@@ -454,9 +456,12 @@ void Renderer::draw(DrawType drawType, U32 indexCount, ProgramId programId,
   // Process uniforms.
   uniforms.apply([&](UniformId uniformId, U32 count, const F32* values) {
     const auto& uniformData = m_uniforms[uniformId.id];
-    I32 location = glGetUniformLocation(programData.id, uniformData.name.getData());
+    char buf[64];
+    std::strncpy(buf, uniformData.name.data(), uniformData.name.length());
+    buf[uniformData.name.length()] = '\0';
+    I32 location = glGetUniformLocation(programData.id, buf);
     if (location == -1) {
-      LOG(Warning) << "Could not get location for uniform: " << uniformData.name.getData();
+      LOG(Warning) << "Could not get location for uniform: " << uniformData.name.data();
       return;
     }
 

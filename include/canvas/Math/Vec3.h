@@ -1,11 +1,11 @@
 #ifndef CANVAS_MATH_VEC3_H_
 #define CANVAS_MATH_VEC3_H_
 
+#include <ostream>
+
 #include "canvas/Math/Common.h"
 #include "canvas/Math/Vec2.h"
 #include "nucleus/Types.h"
-
-#include <ostream>
 
 namespace ca {
 

@@ -2,6 +2,8 @@
 #ifndef CANVAS_RENDERER_UNIFORM_BUFFER_H_
 #define CANVAS_RENDERER_UNIFORM_BUFFER_H_
 
+#include <functional>
+
 #include "canvas/Math/Mat4.h"
 #include "canvas/Math/Vec2.h"
 #include "canvas/Math/Vec3.h"
@@ -10,8 +12,6 @@
 #include "canvas/Utils/Color.h"
 #include "nucleus/Containers/DynamicArray.h"
 #include "nucleus/Streams/WrappedDynamicArrayOutputStream.h"
-
-#include <functional>
 
 namespace ca {
 

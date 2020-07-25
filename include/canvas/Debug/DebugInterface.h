@@ -12,19 +12,22 @@ class Renderer;
 
 class DebugInterface {
 public:
-  explicit DebugInterface(Renderer* renderer);
+  NU_DELETE_COPY_AND_MOVE(DebugInterface);
+
+  DebugInterface(Renderer* renderer, Size size);
 
   auto initialize() -> bool;
 
-  auto render() -> void;
+  auto resize(Size size) -> void;
+
+  auto render(F32 fps) -> void;
 
 private:
-  DELETE_COPY_AND_MOVE(DebugInterface);
-
   auto drawProfileBlock(nu::detail::ProfileMetrics::Block* block, const Pos& position,
                         const ca::Mat4& transform, I32 indent = 0) -> I32;
 
-  Renderer* m_renderer;
+  // Renderer* m_renderer;
+  Size m_size;
   DebugFont m_debugFont;
 };
 

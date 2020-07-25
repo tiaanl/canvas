@@ -31,7 +31,7 @@ inline Vec3 operator*(const Mat3& left, const Vec3& right) {
   };
 }
 
-inline Mat3 fromRotationAxis(const Vec3& UNUSED(axis), F32 UNUSED(rotationInDegrees)) {
+inline Mat3 fromRotationAxis(const Vec3& NU_UNUSED(axis), F32 NU_UNUSED(rotationInDegrees)) {
   return Mat3::identity;
 }
 

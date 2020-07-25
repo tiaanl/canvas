@@ -86,8 +86,8 @@ public:
 
   VertexDefinition& addAttribute(ComponentType type, ComponentCount componentCount,
                                  const nu::StringView& name) {
-    m_attributes.emplaceBack(type, componentCount, name);
-    m_stride += m_attributes.last().getSizeInBytes();
+    auto result = m_attributes.emplaceBack(type, componentCount, name);
+    m_stride += result.element().getSizeInBytes();
 
     return *this;
   }

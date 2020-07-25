@@ -14,6 +14,8 @@ class Renderer;
 
 class DebugFont {
 public:
+  NU_DELETE_COPY_AND_MOVE(DebugFont);
+
   explicit DebugFont(Renderer* renderer);
 
   auto initialize() -> bool;
@@ -21,14 +23,12 @@ public:
   auto drawText(const Mat4& transform, const Pos& position, const nu::StringView& text) -> void;
 
 private:
-  DELETE_COPY_AND_MOVE(DebugFont);
-
   Renderer* m_renderer;
 
-  VertexBufferId m_vertexBufferId{kInvalidResourceId};
-  TextureId m_textureId{kInvalidResourceId};
-  ProgramId m_programId{kInvalidResourceId};
-  UniformId m_transformUniformId{kInvalidResourceId};
+  VertexBufferId m_vertexBufferId;
+  TextureId m_textureId;
+  ProgramId m_programId;
+  UniformId m_transformUniformId;
 };
 
 }  // namespace ca

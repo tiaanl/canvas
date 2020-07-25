@@ -2,13 +2,13 @@
 #ifndef CANVAS_MATH_COMMON_H_
 #define CANVAS_MATH_COMMON_H_
 
+#include <algorithm>
+#include <cmath>
+
 #include "canvas/Math/Angle.h"
 #include "canvas/Utils/Size.h"
 #include "nucleus/Logging.h"
 #include "nucleus/Types.h"
-
-#include <algorithm>
-#include <cmath>
 
 namespace ca {
 

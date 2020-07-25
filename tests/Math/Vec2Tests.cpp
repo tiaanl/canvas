@@ -55,4 +55,4 @@ TEST_CASE("Vec2 operators") {
   }
 }
 
-}
+}  // namespace ca

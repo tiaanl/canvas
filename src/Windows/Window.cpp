@@ -1,15 +1,16 @@
 
 #include "canvas/Windows/Window.h"
 
+#include <cmath>
+
 #include "canvas/OpenGL.h"
+// r
+#include "GLFW/glfw3.h"
 #include "canvas/StaticData/All.h"
 #include "canvas/Windows/Keyboard.h"
+#include "nucleus/HighPerformanceTimer.h"
 #include "nucleus/Logging.h"
 #include "nucleus/Profiling.h"
-
-#include "GLFW/glfw3.h"
-
-#include <cmath>
 
 namespace ca {
 
@@ -300,7 +301,7 @@ bool Window::initialize(WindowDelegate* delegate) {
 
   // Create the window.
   m_window = glfwCreateWindow(m_clientSize.width, m_clientSize.height,
-                              m_delegate->getTitle().getData(), nullptr, nullptr);
+                              m_delegate->getTitle().data(), nullptr, nullptr);
   if (!m_window) {
     LOG(Error) << "Could not create window.";
     m_delegate = nullptr;
@@ -355,7 +356,8 @@ bool Window::initialize(WindowDelegate* delegate) {
     return false;
   }
 
-  // We send a window resized to the delegate as well so that it can do any setup needed.
+  // We send a window resized to the delegate as well so that it can do any
+  // setup needed.
   delegate->onWindowResized(m_clientSize);
 
   return true;
@@ -380,6 +382,8 @@ void Window::activateContext() {
 }
 
 void Window::paint() {
+  auto startTime = nu::getCurrentHighPerformanceTick();
+
   m_renderer.beginFrame();
 
   PROFILE("frame")
@@ -391,7 +395,7 @@ void Window::paint() {
 
   {
     PROFILE("debug interface render")
-    m_debugInterface.render();
+    m_debugInterface.render(m_lastFPS);
   }
 
   nu::detail::getCurrentProfileMetrics()->reset();
@@ -400,6 +404,10 @@ void Window::paint() {
 
   // Swap buffers.
   glfwSwapBuffers(m_window);
+
+  auto endTime = nu::getCurrentHighPerformanceTick();
+  F32 frameTimeInMs = (endTime - startTime) / 1000.0f;
+  m_lastFPS = 1000.0f / frameTimeInMs;
 }
 
 // static
@@ -410,6 +418,8 @@ void Window::frameBufferSizeCallback(GLFWwindow* window, int width, int height) 
 
   // Resize our renderer.
   windowPtr->m_renderer.resize(windowPtr->m_clientSize);
+
+  windowPtr->m_debugInterface.resize({width, height});
 
   Size windowSize(static_cast<U32>(width), static_cast<U32>(height));
   windowPtr->m_delegate->onWindowResized(windowPtr->m_clientSize);
@@ -427,7 +437,7 @@ void Window::cursorPositionCallback(GLFWwindow* window, double xPos, double yPos
 }
 
 // static
-void Window::mouseButtonCallback(GLFWwindow* window, int button, int action, int UNUSED(mods)) {
+void Window::mouseButtonCallback(GLFWwindow* window, int button, int action, int NU_UNUSED(mods)) {
   Window* windowPtr = getUserPointer(window);
 
   double xPos, yPos;
@@ -476,8 +486,8 @@ void Window::scrollCallback(GLFWwindow* window, double xOffset, double yOffset) 
 }
 
 // static
-void Window::keyCallback(GLFWwindow* window, int key, int UNUSED(scancode), int action,
-                         int UNUSED(mods)) {
+void Window::keyCallback(GLFWwindow* window, int key, int NU_UNUSED(scancode), int action,
+                         int NU_UNUSED(mods)) {
   // We don't care for repeats.
   if (action == GLFW_REPEAT) {
     return;

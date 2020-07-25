@@ -2,12 +2,12 @@
 #ifndef CANVAS_WINDOWS_WINDOW_DELEGATE_H_
 #define CANVAS_WINDOWS_WINDOW_DELEGATE_H_
 
+#include <string>
+
 #include "canvas/Utils/Size.h"
 #include "canvas/Windows/Event.h"
 #include "nucleus/Macros.h"
 #include "nucleus/Text/StaticString.h"
-
-#include <string>
 
 namespace ca {
 
@@ -16,13 +16,15 @@ class Window;
 
 class WindowDelegate {
 public:
+  NU_DELETE_COPY_AND_MOVE(WindowDelegate);
+
   explicit WindowDelegate(const nu::StringView& title) : m_title(title) {}
 
   virtual ~WindowDelegate() = default;
 
   // Get the title of the window.
   nu::StringView getTitle() const {
-    return nu::StringView{m_title.getData(), m_title.getLength()};
+    return nu::StringView{m_title.data(), m_title.length()};
   }
 
   // Called right after the window was created.  Return false if the app creation failed.
@@ -47,9 +49,6 @@ public:
 protected:
   // The title that appears in the window title bar.
   nu::StaticString<128> m_title;
-
-private:
-  DELETE_COPY_AND_MOVE(WindowDelegate);
 };
 
 }  // namespace ca

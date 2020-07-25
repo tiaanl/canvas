@@ -1,14 +1,19 @@
 BasedOnStyle: Google
 
 AccessModifierOffset: -2
-AlignEscapedNewlinesLeft: false
-AllowAllParametersOfDeclarationOnNextLine: true
-AllowShortBlocksOnASingleLine: false
+AlignEscapedNewlines: Right
 AllowShortFunctionsOnASingleLine: Empty
-AllowShortIfStatementsOnASingleLine: false
-AllowShortLoopsOnASingleLine: false
 ColumnLimit: 100
-ConstructorInitializerAllOnOneLineOrOnePerLine: false
 ConstructorInitializerIndentWidth: 2
-DerivePointerAlignment: false
-IndentWidth: 2
+
+#AllowAllParametersOfDeclarationOnNextLine: true
+#AllowShortBlocksOnASingleLine: Empty
+#AllowShortCaseLabelsOnASingleLine: false
+#AllowShortIfStatementsOnASingleLine: Never
+#AllowShortLambdasOnASingleLine: Empty
+#AllowShortLoopsOnASingleLine: false
+#ConstructorInitializerAllOnOneLineOrOnePerLine: true
+#DerivePointerAlignment: false
+#IncludeBlocks: Regroup
+#IndentWidth: 2
+#SortIncludes: true

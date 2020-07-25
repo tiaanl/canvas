@@ -3,7 +3,6 @@
 
 #include "canvas/Windows/Window.h"
 #include "canvas/Windows/WindowDelegate.h"
-#include "nucleus/Allocators/DefaultAllocator.h"
 #include "nucleus/Config.h"
 #include "nucleus/HighPerformanceTimer.h"
 #include "nucleus/Macros.h"
@@ -16,6 +15,8 @@ namespace ca {
 template <typename T>
 class App {
 public:
+  NU_DELETE_COPY_AND_MOVE(App);
+
   using DelegateType = T;
 
   // Construct a new app with the specified delegate that will control the app.
@@ -41,8 +42,6 @@ public:
   }
 
 private:
-  DELETE_COPY_AND_MOVE(App);
-
   // The single window we are managing.
   Window m_window;
 

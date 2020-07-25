@@ -2,10 +2,9 @@
 #ifndef CANVAS_WINDOWS_EVENT_H_
 #define CANVAS_WINDOWS_EVENT_H_
 
-#include "nucleus/Types.h"
-
 #include "Keyboard.h"
 #include "canvas/Utils/Pos.h"
+#include "nucleus/Types.h"
 
 namespace ca {
 
@@ -45,8 +44,7 @@ struct MouseEvent : PositionEvent {
     Right,
   } button;
 
-  MouseEvent(Type type, const Pos& pos, Button button)
-    : PositionEvent(type, pos), button(button) {}
+  MouseEvent(Type type, const Pos& pos, Button button) : PositionEvent(type, pos), button(button) {}
 };
 
 struct MouseWheelEvent : PositionEvent {
