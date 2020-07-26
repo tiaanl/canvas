@@ -5,15 +5,3 @@ AlignEscapedNewlines: Right
 AllowShortFunctionsOnASingleLine: Empty
 ColumnLimit: 100
 ConstructorInitializerIndentWidth: 2
-
-#AllowAllParametersOfDeclarationOnNextLine: true
-#AllowShortBlocksOnASingleLine: Empty
-#AllowShortCaseLabelsOnASingleLine: false
-#AllowShortIfStatementsOnASingleLine: Never
-#AllowShortLambdasOnASingleLine: Empty
-#AllowShortLoopsOnASingleLine: false
-#ConstructorInitializerAllOnOneLineOrOnePerLine: true
-#DerivePointerAlignment: false
-#IncludeBlocks: Regroup
-#IndentWidth: 2
-#SortIncludes: true

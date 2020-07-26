@@ -4,6 +4,8 @@
 
 #include <ostream>
 
+#include "nucleus/Types.h"
+
 namespace ca {
 
 struct Pos {
