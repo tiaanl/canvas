@@ -6,11 +6,8 @@
 #include "canvas/OpenGL.h"
 // r
 #include "GLFW/glfw3.h"
-#include "canvas/StaticData/All.h"
-#include "canvas/Windows/Keyboard.h"
 #include "nucleus/HighPerformanceTimer.h"
-#include "nucleus/Logging.h"
-#include "nucleus/Profiling.h"
+#include "nucleus/Text/Utils.h"
 
 namespace ca {
 
@@ -300,8 +297,9 @@ bool Window::initialize(WindowDelegate* delegate) {
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
   // Create the window.
-  m_window = glfwCreateWindow(m_clientSize.width, m_clientSize.height,
-                              m_delegate->getTitle().data(), nullptr, nullptr);
+  auto title = nu::zeroTerminated(m_delegate->getTitle());
+  m_window =
+      glfwCreateWindow(m_clientSize.width, m_clientSize.height, title.data(), nullptr, nullptr);
   if (!m_window) {
     LOG(Error) << "Could not create window.";
     m_delegate = nullptr;

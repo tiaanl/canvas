@@ -18,13 +18,13 @@ class WindowDelegate {
 public:
   NU_DELETE_COPY_AND_MOVE(WindowDelegate);
 
-  explicit WindowDelegate(const nu::StringView& title) : m_title(title) {}
+  explicit WindowDelegate(nu::StringView title) : m_title(title) {}
 
   virtual ~WindowDelegate() = default;
 
   // Get the title of the window.
   nu::StringView getTitle() const {
-    return nu::StringView{m_title.data(), m_title.length()};
+    return m_title.view();
   }
 
   // Called right after the window was created.  Return false if the app creation failed.

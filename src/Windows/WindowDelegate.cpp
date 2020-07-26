@@ -1,8 +1,6 @@
 
 #include "canvas/Windows/WindowDelegate.h"
 
-#include "nucleus/Logging.h"
-
 namespace ca {
 
 class Window;

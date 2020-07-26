@@ -11,6 +11,8 @@ option(CANVAS_BUILD_EXAMPLES "Build canvas examples" OFF)
 add_subdirectory(../nucleus nucleus)
 add_subdirectory(third_party)
 
+find_package(glfw3 CONFIG REQUIRED)
+
 set(canvas_HEADER_FILES
     include/canvas/App.h
     include/canvas/Debug/DebugFont.h
@@ -43,7 +45,6 @@ set(canvas_HEADER_FILES
     include/canvas/Utils/ImmediateShapes.h
     include/canvas/Utils/Pos.h
     include/canvas/Utils/Rect.h
-    include/canvas/Utils/ScopedOpenGLEnable.h
     include/canvas/Utils/ShaderSource.h
     include/canvas/Utils/Size.h
     include/canvas/Windows/Event.h
