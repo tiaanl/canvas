@@ -1,6 +1,6 @@
+#include <catch2/catch.hpp>
 
 #include "canvas/Math/Vec2.h"
-#include "nucleus/Testing.h"
 
 namespace ca {
 

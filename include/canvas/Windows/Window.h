@@ -66,7 +66,7 @@ private:
   Size m_clientSize;
 
   // Last frame's FPS.
-  F32 m_lastFPS = 0.0f;
+  F64 m_lastFPS = 0.0;
 };
 
 }  // namespace ca

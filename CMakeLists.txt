@@ -81,7 +81,14 @@ set(canvas_SOURCE_FILES
     src/Windows/WindowDelegate.cpp
     )
 
+nucleus_add_library(canvas ${canvas_HEADER_FILES} ${canvas_SOURCE_FILES})
+target_link_libraries(canvas nucleus glfw glad)
+target_compile_definitions(canvas PUBLIC -DUNICODE -D_CRT_SECURE_NO_WARNINGS)
+
+find_package(Catch2 CONFIG REQUIRED)
+
 set(canvasTests_SOURCE_FILES
+    tests/Main.cpp
     tests/Math/Mat4Tests.cpp
     tests/Math/TransformTests.cpp
     tests/Math/Vec2Tests.cpp
@@ -91,12 +98,8 @@ set(canvasTests_SOURCE_FILES
     tests/Renderer/VertexDefinitionTests.cpp
     )
 
-nucleus_add_library(canvas ${canvas_HEADER_FILES} ${canvas_SOURCE_FILES})
-target_link_libraries(canvas nucleus glfw glad)
-target_compile_definitions(canvas PUBLIC -DUNICODE)
-
 nucleus_add_executable(canvasTests ${canvasTests_SOURCE_FILES})
-target_link_libraries(canvasTests canvas testing)
+target_link_libraries(canvasTests canvas Catch2::Catch2)
 
 if (CANVAS_BUILD_EXAMPLES)
     add_subdirectory(examples)

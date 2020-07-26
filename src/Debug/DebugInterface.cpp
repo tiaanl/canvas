@@ -19,13 +19,13 @@ auto DebugInterface::resize(ca::Size size) -> void {
   m_size = size;
 }
 
-auto DebugInterface::render(F32 fps) -> void {
+auto DebugInterface::render(F64 fps) -> void {
   // Set up an orthographic view projection.
   auto projection = orthographicProjection(0.0f, static_cast<F32>(m_size.width), 0.0f,
                                            static_cast<F32>(m_size.height), -1.0f, 1.0f);
 
   char buf[64];
-  sprintf(buf, "%.1f", fps);
+  sprintf_s(buf, "%.1lf", fps);
   m_debugFont.drawText(projection, {10, 10}, buf);
 
   return;
@@ -41,7 +41,7 @@ auto DebugInterface::drawProfileBlock(nu::detail::ProfileMetrics::Block* block, 
 
   for (auto* current = block; current; current = current->next) {
     nu::StaticString<128> line;
-    line.append(current->name);
+    line.append(current->name.view());
 
     char buffer[64];
 #if OS(WIN)
@@ -52,7 +52,7 @@ auto DebugInterface::drawProfileBlock(nu::detail::ProfileMetrics::Block* block, 
     line.append("  ");
     line.append(buffer);
 
-    m_debugFont.drawText(transform, currentPosition, line);
+    m_debugFont.drawText(transform, currentPosition, line.view());
 
     currentPosition.y += 16;
 

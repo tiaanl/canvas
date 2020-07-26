@@ -1,7 +1,6 @@
+#include <catch2/catch.hpp>
 
 #include "canvas/Renderer/VertexDefinition.h"
-#include "nucleus/Logging.h"
-#include "nucleus/Testing.h"
 
 namespace ca {
 

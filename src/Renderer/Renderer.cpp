@@ -113,12 +113,12 @@ ProgramId Renderer::createProgram(const ShaderSource& vertexShader,
     GL_CHECK(glGetProgramiv(result.id, GL_INFO_LOG_LENGTH, &infoLength));
 
     if (infoLength > 0) {
-      nu::String buffer;
+      nu::DynamicString buffer;
       buffer.resize(infoLength);
       GL_CHECK(
-          glGetProgramInfoLog(result.id, infoLength, &infoLength, (GLchar*)buffer.getRawBytes()));
+          glGetProgramInfoLog(result.id, infoLength, &infoLength, (GLchar*)buffer.data()));
       if (infoLength) {
-        LOG(Error) << buffer;
+        LOG(Error) << buffer.view();
       }
       return {};
     } else {

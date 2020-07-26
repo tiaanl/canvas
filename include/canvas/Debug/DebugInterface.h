@@ -20,7 +20,7 @@ public:
 
   auto resize(Size size) -> void;
 
-  auto render(F32 fps) -> void;
+  auto render(F64 fps) -> void;
 
 private:
   auto drawProfileBlock(nu::detail::ProfileMetrics::Block* block, const Pos& position,

@@ -3,14 +3,13 @@
 #define CANVAS_UTILS_SHADER_SOURCE_H_
 
 #include "nucleus/Streams/InputStream.h"
-#include "nucleus/Text/String.h"
-#include "nucleus/Text/StringView.h"
+#include "nucleus/Text/DynamicString.h"
 
 namespace ca {
 
 class ShaderSource {
 public:
-  static ShaderSource from(const nu::StringView& source);
+  static ShaderSource from(nu::StringView source);
   static ShaderSource from(nu::InputStream* stream);
 
   ShaderSource() = default;
@@ -19,13 +18,13 @@ public:
   bool loadFromStream(nu::InputStream* stream);
 
   nu::StringView getSource() const {
-    return nu::StringView{m_source.getRawBytes(), m_source.getLength()};
+    return m_source.view();
   }
 
 private:
-  explicit ShaderSource(nu::String&& source);
+  explicit ShaderSource(nu::DynamicString source);
 
-  nu::String m_source;
+  nu::DynamicString m_source;
 };
 
 }  // namespace ca

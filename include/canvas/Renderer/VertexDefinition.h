@@ -30,8 +30,8 @@ public:
     return m_sizeInBytes;
   }
 
-  const nu::StringView& getName() const {
-    return m_name;
+  nu::StringView getName() const {
+    return m_name.view();
   }
 
 private:

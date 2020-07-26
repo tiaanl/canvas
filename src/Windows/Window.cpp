@@ -382,7 +382,7 @@ void Window::activateContext() {
 }
 
 void Window::paint() {
-  auto startTime = nu::getCurrentHighPerformanceTick();
+  F64 startTime = nu::getCurrentHighPerformanceTick();
 
   m_renderer.beginFrame();
 
@@ -405,9 +405,9 @@ void Window::paint() {
   // Swap buffers.
   glfwSwapBuffers(m_window);
 
-  auto endTime = nu::getCurrentHighPerformanceTick();
-  F32 frameTimeInMs = (endTime - startTime) / 1000.0f;
-  m_lastFPS = 1000.0f / frameTimeInMs;
+  F64 endTime = nu::getCurrentHighPerformanceTick();
+  F64 frameTimeInMs = (endTime - startTime) / 1000.0;
+  m_lastFPS = 1000.0 / frameTimeInMs;
 }
 
 // static
