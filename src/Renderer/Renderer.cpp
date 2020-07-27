@@ -115,8 +115,7 @@ ProgramId Renderer::createProgram(const ShaderSource& vertexShader,
     if (infoLength > 0) {
       nu::DynamicString buffer;
       buffer.resize(infoLength);
-      GL_CHECK(
-          glGetProgramInfoLog(result.id, infoLength, &infoLength, (GLchar*)buffer.data()));
+      GL_CHECK(glGetProgramInfoLog(result.id, infoLength, &infoLength, (GLchar*)buffer.data()));
       if (infoLength) {
         LOG(Error) << buffer.view();
       }
@@ -153,7 +152,7 @@ VertexBufferId Renderer::createVertexBuffer(const VertexDefinition& vertexDefini
 
   U32 componentNumber = 0;
   U32 offset = 0;
-  for (const auto& attr : vertexDefinition.getAttributes()) {
+  for (auto& attr : vertexDefinition) {
     glVertexAttribPointer(componentNumber, U32(attr.getCount()), getOglType(attr.getType()),
                           GL_FALSE, vertexDefinition.getStride(),
                           (GLvoid*)(static_cast<MemSize>(offset)));

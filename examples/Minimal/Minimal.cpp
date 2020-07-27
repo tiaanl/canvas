@@ -83,9 +83,9 @@ private:
   }
 
   bool loadVertexBuffer(ca::Renderer* renderer) {
-    auto def = ca::VertexDefinition{}
-                   .addAttribute(ca::ComponentType::Float32, ca::ComponentCount::Three, "position")
-                   .addAttribute(ca::ComponentType::Float32, ca::ComponentCount::Two, "texCoords");
+    ca::VertexDefinition def;
+    def.addAttribute(ca::ComponentType::Float32, ca::ComponentCount::Three);
+    def.addAttribute(ca::ComponentType::Float32, ca::ComponentCount::Two);
 
 #if 0
     static F32 vertices[] = {

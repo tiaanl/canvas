@@ -42,8 +42,8 @@ bool LineRenderer::initialize(ca::Renderer* renderer) {
   m_lines.clear();
 
   ca::VertexDefinition def;
-  def.addAttribute(ca::ComponentType::Float32, ComponentCount::Three, "position");
-  def.addAttribute(ca::ComponentType::Float32, ComponentCount::Four, "color");
+  def.addAttribute(ca::ComponentType::Float32, ComponentCount::Three);
+  def.addAttribute(ca::ComponentType::Float32, ComponentCount::Four);
   m_vertexBufferId = m_renderer->createVertexBuffer(def, nullptr, 0);
   if (!isValid(m_vertexBufferId)) {
     LOG(Error) << "Could not create vertex buffer for line renderer.";

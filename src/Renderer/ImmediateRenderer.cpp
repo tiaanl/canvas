@@ -49,14 +49,12 @@ auto ImmediateRenderer::vertex(const Vec3& position, const Color& color) -> void
 }
 
 auto ImmediateRenderer::submit(DrawType drawType) -> void {
-  auto vertexDefinition =
-      VertexDefinition{}
-          .addAttribute(ComponentType::Float32, ComponentCount::Three, "position")
-          .addAttribute(ComponentType::Float32, ComponentCount::Four, "color");
+  VertexDefinition def;
+  def.addAttribute(ComponentType::Float32, ComponentCount::Three);
+  def.addAttribute(ComponentType::Float32, ComponentCount::Four);
 
-  auto vertexBufferId =
-      m_renderer->createVertexBuffer(vertexDefinition, m_vertices.data(),
-                                     m_vertices.size() * sizeof(typename VertexList::ElementType));
+  auto vertexBufferId = m_renderer->createVertexBuffer(
+      def, m_vertices.data(), m_vertices.size() * sizeof(typename VertexList::ElementType));
 
   auto programId = m_renderer->createProgram(ShaderSource::from(g_vertexShaderSource),
                                              ShaderSource::from(g_fragmentShaderSource));

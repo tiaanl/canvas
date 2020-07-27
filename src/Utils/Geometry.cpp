@@ -28,8 +28,8 @@ Geometry createRectangle(Renderer* renderer, const Vec2& topLeft, const Vec2& bo
   static U16 indices[] = {0, 1, 2, 2, 3, 0};
 
   auto def = VertexDefinition{};
-  def.addAttribute(ca::ComponentType::Float32, ca::ComponentCount::Three, "position");
-  def.addAttribute(ca::ComponentType::Float32, ca::ComponentCount::Two, "textureCoords");
+  def.addAttribute(ca::ComponentType::Float32, ca::ComponentCount::Three);
+  def.addAttribute(ca::ComponentType::Float32, ca::ComponentCount::Two);
 
   auto vertexBufferId = renderer->createVertexBuffer(def, vertices, sizeof(vertices));
   if (!isValid(vertexBufferId)) {

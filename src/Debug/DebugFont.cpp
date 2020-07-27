@@ -62,9 +62,9 @@ DebugFont::DebugFont(Renderer* renderer) : m_renderer{renderer} {}
 auto DebugFont::initialize() -> bool {
   // Create the geometry for the characters.
 
-  VertexDefinition definition;
-  definition.addAttribute(ComponentType::Float32, ComponentCount::Two, "position");
-  definition.addAttribute(ComponentType::Float32, ComponentCount::Two, "texCoords");
+  VertexDefinition def;
+  def.addAttribute(ComponentType::Float32, ComponentCount::Two);
+  def.addAttribute(ComponentType::Float32, ComponentCount::Two);
 
   // Build a vertex buffer that has geometry for each glyph.
   Vertex vertices[kHorizontalGlyphCount * kVerticalGlyphCount * 4];
@@ -85,7 +85,7 @@ auto DebugFont::initialize() -> bool {
     }
   }
 
-  m_vertexBufferId = m_renderer->createVertexBuffer(definition, vertices, sizeof(vertices));
+  m_vertexBufferId = m_renderer->createVertexBuffer(def, vertices, sizeof(vertices));
 
   // Create the texture.
 
