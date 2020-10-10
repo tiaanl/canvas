@@ -9,7 +9,6 @@ project(canvas)
 option(CANVAS_BUILD_EXAMPLES "Build canvas examples" OFF)
 
 add_subdirectory(../nucleus nucleus)
-add_subdirectory(third_party)
 
 find_package(glfw3 CONFIG REQUIRED)
 
@@ -74,16 +73,18 @@ set(canvas_SOURCE_FILES
     src/Renderer/VertexDefinition.cpp
     src/StaticData/MonoFont.cpp
     src/Utils/Color.cpp
-    src/Utils/Geometry.cpp
     src/Utils/GLCheck.cpp
+    src/Utils/Geometry.cpp
     src/Utils/ImmediateShapes.cpp
     src/Utils/ShaderSource.cpp
     src/Windows/Window.cpp
     src/Windows/WindowDelegate.cpp
+    src/glad/glad.c
     )
 
 nucleus_add_library(canvas ${canvas_HEADER_FILES} ${canvas_SOURCE_FILES})
-target_link_libraries(canvas nucleus glfw glad)
+target_include_directories(canvas PRIVATE src/glad)
+target_link_libraries(canvas nucleus glfw)
 target_compile_definitions(canvas PUBLIC -DUNICODE -D_CRT_SECURE_NO_WARNINGS)
 
 find_package(Catch2 CONFIG REQUIRED)
