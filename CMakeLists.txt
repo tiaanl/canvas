@@ -101,7 +101,7 @@ set(canvasTests_SOURCE_FILES
     )
 
 nucleus_add_executable(canvasTests ${canvasTests_SOURCE_FILES})
-target_link_libraries(canvasTests canvas Catch2::Catch2)
+target_link_libraries(canvasTests PRIVATE canvas Catch2::Catch2)
 
 if (CANVAS_BUILD_EXAMPLES)
     add_subdirectory(examples)
