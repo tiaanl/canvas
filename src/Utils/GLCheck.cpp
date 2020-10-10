@@ -4,7 +4,6 @@
 #include "canvas/OpenGL.h"
 #include "nucleus/Debugger.h"
 #include "nucleus/Logging.h"
-#include "nucleus/MemoryDebug.h"
 
 namespace ca {
 
