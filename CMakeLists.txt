@@ -32,8 +32,8 @@ set(canvas_HEADER_FILES
     include/canvas/Utils/Geometry.h
     include/canvas/Utils/GLCheck.h
     include/canvas/Utils/ImmediateShapes.h
-        include/canvas/Utils/ShaderSource.h
-        include/canvas/Windows/Event.h
+    include/canvas/Utils/ShaderSource.h
+    include/canvas/Windows/Event.h
     include/canvas/Windows/Keyboard.h
     include/canvas/Windows/KeyboardEventHandlerInterface.h
     include/canvas/Windows/MouseEventHandlerInterface.h
