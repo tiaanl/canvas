@@ -6,7 +6,7 @@
 #include "canvas/Renderer/UniformBuffer.h"
 #include "canvas/Renderer/VertexDefinition.h"
 #include "canvas/Utils/ShaderSource.h"
-#include "canvas/Utils/Size.h"
+#include "floats/Size.h"
 #include "nucleus/Containers/DynamicArray.h"
 
 namespace ca {
@@ -30,17 +30,17 @@ public:
   void indexBufferData(IndexBufferId id, void* data, MemSize dataSize);
   void deleteIndexBuffer(IndexBufferId id);
 
-  TextureId createTexture(TextureFormat format, const Size& size, const U8* data, MemSize dataSize,
-                          bool smooth = false);
+  TextureId createTexture(TextureFormat format, const fl::Size& size, const U8* data,
+                          MemSize dataSize, bool smooth = false);
 
   UniformId createUniform(const nu::StringView& name);
 
-  const ca::Size& getSize() const {
+  const fl::Size& getSize() const {
     return m_size;
   }
 
   // Resize the rendering area. Typically called when the window is resized.
-  void resize(const Size& size);
+  void resize(const fl::Size& size);
 
   void beginFrame();
   void endFrame();
@@ -69,14 +69,14 @@ private:
 
   struct TextureData {
     U32 id;
-    Size size;
+    fl::Size size;
   };
 
   struct UniformData {
     nu::StaticString<128> name;
   };
 
-  Size m_size;
+  fl::Size m_size;
 
   nu::DynamicArray<ProgramData> m_programs;
   nu::DynamicArray<VertexBufferData> m_vertexBuffers;

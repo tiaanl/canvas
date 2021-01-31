@@ -5,7 +5,7 @@
 
 namespace ca {
 
-Geometry createRectangle(Renderer* renderer, const Vec2& topLeft, const Vec2& bottomRight) {
+Geometry createRectangle(Renderer* renderer, const fl::Vec2& topLeft, const fl::Vec2& bottomRight) {
   static PositionTextureCoords vertices[] = {
       {
           {topLeft.x, topLeft.y, 0.0f},

@@ -1,8 +1,8 @@
 #ifndef CANVAS_DEBUG_PROFILE_PRINTER_H_
 #define CANVAS_DEBUG_PROFILE_PRINTER_H_
 
-#include "canvas/Math/Mat4.h"
-#include "canvas/Utils/Pos.h"
+#include "floats/Mat4.h"
+#include "floats/Pos.h"
 #include "nucleus/Profiling.h"
 
 namespace ca {

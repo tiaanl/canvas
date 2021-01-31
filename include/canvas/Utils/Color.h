@@ -27,7 +27,7 @@ struct Color {
 inline std::ostream& operator<<(std::ostream& os, const Color& value) {
   os << "{" << value.r << ", " << value.g << ", " << value.b << ", " << value.a << "}";
   return os;
-};
+}
 
 }  // namespace ca
 

@@ -1,8 +1,8 @@
 #include "canvas/Debug/DebugFont.h"
 
-#include "canvas/Math/Transform.h"
 #include "canvas/Renderer/Renderer.h"
 #include "canvas/StaticData/All.h"
+#include "floats/Transform.h"
 
 namespace ca {
 
@@ -104,15 +104,15 @@ auto DebugFont::initialize() -> bool {
   return true;
 }
 
-auto DebugFont::drawText(const Mat4& transform, const Pos& position, const nu::StringView& text)
-    -> void {
+auto DebugFont::drawText(const fl::Mat4& transform, const fl::Pos& position,
+                         const nu::StringView& text) -> void {
   for (auto index = 0U; index < text.length(); ++index) {
-    Vec2 offset{
+    fl::Vec2 offset{
         static_cast<F32>(position.x) + static_cast<F32>(index) * (kGlyphWidth),
         static_cast<F32>(position.y),
     };
 
-    auto moved = transform * translationMatrix(Vec3{offset, 0.0f});
+    auto moved = transform * translationMatrix(fl::Vec3{offset, 0.0f});
 
     UniformBuffer uniforms;
     uniforms.set(m_transformUniformId, moved);

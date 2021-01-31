@@ -13,19 +13,19 @@ void UniformBuffer::set(UniformId uniformId, F32 value) {
   addUniformData(uniformId, 1, &value);
 }
 
-void UniformBuffer::set(UniformId uniformId, const Vec2& value) {
+void UniformBuffer::set(UniformId uniformId, const fl::Vec2& value) {
   addUniformData(uniformId, 2, &value.x);
 }
 
-void UniformBuffer::set(UniformId uniformId, const Vec3& value) {
+void UniformBuffer::set(UniformId uniformId, const fl::Vec3& value) {
   addUniformData(uniformId, 3, &value.x);
 }
 
-void UniformBuffer::set(UniformId uniformId, const Vec4& value) {
+void UniformBuffer::set(UniformId uniformId, const fl::Vec4& value) {
   addUniformData(uniformId, 4, &value.x);
 }
 
-void UniformBuffer::set(UniformId uniformId, const Mat4& value) {
+void UniformBuffer::set(UniformId uniformId, const fl::Mat4& value) {
   addUniformData(uniformId, 16, &value.col[0].x);
 }
 

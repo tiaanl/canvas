@@ -4,14 +4,13 @@
 
 #include <functional>
 
-#include "canvas/Math/Mat4.h"
-#include "canvas/Math/Vec2.h"
-#include "canvas/Math/Vec3.h"
-#include "canvas/Math/Vec4.h"
+#include "floats/Mat4.h"
+#include "floats/Vec2.h"
+#include "floats/Vec3.h"
+#include "floats/Vec4.h"
 #include "canvas/Renderer/Types.h"
 #include "canvas/Utils/Color.h"
 #include "nucleus/Containers/DynamicArray.h"
-#include "nucleus/Streams/WrappedDynamicArrayOutputStream.h"
 
 namespace ca {
 
@@ -23,10 +22,10 @@ public:
   ~UniformBuffer();
 
   void set(UniformId uniformId, F32 value);
-  void set(UniformId uniformId, const Vec2& value);
-  void set(UniformId uniformId, const Vec3& value);
-  void set(UniformId uniformId, const Vec4& value);
-  void set(UniformId uniformId, const Mat4& value);
+  void set(UniformId uniformId, const fl::Vec2& value);
+  void set(UniformId uniformId, const fl::Vec3& value);
+  void set(UniformId uniformId, const fl::Vec4& value);
+  void set(UniformId uniformId, const fl::Mat4& value);
   void set(UniformId uniformId, const Color& value);
 
   void apply(ApplyFunc func) const;

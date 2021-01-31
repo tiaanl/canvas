@@ -4,8 +4,8 @@
 
 #include <string>
 
-#include "canvas/Utils/Size.h"
 #include "canvas/Windows/Event.h"
+#include "floats/Size.h"
 #include "nucleus/Macros.h"
 #include "nucleus/Text/StaticString.h"
 
@@ -31,7 +31,7 @@ public:
   virtual bool onWindowCreated(Window* window);
 
   // Called when the size of the window changed.
-  virtual void onWindowResized(const Size& size);
+  virtual void onWindowResized(const fl::Size& size);
 
   // Called on every frame, delta being the ratio to get to 60 fps.
   virtual void tick(F32 delta);

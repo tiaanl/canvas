@@ -419,7 +419,7 @@ void Window::frameBufferSizeCallback(GLFWwindow* window, int width, int height) 
 
   windowPtr->m_debugInterface.resize({width, height});
 
-  Size windowSize(static_cast<U32>(width), static_cast<U32>(height));
+  fl::Size windowSize(static_cast<U32>(width), static_cast<U32>(height));
   windowPtr->m_delegate->onWindowResized(windowPtr->m_clientSize);
 }
 
@@ -428,7 +428,7 @@ void Window::cursorPositionCallback(GLFWwindow* window, double xPos, double yPos
   Window* windowPtr = getUserPointer(window);
 
   // Send the event to the delegate.
-  Pos mousePos{static_cast<I32>(std::round(xPos)), static_cast<I32>(std::round(yPos))};
+  fl::Pos mousePos{static_cast<I32>(std::round(xPos)), static_cast<I32>(std::round(yPos))};
 
   MouseEvent evt{Event::MouseMoved, mousePos, MouseEvent::Button::None};
   windowPtr->m_delegate->onMouseMoved(evt);
@@ -440,7 +440,7 @@ void Window::mouseButtonCallback(GLFWwindow* window, int button, int action, int
 
   double xPos, yPos;
   glfwGetCursorPos(window, &xPos, &yPos);
-  Pos mousePos{static_cast<I32>(std::round(xPos)), static_cast<I32>(std::round(yPos))};
+  fl::Pos mousePos{static_cast<I32>(std::round(xPos)), static_cast<I32>(std::round(yPos))};
 
   MouseEvent::Button evtButton{MouseEvent::Button::None};
   switch (button) {
@@ -476,9 +476,10 @@ void Window::scrollCallback(GLFWwindow* window, double xOffset, double yOffset) 
 
   double xPos, yPos;
   glfwGetCursorPos(window, &xPos, &yPos);
-  Pos mousePos{static_cast<I32>(std::round(xPos)), static_cast<I32>(std::round(yPos))};
+  fl::Pos mousePos{static_cast<I32>(std::round(xPos)), static_cast<I32>(std::round(yPos))};
 
-  Pos scrollOffset{static_cast<I32>(std::lround(xOffset)), static_cast<I32>(std::lround(yOffset))};
+  fl::Pos scrollOffset{static_cast<I32>(std::lround(xOffset)),
+                       static_cast<I32>(std::lround(yOffset))};
   MouseWheelEvent evt{Event::MouseWheel, mousePos, scrollOffset};
   windowPtr->m_delegate->onMouseWheel(evt);
 }

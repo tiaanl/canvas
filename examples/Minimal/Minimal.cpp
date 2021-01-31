@@ -174,7 +174,7 @@ private:
       return false;
     }
 
-    m_textureId = renderer->createTexture(ca::TextureFormat::Alpha, ca::Size{256, 128},
+    m_textureId = renderer->createTexture(ca::TextureFormat::Alpha, fl::Size{256, 128},
                                           ca::monoFont, ca::monoFontSize);
 
 #if 0

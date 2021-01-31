@@ -2,15 +2,15 @@
 #ifndef CANVAS_UTILS_GEOMETRY_H_
 #define CANVAS_UTILS_GEOMETRY_H_
 
-#include "canvas/Math/Vec2.h"
-#include "canvas/Math/Vec3.h"
 #include "canvas/Renderer/Renderer.h"
+#include "floats/Vec2.h"
+#include "floats/Vec3.h"
 
 namespace ca {
 
 struct PositionTextureCoords {
-  Vec3 position;
-  Vec2 textureCoords;
+  fl::Vec3 position;
+  fl::Vec2 textureCoords;
 };
 
 struct Geometry {
@@ -23,7 +23,7 @@ inline bool isValid(const Geometry& geometry) {
   return isValid(geometry.vertexBufferId) && isValid(geometry.indexBufferId);
 }
 
-Geometry createRectangle(Renderer* renderer, const Vec2& topLeft, const Vec2& bottomRight);
+Geometry createRectangle(Renderer* renderer, const fl::Vec2& topLeft, const fl::Vec2& bottomRight);
 
 }  // namespace ca
 

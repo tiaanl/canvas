@@ -2,7 +2,6 @@
 
 #include "canvas/Renderer/Renderer.h"
 #include "canvas/Renderer/VertexDefinition.h"
-#include "nucleus/Streams/WrappedMemoryInputStream.h"
 
 namespace ca {
 
@@ -40,11 +39,11 @@ void main() {
 
 ImmediateRenderer::ImmediateRenderer(Renderer* renderer) : m_renderer{renderer} {}
 
-auto ImmediateRenderer::setTransform(const Mat4& transform) -> void {
+auto ImmediateRenderer::setTransform(const fl::Mat4& transform) -> void {
   m_transform = transform;
 }
 
-auto ImmediateRenderer::vertex(const Vec3& position, const Color& color) -> void {
+auto ImmediateRenderer::vertex(const fl::Vec3& position, const Color& color) -> void {
   m_vertices.emplaceBack(position, color);
 }
 

@@ -11,7 +11,7 @@ bool WindowDelegate::onWindowCreated(Window*) {
 
 void WindowDelegate::tick(F32 NU_UNUSED(delta)) {}
 
-void WindowDelegate::onWindowResized(const Size&) {}
+void WindowDelegate::onWindowResized(const fl::Size&) {}
 
 void WindowDelegate::onMouseMoved(const MouseEvent&) {}
 

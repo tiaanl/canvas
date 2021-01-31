@@ -3,7 +3,7 @@
 #define CANVAS_WINDOWS_EVENT_H_
 
 #include "Keyboard.h"
-#include "canvas/Utils/Pos.h"
+#include "floats/Pos.h"
 #include "nucleus/Types.h"
 
 namespace ca {
@@ -31,9 +31,9 @@ struct KeyEvent : Event {
 };
 
 struct PositionEvent : Event {
-  Pos pos;
+  fl::Pos pos;
 
-  PositionEvent(Type type, const Pos& pos) : Event(type), pos(pos) {}
+  PositionEvent(Type type, const fl::Pos& pos) : Event(type), pos(pos) {}
 };
 
 struct MouseEvent : PositionEvent {
@@ -44,13 +44,14 @@ struct MouseEvent : PositionEvent {
     Right,
   } button;
 
-  MouseEvent(Type type, const Pos& pos, Button button) : PositionEvent(type, pos), button(button) {}
+  MouseEvent(Type type, const fl::Pos& pos, Button button)
+    : PositionEvent(type, pos), button(button) {}
 };
 
 struct MouseWheelEvent : PositionEvent {
-  Pos wheelOffset;
+  fl::Pos wheelOffset;
 
-  MouseWheelEvent(Type type, const Pos& pos, Pos& wheelOffset)
+  MouseWheelEvent(Type type, const fl::Pos& pos, fl::Pos& wheelOffset)
     : PositionEvent(type, pos), wheelOffset(wheelOffset) {}
 };
 

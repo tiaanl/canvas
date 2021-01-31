@@ -8,7 +8,10 @@
 #include "nucleus/Macros.h"
 #include "nucleus/Memory/ScopedPtr.h"
 #include "nucleus/Profiling.h"
+
+#if OS(WIN32)
 #include "nucleus/Win/WindowsMixin.h"
+#endif
 
 namespace ca {
 

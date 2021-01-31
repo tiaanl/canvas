@@ -24,7 +24,7 @@ public:
   bool initialize(WindowDelegate* delegate);
 
   // Get the client size of the window.
-  const ca::Size& getClientSize() const {
+  const fl::Size& getClientSize() const {
     return m_clientSize;
   }
 
@@ -63,7 +63,7 @@ private:
   DebugInterface m_debugInterface{&m_renderer, {1600, 900}};
 
   // Size of the client area of the window.
-  Size m_clientSize;
+  fl::Size m_clientSize;
 
   // Last frame's FPS.
   F64 m_lastFPS = 0.0;

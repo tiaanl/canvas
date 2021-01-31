@@ -1,10 +1,10 @@
 #ifndef CANVAS_RENDERER_IMMEDIATE_RENDERER_H_
 #define CANVAS_RENDERER_IMMEDIATE_RENDERER_H_
 
-#include "canvas/Math/Mat4.h"
-#include "canvas/Math/Vec3.h"
 #include "canvas/Renderer/Types.h"
 #include "canvas/Utils/Color.h"
+#include "floats/Mat4.h"
+#include "floats/Vec3.h"
 #include "nucleus/Containers/DynamicArray.h"
 #include "nucleus/Macros.h"
 
@@ -18,15 +18,15 @@ public:
 
   explicit ImmediateRenderer(Renderer* renderer);
 
-  auto setTransform(const Mat4& transform) -> void;
-  auto vertex(const Vec3& position, const Color& color) -> void;
+  auto setTransform(const fl::Mat4& transform) -> void;
+  auto vertex(const fl::Vec3& position, const Color& color) -> void;
 
   auto submit(DrawType drawType) -> void;
   auto reset() -> void;
 
 private:
   struct Vertex {
-    Vec3 position;
+    fl::Vec3 position;
     Color color;
   };
 
@@ -34,7 +34,7 @@ private:
 
   Renderer* m_renderer;
 
-  ca::Mat4 m_transform = ca::Mat4::identity;
+  fl::Mat4 m_transform = fl::Mat4::identity;
 
   VertexList m_vertices;
 };

@@ -1,10 +1,10 @@
 #ifndef CANVAS_DEBUG_DEBUG_FONT_H_
 #define CANVAS_DEBUG_DEBUG_FONT_H_
 
-#include "canvas/Math/Mat4.h"
 #include "canvas/Renderer/Types.h"
 #include "canvas/Renderer/UniformBuffer.h"
-#include "canvas/Utils/Pos.h"
+#include "floats/Mat4.h"
+#include "floats/Pos.h"
 #include "nucleus/Macros.h"
 #include "nucleus/Text/StringView.h"
 
@@ -20,7 +20,8 @@ public:
 
   auto initialize() -> bool;
 
-  auto drawText(const Mat4& transform, const Pos& position, const nu::StringView& text) -> void;
+  auto drawText(const fl::Mat4& transform, const fl::Pos& position, const nu::StringView& text)
+      -> void;
 
 private:
   Renderer* m_renderer;

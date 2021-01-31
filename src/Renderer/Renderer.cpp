@@ -47,7 +47,7 @@ bool compileShaderSource(const ShaderSource& source, U32 shaderType, U32* idOut)
 
   // Set the source of the shader.
   const GLchar* src = s.data();
-  const GLint length = static_cast<const GLint>(s.length());
+  GLint length = static_cast<GLint>(s.length());
   GL_CHECK(glShaderSource(id, 1, &src, &length));
   GL_CHECK(glCompileShader(id));
 
@@ -224,7 +224,7 @@ void Renderer::deleteIndexBuffer(IndexBufferId id) {
   GL_CHECK(glDeleteBuffers(1, &indexBufferData.id));
 }
 
-TextureId Renderer::createTexture(TextureFormat format, const Size& size, const U8* data,
+TextureId Renderer::createTexture(TextureFormat format, const fl::Size& size, const U8* data,
                                   MemSize dataSize, bool smooth) {
   if (format == TextureFormat::Unknown) {
     LOG(Warning) << "Can not create texture from image with unknown format.";
@@ -303,7 +303,7 @@ UniformId Renderer::createUniform(const nu::StringView& name) {
   return UniformId{m_uniforms.size() - 1};
 }
 
-void Renderer::resize(const Size& size) {
+void Renderer::resize(const fl::Size& size) {
   m_size = size;
   GL_CHECK(glViewport(0, 0, size.width, size.height));
 }
