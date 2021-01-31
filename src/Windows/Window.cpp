@@ -6,7 +6,7 @@
 #include "canvas/OpenGL.h"
 // r
 #include "GLFW/glfw3.h"
-#include "nucleus/HighPerformanceTimer.h"
+#include "nucleus/HighResolutionTimer.h"
 #include "nucleus/Text/Utils.h"
 
 namespace ca {
@@ -380,7 +380,7 @@ void Window::activateContext() {
 }
 
 void Window::paint() {
-  F64 startTime = nu::getCurrentHighPerformanceTick();
+  nu::Timer timer;
 
   m_renderer.beginFrame();
 
@@ -403,9 +403,7 @@ void Window::paint() {
   // Swap buffers.
   glfwSwapBuffers(m_window);
 
-  F64 endTime = nu::getCurrentHighPerformanceTick();
-  F64 frameTimeInMs = (endTime - startTime) / 1000.0;
-  m_lastFPS = 1000.0 / frameTimeInMs;
+  m_lastFPS = 1000000.0 / timer.elapsed();
 }
 
 // static
