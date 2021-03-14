@@ -66,16 +66,13 @@ target_link_libraries(canvas PUBLIC nucleus floats glfw)
 target_link_libraries(canvas PRIVATE glad::glad)
 target_compile_definitions(canvas PUBLIC -DUNICODE -D_CRT_SECURE_NO_WARNINGS)
 
-find_package(Catch2 CONFIG REQUIRED)
-
 set(canvasTests_SOURCE_FILES
-    tests/Main.cpp
     tests/Renderer/UniformBufferTests.cpp
     tests/Renderer/VertexDefinitionTests.cpp
     )
 
 nucleus_add_executable(canvasTests ${canvasTests_SOURCE_FILES})
-target_link_libraries(canvasTests PRIVATE canvas Catch2::Catch2)
+target_link_libraries(canvasTests PRIVATE canvas testsMain)
 
 if (CANVAS_BUILD_EXAMPLES)
     add_subdirectory(examples)
