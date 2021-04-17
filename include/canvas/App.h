@@ -1,58 +1,38 @@
-#ifndef CANVAS_APP_H_
-#define CANVAS_APP_H_
+#pragma once
 
 #include "canvas/Windows/Window.h"
 #include "canvas/Windows/WindowDelegate.h"
+#include "canvas/message_loop/message_pump_ui.h"
 #include "nucleus/Config.h"
 #include "nucleus/HighResolutionTimer.h"
 #include "nucleus/Macros.h"
 #include "nucleus/Memory/ScopedPtr.h"
 #include "nucleus/Profiling.h"
+#include "nucleus/message_loop/message_loop.h"
 
 #if OS(WIN32)
 #include "nucleus/Win/WindowsMixin.h"
 #endif
 
-namespace ca {
-
-template <typename T>
-class App {
-public:
-  NU_DELETE_COPY_AND_MOVE(App);
-
-  using DelegateType = T;
-
-  // Construct a new app with the specified delegate that will control the app.
-  App() = default;
-
-  // Run the application and only return once all the windows are closed.
-  I32 run() {
-    if (!m_window.initialize(&m_delegate)) {
-      LOG(Error) << "Could not set up window.";
-      return 1;
-    }
-
-    auto tick = nu::getTimeInMicroseconds();
-    while (m_window.processEvents()) {
-      auto now = nu::getTimeInMicroseconds();
-      m_delegate.tick(static_cast<F32>(1000000.0 / 60.0 / (now - tick)));
-      tick = now;
-
-      m_window.paint();
-    }
-
-    return 0;
-  }
-
-private:
+template <typename DelegateType>
+static I32 run() {
   // The single window we are managing.
-  Window m_window;
+  ca::Window window;
 
   // The delegate that processes window state events.
-  DelegateType m_delegate;
-};
+  DelegateType delegate;
 
-}  // namespace ca
+  if (!window.initialize(&delegate)) {
+    LOG(Error) << "Could not set up window.";
+    return 1;
+  }
+
+  ca::MessagePumpUI pump{&window};
+  nu::MessageLoop ml{&pump};
+  ml.run();
+
+  return 0;
+}
 
 #if OS(WIN)
 #define MAIN_HEADER int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
@@ -71,11 +51,8 @@ private:
     I32 result = 0;                                                                                \
     {                                                                                              \
       nu::Profiling profiling;                                                                     \
-      ca::App<DelegateType> app;                                                                   \
-      result = app.run();                                                                          \
+      result = run<DelegateType>();                                                                \
     }                                                                                              \
     MEMORY_DUMP                                                                                    \
     return result;                                                                                 \
   }
-
-#endif  // CANVAS_APP_H_

@@ -1,7 +1,6 @@
 
 #include "canvas/App.h"
 #include "canvas/StaticData/All.h"
-#include "canvas/Utils/ImmediateShapes.h"
 #include "canvas/Utils/ShaderSource.h"
 #include "nucleus/FilePath.h"
 #include "nucleus/Streams/FileInputStream.h"
@@ -11,7 +10,7 @@ public:
   NU_DELETE_COPY_AND_MOVE(Minimal);
 
   Minimal()
-    : ca::WindowDelegate("Canvas Minimal Example"), m_rootPath(nu::getCurrentWorkingDirectory()) {}
+    : ca::WindowDelegate("Canvas Minimal Example"), m_rootPath(nu::getExecutablePath().dirName()) {}
 
   ~Minimal() override = default;
 
@@ -43,7 +42,7 @@ public:
   }
 
   void onRender(ca::Renderer* renderer) override {
-    PROFILE("Mininal Frame")
+    PROFILE("Minimal Frame")
 
     {
       PROFILE("clear")
@@ -55,14 +54,6 @@ public:
       renderer->draw(ca::DrawType::Triangles, 6, m_programId, m_vertexBufferId, m_indexBufferId,
                      m_textureId, m_uniforms);
     }
-
-#if 0
-    ca::ImmediateRenderer immediate{renderer};
-    ca::drawRectangle(&immediate, ca::Vec3::zero, 0.7f, 0.3f, ca::Color::yellow);
-
-    ca::drawCircle(&immediate, {0.5f, 0.0f, 0.0f}, 0.5f, 64, ca::Color::red);
-    ca::drawOval(&immediate, {0.0f, 0.0f, 0.0f}, 0.1f, 1.0f, 32, ca::Color::red);
-#endif  // 0
   }
 
 private:
@@ -86,15 +77,6 @@ private:
     ca::VertexDefinition def;
     def.addAttribute(ca::ComponentType::Float32, ca::ComponentCount::Three);
     def.addAttribute(ca::ComponentType::Float32, ca::ComponentCount::Two);
-
-#if 0
-    static F32 vertices[] = {
-        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,  //
-        -0.5f, 0.5f,  0.0f, 0.0f, 1.0f,  //
-        0.5f,  -0.5f, 0.0f, 1.0f, 0.0f,  //
-        0.5f,  0.5f,  0.0f, 1.0f, 1.0f,  //
-    };
-#endif  // 0
 
     static struct {
       F32 x;
@@ -170,37 +152,11 @@ private:
     auto imagePath = m_rootPath / "default.png";
     nu::FileInputStream imageStream{imagePath};
     if (!imageStream.openedOk()) {
-      // LOG(Error) << "Could not load image: " << imagePath;
       return false;
     }
 
     m_textureId = renderer->createTexture(ca::TextureFormat::Alpha, fl::Size{256, 128},
                                           ca::monoFont, ca::monoFontSize);
-
-#if 0
-    struct Pixel {
-      U8 r;
-      U8 g;
-      U8 b;
-      U8 a;
-    };
-
-    ca::Size imageSize{16, 16};
-    nu::DynamicArray<Pixel> imageData;
-    imageData.resize(imageSize.width * imageSize.height);
-    U32 c = 0;
-    for (auto& p : imageData) {
-      p.r = (c % 2) ? 255 : 0;
-      p.g = (c % 2) ? 0 : 255;
-      p.b = 0;
-      p.a = 255;
-
-      ++c;
-    }
-
-    m_textureId = renderer->createTexture(ca::TextureFormat::RGBA, imageSize, (U8*)imageData.data(),
-                                          imageData.size() * sizeof(ca::Color), false);
-#endif  // 0
 
     return isValid(m_textureId);
   }

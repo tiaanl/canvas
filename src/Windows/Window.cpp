@@ -4,8 +4,9 @@
 #include <cmath>
 
 #include "canvas/OpenGL.h"
-// r
+// -------------
 #include "GLFW/glfw3.h"
+#include "canvas/message_loop/message_pump_ui.h"
 #include "nucleus/HighResolutionTimer.h"
 #include "nucleus/Text/Utils.h"
 
@@ -377,6 +378,10 @@ bool Window::processEvents() {
 
 void Window::activateContext() {
   glfwMakeContextCurrent(m_window);
+}
+
+void Window::tick(F32 delta) {
+  m_delegate->tick(delta);
 }
 
 void Window::paint() {

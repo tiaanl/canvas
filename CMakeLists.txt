@@ -29,8 +29,8 @@ set(canvas_HEADER_FILES
     include/canvas/Renderer/VertexDefinition.h
     include/canvas/StaticData/All.h
     include/canvas/Utils/Color.h
-    include/canvas/Utils/Geometry.h
     include/canvas/Utils/GLCheck.h
+    include/canvas/Utils/Geometry.h
     include/canvas/Utils/ImmediateShapes.h
     include/canvas/Utils/ShaderSource.h
     include/canvas/Windows/Event.h
@@ -40,6 +40,7 @@ set(canvas_HEADER_FILES
     include/canvas/Windows/Window.h
     include/canvas/Windows/WindowDelegate.h
     include/canvas/Windows/WindowStyle.h
+    include/canvas/message_loop/message_pump_ui.h
     )
 
 set(canvas_SOURCE_FILES
@@ -59,6 +60,7 @@ set(canvas_SOURCE_FILES
     src/Utils/ShaderSource.cpp
     src/Windows/Window.cpp
     src/Windows/WindowDelegate.cpp
+    src/message_loop/message_pump_ui.cpp
     )
 
 nucleus_add_library(canvas ${canvas_HEADER_FILES} ${canvas_SOURCE_FILES})
