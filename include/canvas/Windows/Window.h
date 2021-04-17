@@ -1,6 +1,4 @@
-
-#ifndef CANVAS_WINDOWS_WINDOW_H_
-#define CANVAS_WINDOWS_WINDOW_H_
+#pragma once
 
 #include "canvas/Debug/DebugInterface.h"
 #include "canvas/Renderer/Renderer.h"
@@ -39,6 +37,9 @@ public:
   // Activate this window's rendering context.
   void activateContext();
 
+  // Tick the delegate of the window.
+  void tick(F32 delta);
+
   // Request that the window paint it's contents.
   void paint();
 
@@ -70,5 +71,3 @@ private:
 };
 
 }  // namespace ca
-
-#endif  // CANVAS_WINDOWS_WINDOW_H_
