@@ -10,7 +10,7 @@
 #include "nucleus/Profiling.h"
 #include "nucleus/message_loop/message_loop.h"
 
-#if OS(WIN32)
+#if OS(WIN)
 #include "nucleus/Win/WindowsMixin.h"
 #endif
 
