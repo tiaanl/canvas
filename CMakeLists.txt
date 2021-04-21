@@ -27,6 +27,7 @@ set(canvas_HEADER_FILES
     include/canvas/Renderer/Types.h
     include/canvas/Renderer/UniformBuffer.h
     include/canvas/Renderer/VertexDefinition.h
+    include/canvas/Renderer/immediate_mesh.h
     include/canvas/StaticData/All.h
     include/canvas/Utils/Color.h
     include/canvas/Utils/GLCheck.h
@@ -35,8 +36,8 @@ set(canvas_HEADER_FILES
     include/canvas/Utils/ShaderSource.h
     include/canvas/Windows/Event.h
     include/canvas/Windows/Keyboard.h
-    include/canvas/Windows/KeyboardEventHandlerInterface.h
-    include/canvas/Windows/MouseEventHandlerInterface.h
+    include/canvas/Windows/keyboard_event_handler_interface.h
+    include/canvas/Windows/mouse_event_handler_interface.h
     include/canvas/Windows/Window.h
     include/canvas/Windows/WindowDelegate.h
     include/canvas/Windows/WindowStyle.h
@@ -52,6 +53,7 @@ set(canvas_SOURCE_FILES
     src/Renderer/Renderer.cpp
     src/Renderer/UniformBuffer.cpp
     src/Renderer/VertexDefinition.cpp
+    src/Renderer/immediate_mesh.cpp
     src/StaticData/MonoFont.cpp
     src/Utils/Color.cpp
     src/Utils/GLCheck.cpp

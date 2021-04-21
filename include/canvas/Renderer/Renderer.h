@@ -21,7 +21,7 @@ public:
   ProgramId createProgram(const ShaderSource& vertexShader, const ShaderSource& fragmentShader);
   void deleteProgram(ProgramId programId);
 
-  VertexBufferId createVertexBuffer(const VertexDefinition& bufferDefinition, void* data,
+  VertexBufferId createVertexBuffer(const VertexDefinition& bufferDefinition, const void* data,
                                     MemSize dataSize);
   void vertexBufferData(VertexBufferId id, void* data, MemSize dataSize);
   void deleteVertexBuffer(VertexBufferId id);

@@ -7,7 +7,7 @@ namespace ca {
 
 namespace {
 
-auto g_vertexShaderSource = R"source(
+auto g_vertex_shader_source = R"source(
 #version 330
 
 layout(location = 0) in vec3 inPosition;
@@ -23,7 +23,7 @@ void main() {
 }
 )source";
 
-auto g_fragmentShaderSource = R"source(
+auto g_fragment_shader_source = R"source(
 #version 330
 
 in vec4 vsColor;
@@ -35,45 +35,44 @@ void main() {
 }
 )source";
 
+ProgramId g_program_id{kInvalidResourceId};
+
 }  // namespace
 
 ImmediateRenderer::ImmediateRenderer(Renderer* renderer) : m_renderer{renderer} {}
 
-auto ImmediateRenderer::setTransform(const fl::Mat4& transform) -> void {
-  m_transform = transform;
+ImmediateMesh& ImmediateRenderer::create_mesh(DrawType draw_type, const fl::Mat4& transform) {
+  auto result = meshes_.emplaceBack(this, draw_type, transform);
+  return result.element();
 }
 
-auto ImmediateRenderer::vertex(const fl::Vec3& position, const Color& color) -> void {
-  m_vertices.emplaceBack(position, color);
-}
+void ImmediateRenderer::submit_to_renderer() {
+  if (!g_program_id.isValid()) {
+    LOG(Info) << "Creating program";
+    g_program_id = m_renderer->createProgram(ShaderSource::from(g_vertex_shader_source),
+                                             ShaderSource::from(g_fragment_shader_source));
+  }
 
-auto ImmediateRenderer::submit(DrawType drawType) -> void {
   VertexDefinition def;
   def.addAttribute(ComponentType::Float32, ComponentCount::Three);
   def.addAttribute(ComponentType::Float32, ComponentCount::Four);
 
-  auto vertexBufferId = m_renderer->createVertexBuffer(
-      def, m_vertices.data(), m_vertices.size() * sizeof(typename VertexList::ElementType));
+  for (const auto& mesh : meshes_) {
+    auto vertex_buffer_id = m_renderer->createVertexBuffer(
+        def, mesh.vertices_.data(), mesh.vertices_.size() * sizeof(ImmediateMesh::Vertex));
 
-  auto programId = m_renderer->createProgram(ShaderSource::from(g_vertexShaderSource),
-                                             ShaderSource::from(g_fragmentShaderSource));
+    auto transform_uniform_id = m_renderer->createUniform("uTransform");
 
-  auto transformUniformId = m_renderer->createUniform("uTransform");
+    UniformBuffer uniforms;
+    uniforms.set(transform_uniform_id, mesh.transform_);
 
-  UniformBuffer uniforms;
-  uniforms.set(transformUniformId, m_transform);
+    m_renderer->draw(mesh.draw_type_, 0, static_cast<U32>(mesh.vertices_.size()), g_program_id,
+                     vertex_buffer_id, TextureId{}, uniforms);
 
-  m_renderer->draw(drawType, 0, static_cast<U32>(m_vertices.size()), programId, vertexBufferId,
-                   TextureId{}, uniforms);
+    m_renderer->deleteVertexBuffer(vertex_buffer_id);
+  }
 
-  // m_renderer->deleteProgram(programId);
-  m_renderer->deleteVertexBuffer(vertexBufferId);
-
-  reset();
-}
-
-auto ImmediateRenderer::reset() -> void {
-  m_vertices.clear();
+  meshes_.clear();
 }
 
 }  // namespace ca

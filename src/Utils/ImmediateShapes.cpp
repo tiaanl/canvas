@@ -13,12 +13,13 @@ auto drawRectangle(ImmediateRenderer* renderer, const fl::Vec3& center, F32 widt
                    const Color& color) -> void {
   const F32 halfWidth = width * 0.5f;
   const F32 halfHeight = height * 0.5f;
-  renderer->vertex(center + fl::Vec3{-halfWidth, -halfHeight, 0.0f}, color);
-  renderer->vertex(center + fl::Vec3{-halfWidth, halfHeight, 0.0f}, color);
-  renderer->vertex(center + fl::Vec3{halfWidth, halfHeight, 0.0f}, color);
-  renderer->vertex(center + fl::Vec3{halfWidth, -halfHeight, 0.0f}, color);
-  renderer->vertex(center + fl::Vec3{-halfWidth, -halfHeight, 0.0f}, color);
-  renderer->submit(DrawType::LineStrip);
+
+  renderer->create_mesh(DrawType::LineStrip)
+      .vertex(center + fl::Vec3{-halfWidth, -halfHeight, 0.0f}, color)
+      .vertex(center + fl::Vec3{-halfWidth, halfHeight, 0.0f}, color)
+      .vertex(center + fl::Vec3{halfWidth, halfHeight, 0.0f}, color)
+      .vertex(center + fl::Vec3{halfWidth, -halfHeight, 0.0f}, color)
+      .vertex(center + fl::Vec3{-halfWidth, -halfHeight, 0.0f}, color);
 }
 
 auto drawCircle(ImmediateRenderer* renderer, const fl::Vec3& center, F32 radius, I32 segments,
@@ -30,15 +31,15 @@ auto drawOval(ImmediateRenderer* renderer, const fl::Vec3& center, F32 verticalR
               F32 horizontalRadius, I32 segments, const Color& color) -> void {
   segments = fl::maximum(segments, 3);
 
+  auto& mesh = renderer->create_mesh(DrawType::LineStrip);
+
   for (auto i = 0; i < segments + 1; ++i) {
     F32 d = static_cast<F32>(i) * 360.0f / static_cast<F32>(segments);
     fl::Vec3 p{cosine(fl::degrees(d)) * horizontalRadius, sine(fl::degrees(d)) * verticalRadius,
                0.0f};
 
-    renderer->vertex(center + p, color);
+    mesh.vertex(center + p, color);
   }
-
-  renderer->submit(DrawType::LineStrip);
 }
 
 }  // namespace ca

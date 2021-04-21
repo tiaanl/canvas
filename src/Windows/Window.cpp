@@ -434,7 +434,7 @@ void Window::cursorPositionCallback(GLFWwindow* window, double xPos, double yPos
   fl::Pos mousePos{static_cast<I32>(std::round(xPos)), static_cast<I32>(std::round(yPos))};
 
   MouseEvent evt{Event::MouseMoved, mousePos, MouseEvent::Button::None};
-  windowPtr->m_delegate->onMouseMoved(evt);
+  windowPtr->m_delegate->on_mouse_moved(evt);
 }
 
 // static
@@ -466,10 +466,10 @@ void Window::mouseButtonCallback(GLFWwindow* window, int button, int action, int
 
   if (action == GLFW_PRESS) {
     MouseEvent evt{Event::MousePressed, mousePos, evtButton};
-    windowPtr->m_delegate->onMousePressed(evt);
+    windowPtr->m_delegate->on_mouse_pressed(evt);
   } else if (action == GLFW_RELEASE) {
     MouseEvent evt{Event::MouseReleased, mousePos, evtButton};
-    windowPtr->m_delegate->onMouseReleased(evt);
+    windowPtr->m_delegate->on_mouse_released(evt);
   }
 }
 
@@ -484,7 +484,7 @@ void Window::scrollCallback(GLFWwindow* window, double xOffset, double yOffset) 
   fl::Pos scrollOffset{static_cast<I32>(std::lround(xOffset)),
                        static_cast<I32>(std::lround(yOffset))};
   MouseWheelEvent evt{Event::MouseWheel, mousePos, scrollOffset};
-  windowPtr->m_delegate->onMouseWheel(evt);
+  windowPtr->m_delegate->on_mouse_wheel(evt);
 }
 
 // static
@@ -499,10 +499,10 @@ void Window::keyCallback(GLFWwindow* window, int key, int NU_UNUSED(scancode), i
 
   if (action == GLFW_PRESS) {
     KeyEvent evt{Event::KeyPressed, getKeyFromGLFWKey(key)};
-    windowPtr->m_delegate->onKeyPressed(evt);
+    windowPtr->m_delegate->on_key_pressed(evt);
   } else {
     KeyEvent evt{Event::KeyReleased, getKeyFromGLFWKey(key)};
-    windowPtr->m_delegate->onKeyReleased(evt);
+    windowPtr->m_delegate->on_key_released(evt);
   }
 }
 

@@ -134,7 +134,7 @@ void Renderer::deleteProgram(ProgramId programId) {
   glDeleteProgram(programData.id);
 }
 
-VertexBufferId Renderer::createVertexBuffer(const VertexDefinition& vertexDefinition, void* data,
+VertexBufferId Renderer::createVertexBuffer(const VertexDefinition& vertexDefinition, const void* data,
                                             MemSize dataSize) {
   VertexBufferData result;
 
