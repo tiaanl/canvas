@@ -1,10 +1,10 @@
-#ifndef CANVAS_RENDERER_RENDERER_H_
-#define CANVAS_RENDERER_RENDERER_H_
+#pragma once
 
 #include "canvas/Renderer/Command.h"
 #include "canvas/Renderer/Types.h"
 #include "canvas/Renderer/UniformBuffer.h"
 #include "canvas/Renderer/VertexDefinition.h"
+#include "canvas/Renderer/render_state.h"
 #include "canvas/Utils/ShaderSource.h"
 #include "floats/Size.h"
 #include "nucleus/Containers/DynamicArray.h"
@@ -41,6 +41,10 @@ public:
 
   // Resize the rendering area. Typically called when the window is resized.
   void resize(const fl::Size& size);
+
+  NU_NO_DISCARD RenderState& state() {
+    return render_state_;
+  }
 
   void beginFrame();
   void endFrame();
@@ -83,8 +87,8 @@ private:
   nu::DynamicArray<IndexBufferData> m_indexBuffers;
   nu::DynamicArray<TextureData> m_textures;
   nu::DynamicArray<UniformData> m_uniforms;
+
+  RenderState render_state_;
 };
 
 }  // namespace ca
-
-#endif  // CANVAS_RENDERER_RENDERER_H_

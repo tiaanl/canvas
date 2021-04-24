@@ -1,7 +1,7 @@
-project(Minimal)
+project(CanvasMinimal)
 
-nucleus_add_executable(Minimal WIN32 MACOSX_BUNDLE Minimal.cpp)
-target_link_libraries(Minimal canvas)
+nucleus_add_executable(CanvasMinimal WIN32 MACOSX_BUNDLE canvas_minimal.cpp)
+target_link_libraries(CanvasMinimal PRIVATE canvas)
 
 function(copy_dependency file)
     add_custom_command(

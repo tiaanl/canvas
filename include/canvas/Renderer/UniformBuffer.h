@@ -4,22 +4,20 @@
 
 #include <functional>
 
+#include "canvas/Renderer/Types.h"
+#include "canvas/Utils/Color.h"
 #include "floats/Mat4.h"
 #include "floats/Vec2.h"
 #include "floats/Vec3.h"
 #include "floats/Vec4.h"
-#include "canvas/Renderer/Types.h"
-#include "canvas/Utils/Color.h"
 #include "nucleus/Containers/DynamicArray.h"
+#include "nucleus/function.h"
 
 namespace ca {
 
 class UniformBuffer {
 public:
-  using ApplyFunc = std::function<void(UniformId uniformId, U32 count, const F32* values)>;
-
-  UniformBuffer();
-  ~UniformBuffer();
+  using ApplyFunc = nu::Function<void(UniformId uniformId, U32 count, const F32* values)>;
 
   void set(UniformId uniformId, F32 value);
   void set(UniformId uniformId, const fl::Vec2& value);

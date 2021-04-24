@@ -18,9 +18,9 @@ class Renderer;
 class Window;
 
 class WindowDelegate : public MouseEventHandlerInterface, public KeyboardEventHandlerInterface {
-public:
   NU_DELETE_COPY_AND_MOVE(WindowDelegate);
 
+public:
   explicit WindowDelegate(nu::StringView title) : m_title(title) {}
 
   virtual ~WindowDelegate() = default;

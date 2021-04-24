@@ -12,9 +12,12 @@ constexpr MemSize kInvalidResourceId = std::numeric_limits<MemSize>::max();
 
 #define DECLARE_RESOURCE_ID(Name)                                                                  \
   struct Name##Id {                                                                                \
-    MemSize id;                                                                                    \
+    MemSize id = kInvalidResourceId;                                                               \
     bool isValid() const {                                                                         \
       return id != kInvalidResourceId;                                                             \
+    }                                                                                              \
+    operator bool() const {                                                                        \
+      return isValid();                                                                            \
     }                                                                                              \
   };                                                                                               \
                                                                                                    \

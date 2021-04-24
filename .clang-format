@@ -3,5 +3,6 @@ BasedOnStyle: Google
 AccessModifierOffset: -2
 AlignEscapedNewlines: Right
 AllowShortFunctionsOnASingleLine: Empty
+AllowShortLambdasOnASingleLine: Empty
 ColumnLimit: 100
 ConstructorInitializerIndentWidth: 2

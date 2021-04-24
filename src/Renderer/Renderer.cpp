@@ -134,8 +134,8 @@ void Renderer::deleteProgram(ProgramId programId) {
   glDeleteProgram(programData.id);
 }
 
-VertexBufferId Renderer::createVertexBuffer(const VertexDefinition& vertexDefinition, const void* data,
-                                            MemSize dataSize) {
+VertexBufferId Renderer::createVertexBuffer(const VertexDefinition& vertexDefinition,
+                                            const void* data, MemSize dataSize) {
   VertexBufferData result;
 
   // Create a vertex array object and bind it.
@@ -410,12 +410,20 @@ void Renderer::draw(DrawType drawType, U32 vertexOffset, U32 vertexCount, Progra
       break;
   }
 
+  if (render_state_.depth_test()) {
+    GL_CHECK(glEnable(GL_DEPTH_TEST));
+  }
+
   GL_CHECK(glEnable(GL_BLEND));
   GL_CHECK(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
   GL_CHECK(glDrawArrays(mode, vertexOffset, vertexCount));
 
   GL_CHECK(glDisable(GL_BLEND));
+
+  if (render_state_.depth_test()) {
+    GL_CHECK(glDisable(GL_DEPTH_TEST));
+  }
 }
 
 void Renderer::draw(DrawType drawType, U32 indexCount, ProgramId programId,

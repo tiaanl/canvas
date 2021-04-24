@@ -1,2 +1,4 @@
+project(CanvasMatrices)
 
-add_subdirectory(Minimal)
+add_subdirectory(CanvasMatrices)
+add_subdirectory(CanvasMinimal)

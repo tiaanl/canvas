@@ -5,10 +5,6 @@
 
 namespace ca {
 
-UniformBuffer::UniformBuffer() = default;
-
-UniformBuffer::~UniformBuffer() = default;
-
 void UniformBuffer::set(UniformId uniformId, F32 value) {
   addUniformData(uniformId, 1, &value);
 }
