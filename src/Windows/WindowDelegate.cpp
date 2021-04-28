@@ -19,10 +19,12 @@ void WindowDelegate::on_mouse_moved(const MouseEvent& evt) {
   }
 }
 
-void WindowDelegate::on_mouse_pressed(const MouseEvent& evt) {
+bool WindowDelegate::on_mouse_pressed(const MouseEvent& evt) {
   for (auto handler : mouse_input_handlers_) {
     handler->on_mouse_pressed(evt);
   }
+
+  return false;
 }
 
 void WindowDelegate::on_mouse_released(const MouseEvent& evt) {

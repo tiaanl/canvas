@@ -49,7 +49,7 @@ public:
 
   // Override: MouseEventHandlerInterface
   void on_mouse_moved(const MouseEvent& evt) override;
-  void on_mouse_pressed(const MouseEvent& evt) override;
+  bool on_mouse_pressed(const MouseEvent& evt) override;
   void on_mouse_released(const MouseEvent& evt) override;
   void on_mouse_wheel(const MouseWheelEvent& evt) override;
 
