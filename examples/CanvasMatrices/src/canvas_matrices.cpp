@@ -7,12 +7,13 @@ static const char* VERTEX_SHADER = R"(
 layout(location = 0) in vec3 inPosition;
 layout(location = 1) in vec4 inColor;
 
-uniform mat4 u_mvp;
+uniform mat4 u_projection;
+uniform mat4 u_view;
 
 out vec4 vertex_color;
 
 void main() {
-  gl_Position = u_mvp * vec4(inPosition, 1.0);
+  gl_Position = u_projection * u_view * vec4(inPosition, 1.0);
   vertex_color = inColor;
 }
 )";
@@ -106,8 +107,13 @@ public:
       return false;
     }
 
-    mvp_uniform_id_ = renderer->createUniform("u_mvp");
-    if (!mvp_uniform_id_) {
+    projection_matrix_uniform_id_ = renderer->createUniform("u_projection");
+    if (!projection_matrix_uniform_id_) {
+      return false;
+    }
+
+    view_matrix_uniform_id_ = renderer->createUniform("u_view");
+    if (!view_matrix_uniform_id_) {
       return false;
     }
 
@@ -132,17 +138,25 @@ public:
       last_mouse_pos_ = evt.pos;
 
       horizontal_ += delta_x;
+      while (horizontal_ > 360.0f) {
+        horizontal_ -= 360.0f;
+      }
       vertical_ += delta_y;
+      vertical_ = fl::clamp(vertical_, -89.0f, 89.0f);
     }
   }
 
-  void on_mouse_pressed(const ca::MouseEvent& evt) override {
+  bool on_mouse_pressed(const ca::MouseEvent& evt) override {
     WindowDelegate::on_mouse_pressed(evt);
 
     if (evt.button == ca::MouseEvent::Button::Left) {
       is_dragging_ = true;
       last_mouse_pos_ = evt.pos;
+
+      return true;
     }
+
+    return false;
   }
 
   void on_mouse_released(const ca::MouseEvent& evt) override {
@@ -163,8 +177,7 @@ public:
   }
 
   void onRender(ca::Renderer* renderer) override {
-    // auto mvp = fl::Mat4::identity;
-    auto projection =
+    auto projection_matrix =
         fl::perspectiveProjection(fl::Angle::fromDegrees(60.0f), aspect_ratio_, 0.1f, 100.0f);
 
     auto rotation_1 = fl::Quaternion::fromEulerAngles(fl::Angle::fromDegrees(vertical_),
@@ -175,10 +188,11 @@ public:
                           .toRotationMatrix();
     auto translation = fl::translationMatrix({0.0f, 0.0f, -5.0f});
 
-    auto mvp = projection * (translation * rotation_1 * rotation_2);
+    auto view_matrix = translation * rotation_1 * rotation_2;
 
     ca::UniformBuffer uniforms;
-    uniforms.set(mvp_uniform_id_, mvp);
+    uniforms.set(projection_matrix_uniform_id_, projection_matrix);
+    uniforms.set(view_matrix_uniform_id_, view_matrix);
 
     renderer->state().depth_test(true);
     renderer->draw(ca::DrawType::Triangles, 0, 36, program_id_, vertex_buffer_id_, {}, uniforms);
@@ -187,7 +201,8 @@ public:
 private:
   ca::VertexBufferId vertex_buffer_id_;
   ca::ProgramId program_id_;
-  ca::UniformId mvp_uniform_id_;
+  ca::UniformId projection_matrix_uniform_id_;
+  ca::UniformId view_matrix_uniform_id_;
 
   F32 aspect_ratio_ = 1.0f;
 
