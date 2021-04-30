@@ -1,6 +1,7 @@
 #ifndef CANVAS_DEBUG_DEBUG_INTERFACE_H_
 #define CANVAS_DEBUG_DEBUG_INTERFACE_H_
 
+#include <floats/Size.h>
 #include <nucleus/Profiling.h>
 
 #include "canvas/Debug/DebugFont.h"
