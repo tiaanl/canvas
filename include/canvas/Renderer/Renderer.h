@@ -5,6 +5,7 @@
 #include "canvas/Renderer/UniformBuffer.h"
 #include "canvas/Renderer/VertexDefinition.h"
 #include "canvas/Renderer/render_state.h"
+#include "canvas/Renderer/texture_slots.h"
 #include "canvas/Utils/ShaderSource.h"
 #include "floats/Size.h"
 #include "nucleus/Containers/DynamicArray.h"
@@ -26,11 +27,11 @@ public:
   void vertexBufferData(VertexBufferId id, void* data, MemSize dataSize);
   void deleteVertexBuffer(VertexBufferId id);
 
-  IndexBufferId createIndexBuffer(ComponentType componentType, void* data, MemSize dataSize);
+  IndexBufferId createIndexBuffer(ComponentType componentType, const void* data, MemSize dataSize);
   void indexBufferData(IndexBufferId id, void* data, MemSize dataSize);
   void deleteIndexBuffer(IndexBufferId id);
 
-  TextureId createTexture(TextureFormat format, const fl::Size& size, const U8* data,
+  TextureId createTexture(TextureFormat format, const fl::Size& size, const void* data,
                           MemSize dataSize, bool smooth = false);
 
   UniformId createUniform(const nu::StringView& name);
@@ -52,10 +53,12 @@ public:
   void clear(const Color& color);
 
   void draw(DrawType drawType, U32 vertexOffset, U32 vertexCount, ProgramId programId,
-            VertexBufferId vertexBufferId, TextureId textureId, const UniformBuffer& uniforms);
+            VertexBufferId vertexBufferId, const TextureSlots& textures,
+            const UniformBuffer& uniforms);
 
   void draw(DrawType drawType, U32 indexCount, ProgramId programId, VertexBufferId vertexBufferId,
-            IndexBufferId indexBufferId, TextureId textureId, const UniformBuffer& uniforms);
+            IndexBufferId indexBufferId, const TextureSlots& textures,
+            const UniformBuffer& uniforms);
 
 private:
   struct ProgramData {
@@ -79,6 +82,9 @@ private:
   struct UniformData {
     nu::StaticString<128> name;
   };
+
+  void pre_draw(ProgramId program_id, const TextureSlots& textures, const UniformBuffer& uniforms);
+  void post_draw();
 
   fl::Size m_size;
 

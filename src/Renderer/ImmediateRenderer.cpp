@@ -67,7 +67,7 @@ void ImmediateRenderer::submit_to_renderer() {
     uniforms.set(transform_uniform_id, mesh.transform_);
 
     m_renderer->draw(mesh.draw_type_, 0, static_cast<U32>(mesh.vertices_.size()), g_program_id,
-                     vertex_buffer_id, TextureId{}, uniforms);
+                     vertex_buffer_id, {}, uniforms);
 
     m_renderer->deleteVertexBuffer(vertex_buffer_id);
   }

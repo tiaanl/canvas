@@ -71,6 +71,37 @@ bool compileShaderSource(const ShaderSource& source, U32 shaderType, U32* idOut)
   return true;
 }
 
+U32 mode_from_draw_type(DrawType draw_type) {
+  U32 mode = GL_TRIANGLES;
+  switch (draw_type) {
+    case DrawType::Triangles:
+      mode = GL_TRIANGLES;
+      break;
+
+    case DrawType::TriangleStrip:
+      mode = GL_TRIANGLE_STRIP;
+      break;
+
+    case DrawType::TriangleFan:
+      mode = GL_TRIANGLE_FAN;
+      break;
+
+    case DrawType::Lines:
+      mode = GL_LINES;
+      break;
+
+    case DrawType::LineStrip:
+      mode = GL_LINE_STRIP;
+      break;
+
+    default:
+      DCHECK(false) << "Invalid draw type";
+      break;
+  }
+
+  return mode;
+}
+
 }  // namespace
 
 Renderer::Renderer() = default;
@@ -191,7 +222,7 @@ void Renderer::deleteVertexBuffer(VertexBufferId id) {
   GL_CHECK(glDeleteVertexArrays(1, &data.id));
 }
 
-IndexBufferId Renderer::createIndexBuffer(ComponentType componentType, void* data,
+IndexBufferId Renderer::createIndexBuffer(ComponentType componentType, const void* data,
                                           MemSize dataSize) {
   GLuint bufferId;
   GL_CHECK(glGenBuffers(1, &bufferId));
@@ -224,7 +255,7 @@ void Renderer::deleteIndexBuffer(IndexBufferId id) {
   GL_CHECK(glDeleteBuffers(1, &indexBufferData.id));
 }
 
-TextureId Renderer::createTexture(TextureFormat format, const fl::Size& size, const U8* data,
+TextureId Renderer::createTexture(TextureFormat format, const fl::Size& size, const void* data,
                                   MemSize dataSize, bool smooth) {
   if (format == TextureFormat::Unknown) {
     LOG(Warning) << "Can not create texture from image with unknown format.";
@@ -321,118 +352,28 @@ void Renderer::clear(const Color& color) {
 }
 
 void Renderer::draw(DrawType drawType, U32 vertexOffset, U32 vertexCount, ProgramId programId,
-                    VertexBufferId vertexBufferId, TextureId textureId,
+                    VertexBufferId vertexBufferId, const TextureSlots& textures,
                     const UniformBuffer& uniforms) {
-  if (!isValid(programId)) {
-    LOG(Error) << "Draw command without program.";
-    return;
-  }
+  pre_draw(programId, textures, uniforms);
 
   if (!isValid(vertexBufferId)) {
     LOG(Error) << "Draw command without vertex buffer.";
     return;
   }
 
-  auto& programData = m_programs[programId.id];
-  GL_CHECK(glUseProgram(programData.id));
-
   auto& vertexBufferData = m_vertexBuffers[vertexBufferId.id];
   GL_CHECK(glBindVertexArray(vertexBufferData.id));
 
-  if (isValid(textureId)) {
-    auto& textureData = m_textures[textureId.id];
-    GL_CHECK(glBindTexture(GL_TEXTURE_2D, textureData.id));
-  }
-
-  // Process uniforms.
-  uniforms.apply([&](UniformId uniformId, U32 count, const F32* values) {
-    const auto& uniformData = m_uniforms[uniformId.id];
-    char buf[64];
-    std::strncpy(buf, uniformData.name.data(), uniformData.name.length());
-    buf[uniformData.name.length()] = '\0';
-    I32 location = glGetUniformLocation(programData.id, buf);
-    if (location == -1) {
-      LOG(Warning) << "Could not get location for uniform: " << uniformData.name.data();
-      return;
-    }
-
-    switch (count) {
-      case 1:
-        GL_CHECK(glUniform1fv(location, 1, values));
-        break;
-
-      case 2:
-        GL_CHECK(glUniform2fv(location, 1, values));
-        break;
-
-      case 3:
-        GL_CHECK(glUniform3fv(location, 1, values));
-        break;
-
-      case 4:
-        GL_CHECK(glUniform4fv(location, 1, values));
-        break;
-
-      case 16:
-        glUniformMatrix4fv(location, 1, GL_FALSE, values);
-        break;
-
-      default:
-        DCHECK(false) << "Invalid uniform size.";
-        break;
-    }
-  });
-
-  U32 mode = GL_TRIANGLES;
-  switch (drawType) {
-    case DrawType::Triangles:
-      mode = GL_TRIANGLES;
-      break;
-
-    case DrawType::TriangleStrip:
-      mode = GL_TRIANGLE_STRIP;
-      break;
-
-    case DrawType::TriangleFan:
-      mode = GL_TRIANGLE_FAN;
-      break;
-
-    case DrawType::Lines:
-      mode = GL_LINES;
-      break;
-
-    case DrawType::LineStrip:
-      mode = GL_LINE_STRIP;
-      break;
-
-    default:
-      DCHECK(false) << "Invalid draw type";
-      break;
-  }
-
-  if (render_state_.depth_test()) {
-    GL_CHECK(glEnable(GL_DEPTH_TEST));
-  }
-
-  GL_CHECK(glEnable(GL_BLEND));
-  GL_CHECK(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-
+  auto mode = mode_from_draw_type(drawType);
   GL_CHECK(glDrawArrays(mode, vertexOffset, vertexCount));
 
-  GL_CHECK(glDisable(GL_BLEND));
-
-  if (render_state_.depth_test()) {
-    GL_CHECK(glDisable(GL_DEPTH_TEST));
-  }
+  post_draw();
 }
 
 void Renderer::draw(DrawType drawType, U32 indexCount, ProgramId programId,
-                    VertexBufferId vertexBufferId, IndexBufferId indexBufferId, TextureId textureId,
-                    const UniformBuffer& uniforms) {
-  if (!isValid(programId)) {
-    LOG(Error) << "Draw command without program.";
-    return;
-  }
+                    VertexBufferId vertexBufferId, IndexBufferId indexBufferId,
+                    const TextureSlots& textures, const UniformBuffer& uniforms) {
+  pre_draw(programId, textures, uniforms);
 
   if (!isValid(vertexBufferId)) {
     LOG(Error) << "Draw command without vertex buffer.";
@@ -444,90 +385,113 @@ void Renderer::draw(DrawType drawType, U32 indexCount, ProgramId programId,
     return;
   }
 
-  auto& programData = m_programs[programId.id];
-  GL_CHECK(glUseProgram(programData.id));
-
   auto& vertexBufferData = m_vertexBuffers[vertexBufferId.id];
   GL_CHECK(glBindVertexArray(vertexBufferData.id));
 
   auto& indexBufferData = m_indexBuffers[indexBufferId.id];
   GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferData.id));
 
-  if (isValid(textureId)) {
-    auto& textureData = m_textures[textureId.id];
-    GL_CHECK(glBindTexture(GL_TEXTURE_2D, textureData.id));
-  }
-
   U32 oglType = getOglType(indexBufferData.componentType);
 
+  U32 mode = mode_from_draw_type(drawType);
+
+  GL_CHECK(glDrawElements(mode, indexCount, oglType, nullptr));
+
+  post_draw();
+}
+
+void Renderer::pre_draw(ProgramId program_id, const TextureSlots& textures,
+                        const UniformBuffer& uniforms) {
+  if (!isValid(program_id)) {
+    LOG(Error) << "Draw command without program.";
+    return;
+  }
+
+  auto& programData = m_programs[program_id.id];
+  GL_CHECK(glUseProgram(programData.id));
+
+  textures.for_each_valid_slot([&](U32 slot, TextureId texture_id) {
+    auto& textureData = m_textures[texture_id.id];
+    GL_CHECK(glActiveTexture(GL_TEXTURE0 + slot));
+    GL_CHECK(glBindTexture(GL_TEXTURE_2D, textureData.id));
+  });
+
   // Process uniforms.
-  uniforms.apply([&](UniformId uniformId, U32 count, const F32* values) {
+  uniforms.apply([&](UniformId uniformId, ComponentType type, U32 count, const void* values) {
     const auto& uniformData = m_uniforms[uniformId.id];
     char buf[64];
     std::strncpy(buf, uniformData.name.data(), uniformData.name.length());
     buf[uniformData.name.length()] = '\0';
     I32 location = glGetUniformLocation(programData.id, buf);
     if (location == -1) {
-      LOG(Warning) << "Could not get location for uniform: " << uniformData.name.data();
+      LOG(Warning) << "Could not get location for uniform: " << buf;
       return;
     }
 
-    switch (count) {
-      case 1:
-        GL_CHECK(glUniform1fv(location, 1, values));
-        break;
+    if (type == ComponentType::Float32) {
+      switch (count) {
+        case 1:
+          GL_CHECK(glUniform1fv(location, 1, (GLfloat*)values));
+          break;
 
-      case 2:
-        GL_CHECK(glUniform2fv(location, 1, values));
-        break;
+        case 2:
+          GL_CHECK(glUniform2fv(location, 1, (GLfloat*)values));
+          break;
 
-      case 3:
-        GL_CHECK(glUniform3fv(location, 1, values));
-        break;
+        case 3:
+          GL_CHECK(glUniform3fv(location, 1, (GLfloat*)values));
+          break;
 
-      case 4:
-        GL_CHECK(glUniform4fv(location, 1, values));
-        break;
+        case 4:
+          GL_CHECK(glUniform4fv(location, 1, (GLfloat*)values));
+          break;
 
-      case 16:
-        glUniformMatrix4fv(location, 1, GL_FALSE, values);
-        break;
+        case 16:
+          GL_CHECK(glUniformMatrix4fv(location, 1, GL_FALSE, (GLfloat*)values));
+          break;
 
-      default:
-        DCHECK(false) << "Invalid uniform size.";
-        break;
+        default:
+          DCHECK(false) << "Invalid uniform size.";
+          break;
+      }
+    } else if (type == ComponentType::Signed32) {
+      DCHECK(count == 1);
+      GL_CHECK(glUniform1i(location, *(GLint*)values));
+    } else if (type == ComponentType::Unsigned32) {
+      DCHECK(count == 1);
+      GL_CHECK(glUniform1ui(location, *(GLuint*)values));
+    } else {
+      DCHECK(false) << "Unsupported uniform component type.";
     }
   });
 
-  U32 mode = GL_TRIANGLES;
-  switch (drawType) {
-    case DrawType::Triangles:
-      mode = GL_TRIANGLES;
-      break;
+  if (render_state_.depth_test()) {
+    GL_CHECK(glEnable(GL_DEPTH_TEST));
+  }
 
-    case DrawType::TriangleStrip:
-      mode = GL_TRIANGLE_STRIP;
-      break;
-
-    case DrawType::TriangleFan:
-      mode = GL_TRIANGLE_FAN;
-      break;
-
-    case DrawType::Lines:
-      mode = GL_LINES;
-      break;
-
-    default:
-      DCHECK(false) << "Invalid draw type";
-      break;
+  if (render_state_.cull_face()) {
+    GL_CHECK(glEnable(GL_CULL_FACE));
   }
 
   GL_CHECK(glEnable(GL_BLEND));
   GL_CHECK(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+}
 
-  GL_CHECK(glDrawElements(mode, indexCount, oglType, nullptr));
+void Renderer::post_draw() {
+  for (U32 i = 0; i < TextureSlots::MAX_TEXTURE_SLOTS; ++i) {
+    GL_CHECK(glActiveTexture(GL_TEXTURE0 + i));
+    GL_CHECK(glBindTexture(GL_TEXTURE_2D, 0));
+  }
 
   GL_CHECK(glDisable(GL_BLEND));
+
+  if (render_state_.cull_face()) {
+    GL_CHECK(glDisable(GL_CULL_FACE));
+  }
+
+  if (render_state_.depth_test()) {
+    GL_CHECK(glDisable(GL_DEPTH_TEST));
+  }
 }
 
 }  // namespace ca

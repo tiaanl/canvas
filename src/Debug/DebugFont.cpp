@@ -104,8 +104,7 @@ bool DebugFont::initialize() {
   return true;
 }
 
-void DebugFont::drawText(const fl::Mat4& transform, const fl::Pos& position,
-                         const nu::StringView& text) {
+void DebugFont::drawText(const fl::Mat4& transform, const fl::Pos& position, nu::StringView text) {
   for (auto index = 0U; index < text.length(); ++index) {
     fl::Vec2 offset{
         static_cast<F32>(position.x) + static_cast<F32>(index) * (kGlyphWidth),

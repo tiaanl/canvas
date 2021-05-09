@@ -17,7 +17,8 @@ namespace ca {
 
 class UniformBuffer {
 public:
-  using ApplyFunc = nu::Function<void(UniformId uniformId, U32 count, const F32* values)>;
+  using ApplyFunc =
+      nu::Function<void(UniformId uniformId, ComponentType type, U32 count, const void* values)>;
 
   void set(UniformId uniformId, F32 value);
   void set(UniformId uniformId, const fl::Vec2& value);
@@ -25,17 +26,20 @@ public:
   void set(UniformId uniformId, const fl::Vec4& value);
   void set(UniformId uniformId, const fl::Mat4& value);
   void set(UniformId uniformId, const Color& value);
+  void set(UniformId uniformId, U32 value);
+  void set(UniformId uniformId, I32 value);
 
   void apply(ApplyFunc func) const;
 
 private:
   struct UniformData {
     UniformId uniformId;
+    ComponentType type;
     U32 count;
-    F32 values[16];
+    U8 data[sizeof(F32) * 16];
   };
 
-  void addUniformData(UniformId uniformId, U32 count, const F32* values);
+  void addUniformData(UniformId uniform_id, ComponentType type, U32 count, const void* data);
 
   nu::DynamicArray<UniformData> m_uniforms;
 };

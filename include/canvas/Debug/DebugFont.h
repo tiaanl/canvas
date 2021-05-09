@@ -20,7 +20,7 @@ public:
 
   bool initialize();
 
-  void drawText(const fl::Mat4& transform, const fl::Pos& position, const nu::StringView& text);
+  void drawText(const fl::Mat4& transform, const fl::Pos& position, nu::StringView text);
 
 private:
   Renderer* m_renderer;
