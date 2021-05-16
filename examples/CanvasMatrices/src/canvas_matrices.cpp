@@ -1,4 +1,6 @@
 #include <canvas/App.h>
+#include <canvas/Renderer/pipeline.h>
+#include <canvas/Renderer/pipeline_builder.h>
 #include <floats/Transform.h>
 
 static const unsigned DIFFUSE_TEXTURE_WIDTH = 5;
@@ -240,34 +242,34 @@ public:
     }
 
     auto* renderer = window->getRenderer();
-    auto def = ca::VertexDefinition();
-    def.addAttribute(ca::ComponentType::Float32, ca::ComponentCount::Three);
-    def.addAttribute(ca::ComponentType::Float32, ca::ComponentCount::Two);
-    def.addAttribute(ca::ComponentType::Float32, ca::ComponentCount::Three);
+
+    model_pipeline_ =
+        ca::PipelineBuilder()
+            .attribute("position", ca::ComponentType::Float32, ca::ComponentCount::Three)
+            .attribute("tex_coord", ca::ComponentType::Float32, ca::ComponentCount::Two)
+            .attribute("normal", ca::ComponentType::Float32, ca::ComponentCount::Three)
+            .vertex_shader(ca::ShaderSource::from(MATERIAL_VERTEX_SHADER))
+            .fragment_shader(ca::ShaderSource::from(MATERIAL_FRAGMENT_SHADER))
+            .build(renderer);
 
     auto vertices = build_mesh();
     vertex_buffer_id_ =
-        renderer->createVertexBuffer(def, vertices.data(), vertices.size() * sizeof(Vertex));
+        model_pipeline_->create_vertex_buffer(vertices.data(), vertices.size() * sizeof(Vertex));
     if (!vertex_buffer_id_) {
       return false;
     }
 
+    light_pipeline_ =
+        ca::PipelineBuilder()
+            .attribute("position", ca::ComponentType::Float32, ca::ComponentCount::Three)
+            .vertex_shader(ca::ShaderSource::from(LIGHT_VERTEX_SHADER))
+            .fragment_shader(ca::ShaderSource::from(LIGHT_FRAGMENT_SHADER))
+            .build(renderer);
+
     auto box_vertices = build_light_box();
-    auto light_box_def = ca::VertexDefinition{};
-    light_box_def.addAttribute(ca::ComponentType::Float32, ca::ComponentCount::Three);
-    light_box_vertex_buffer_id_ = renderer->createVertexBuffer(
-        light_box_def, box_vertices.data(), box_vertices.size() * sizeof(fl::Vec3));
-
-    material_program_id_ =
-        renderer->createProgram(ca::ShaderSource::from(MATERIAL_VERTEX_SHADER),
-                                ca::ShaderSource::from(MATERIAL_FRAGMENT_SHADER));
-    if (!material_program_id_) {
-      return false;
-    }
-
-    light_program_id_ = renderer->createProgram(ca::ShaderSource::from(LIGHT_VERTEX_SHADER),
-                                                ca::ShaderSource::from(LIGHT_FRAGMENT_SHADER));
-    if (!light_program_id_) {
+    light_box_vertex_buffer_id_ = light_pipeline_->create_vertex_buffer(
+        box_vertices.data(), box_vertices.size() * sizeof(fl::Vec3));
+    if (!light_box_vertex_buffer_id_) {
       return false;
     }
 
@@ -416,8 +418,8 @@ public:
     uniforms.set(diffuse_texture_uniform_id_, static_cast<I32>(0));
     uniforms.set(normals_texture_uniform_id_, static_cast<I32>(1));
 
-    renderer->draw(ca::DrawType::Triangles, 0, sizeof(FACES) / 3, material_program_id_,
-                   vertex_buffer_id_, {diffuse_texture_id_, normals_texture_id_}, uniforms);
+    model_pipeline_->draw(ca::DrawType::Triangles, 0, sizeof(FACES) / 3, vertex_buffer_id_,
+                          {diffuse_texture_id_, normals_texture_id_}, uniforms);
 
     model_matrix = fl::translationMatrix(light_position_);
 
@@ -425,11 +427,14 @@ public:
     light_box_uniforms.set(projection_matrix_uniform_id_, projection_matrix);
     light_box_uniforms.set(view_matrix_uniform_id_, view_matrix);
     light_box_uniforms.set(model_matrix_uniform_id_, model_matrix);
-    renderer->draw(ca::DrawType::Triangles, 0, sizeof(FACES) / 3, light_program_id_,
-                   light_box_vertex_buffer_id_, {}, light_box_uniforms);
+    light_pipeline_->draw(ca::DrawType::Triangles, 0, sizeof(FACES) / 3,
+                          light_box_vertex_buffer_id_, {}, light_box_uniforms);
   }
 
 private:
+  nu::Optional<ca::Pipeline> model_pipeline_;
+  nu::Optional<ca::Pipeline> light_pipeline_;
+
   ca::UniformId projection_matrix_uniform_id_;
   ca::UniformId view_matrix_uniform_id_;
   ca::UniformId model_matrix_uniform_id_;
@@ -438,14 +443,12 @@ private:
   ca::UniformId diffuse_texture_uniform_id_;
   ca::UniformId normals_texture_uniform_id_;
 
-  ca::ProgramId material_program_id_;
   ca::VertexBufferId vertex_buffer_id_;
   ca::TextureId diffuse_texture_id_;
   ca::TextureId normals_texture_id_;
 
   F32 ambient_light_intensity_ = 0.2f;
   fl::Vec3 light_position_ = fl::Vec3{1.0f, 1.0f, 1.0f};
-  ca::ProgramId light_program_id_;
   ca::VertexBufferId light_box_vertex_buffer_id_;
 
   F32 aspect_ratio_ = 1.0f;

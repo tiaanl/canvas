@@ -28,6 +28,8 @@ set(canvas_HEADER_FILES
     include/canvas/Renderer/UniformBuffer.h
     include/canvas/Renderer/VertexDefinition.h
     include/canvas/Renderer/immediate_mesh.h
+    include/canvas/Renderer/pipeline.h
+    include/canvas/Renderer/pipeline_builder.h
     include/canvas/Renderer/texture_slots.h
     include/canvas/StaticData/All.h
     include/canvas/Utils/Color.h
@@ -55,6 +57,8 @@ set(canvas_SOURCE_FILES
     src/Renderer/UniformBuffer.cpp
     src/Renderer/VertexDefinition.cpp
     src/Renderer/immediate_mesh.cpp
+    src/Renderer/pipeline.cpp
+    src/Renderer/pipeline_builder.cpp
     src/Renderer/texture_slots.cpp
     src/StaticData/MonoFont.cpp
     src/Utils/Color.cpp
