@@ -20,6 +20,8 @@ public:
   ~Renderer();
 
   ProgramId createProgram(const ShaderSource& vertexShader, const ShaderSource& fragmentShader);
+  ProgramId createProgram(const ShaderSource& vertexShader, const ShaderSource& geometryShader,
+                          const ShaderSource& fragmentShader);
   void deleteProgram(ProgramId programId);
 
   VertexBufferId createVertexBuffer(const VertexDefinition& bufferDefinition, const void* data,

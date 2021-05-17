@@ -49,12 +49,14 @@ enum class ComponentCount : U32 {
 };
 
 enum class DrawType : U32 {
-  Triangles,
-  TriangleStrip,
-  TriangleFan,
+  Points,
 
   Lines,
   LineStrip,
+
+  Triangles,
+  TriangleStrip,
+  TriangleFan,
 };
 
 enum class TextureFormat : U32 {

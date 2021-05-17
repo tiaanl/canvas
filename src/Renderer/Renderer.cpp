@@ -74,6 +74,18 @@ bool compileShaderSource(const ShaderSource& source, U32 shaderType, U32* idOut)
 U32 mode_from_draw_type(DrawType draw_type) {
   U32 mode = GL_TRIANGLES;
   switch (draw_type) {
+    case DrawType::Points:
+      mode = GL_POINTS;
+      break;
+
+    case DrawType::Lines:
+      mode = GL_LINES;
+      break;
+
+    case DrawType::LineStrip:
+      mode = GL_LINE_STRIP;
+      break;
+
     case DrawType::Triangles:
       mode = GL_TRIANGLES;
       break;
@@ -84,14 +96,6 @@ U32 mode_from_draw_type(DrawType draw_type) {
 
     case DrawType::TriangleFan:
       mode = GL_TRIANGLE_FAN;
-      break;
-
-    case DrawType::Lines:
-      mode = GL_LINES;
-      break;
-
-    case DrawType::LineStrip:
-      mode = GL_LINE_STRIP;
       break;
 
     default:
@@ -110,15 +114,29 @@ Renderer::~Renderer() = default;
 
 ProgramId Renderer::createProgram(const ShaderSource& vertexShader,
                                   const ShaderSource& fragmentShader) {
+  return createProgram(vertexShader, {}, fragmentShader);
+}
+
+ProgramId Renderer::createProgram(const ShaderSource& vertexShader,
+                                  const ShaderSource& geometryShader,
+                                  const ShaderSource& fragmentShader) {
+  bool has_geometry_shader_ = !geometryShader.getSource().empty();
+
   ProgramData result;
 
   result.id = glCreateProgram();
 
   // Compile and attach the shaders.
-  U32 vertexShaderId, fragmentShaderId;
+  U32 vertexShaderId, geometryShaderId, fragmentShaderId;
 
   if (!compileShaderSource(vertexShader, GL_VERTEX_SHADER, &vertexShaderId)) {
     return {};
+  }
+
+  if (has_geometry_shader_) {
+    if (!compileShaderSource(geometryShader, GL_GEOMETRY_SHADER, &geometryShaderId)) {
+      return {};
+    }
   }
 
   if (!compileShaderSource(fragmentShader, GL_FRAGMENT_SHADER, &fragmentShaderId)) {
@@ -127,6 +145,9 @@ ProgramId Renderer::createProgram(const ShaderSource& vertexShader,
 
   // Attach the shaders.
   GL_CHECK(glAttachShader(result.id, vertexShaderId));
+  if (has_geometry_shader_) {
+    GL_CHECK(glAttachShader(result.id, geometryShaderId));
+  }
   GL_CHECK(glAttachShader(result.id, fragmentShaderId));
 
   // Link the program.
@@ -134,6 +155,9 @@ ProgramId Renderer::createProgram(const ShaderSource& vertexShader,
 
   // Release the references to the shaders.
   GL_CHECK(glDeleteShader(fragmentShaderId));
+  if (has_geometry_shader_) {
+    GL_CHECK(glDeleteShader(geometryShaderId));
+  }
   GL_CHECK(glDeleteShader(vertexShaderId));
 
   GLint success;
@@ -157,6 +181,7 @@ ProgramId Renderer::createProgram(const ShaderSource& vertexShader,
   }
 
   m_programs.pushBack(result);
+
   return ProgramId{m_programs.size() - 1};
 }
 

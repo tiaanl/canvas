@@ -74,6 +74,50 @@ void main() {
 }
 )";
 
+static const char* LIGHT_GEOMETRY_SHADER = R"(
+#version 450 core
+
+layout(points) in;
+layout(triangle_strip, max_vertices = 48) out;
+
+uniform mat4 u_projection;
+uniform mat4 u_view;
+uniform mat4 u_model;
+
+const vec3 VERTICES[] = {
+    vec3(-0.5,  0.5, -0.5),  // 0
+    vec3(-0.5, -0.5, -0.5),  // 1
+    vec3( 0.5,  0.5, -0.5),  // 2
+    vec3( 0.5, -0.5, -0.5),  // 3
+    vec3(-0.5,  0.5,  0.5),  // 4
+    vec3(-0.5, -0.5,  0.5),  // 5
+    vec3( 0.5,  0.5,  0.5),  // 6
+    vec3( 0.5, -0.5,  0.5),  // 7
+};
+
+const int INDICES[] = {
+  0, 1, 2, 3,
+  4, 5, 6, 7,
+  0, 1, 4, 5,
+  1, 2, 5, 6,
+  2, 3, 6, 7,
+  3, 0, 4, 7,
+};
+
+void main() {
+  const float size = 0.1;
+  const mat4 m = u_projection * u_view * u_model;
+
+  for (int i = 0; i < INDICES.length(); ++i) {
+    gl_Position = m * vec4(VERTICES[INDICES[i]].xyz * size, 1.0);
+    EmitVertex();
+    if (i % 4 == 3) {
+      EndPrimitive();
+    }
+  }
+}
+)";
+
 static const char* LIGHT_FRAGMENT_SHADER = R"(
 #version 330
 
@@ -149,10 +193,7 @@ struct Vertex {
 nu::DynamicArray<fl::Vec3> build_light_box() {
   nu::DynamicArray<fl::Vec3> result;
 
-  for (unsigned i = 0; i < NU_ARRAY_SIZE(FACES); i += 3) {
-    unsigned vertex_index = FACES[i] - 1;
-    result.pushBack(VERTICES[vertex_index] * 0.1f);
-  }
+  result.emplaceBack(0.0f, 0.0f, 0.0f);
 
   return result;
 }
@@ -263,8 +304,12 @@ public:
         ca::PipelineBuilder()
             .attribute("position", ca::ComponentType::Float32, ca::ComponentCount::Three)
             .vertex_shader(ca::ShaderSource::from(LIGHT_VERTEX_SHADER))
+            .geometry_shader(ca::ShaderSource::from(LIGHT_GEOMETRY_SHADER))
             .fragment_shader(ca::ShaderSource::from(LIGHT_FRAGMENT_SHADER))
             .build(renderer);
+    if (!light_pipeline_.has_value()) {
+      return false;
+    }
 
     auto box_vertices = build_light_box();
     light_box_vertex_buffer_id_ = light_pipeline_->create_vertex_buffer(
@@ -416,7 +461,7 @@ public:
     uniforms.set(light_position_uniform_id_, light_position_);
     uniforms.set(ambient_light_intensity_uniform_id_, ambient_light_intensity_);
     uniforms.set(diffuse_texture_uniform_id_, static_cast<I32>(0));
-    uniforms.set(normals_texture_uniform_id_, static_cast<I32>(1));
+    // uniforms.set(normals_texture_uniform_id_, static_cast<I32>(1));
 
     model_pipeline_->draw(ca::DrawType::Triangles, 0, sizeof(FACES) / 3, vertex_buffer_id_,
                           {diffuse_texture_id_, normals_texture_id_}, uniforms);
@@ -427,8 +472,8 @@ public:
     light_box_uniforms.set(projection_matrix_uniform_id_, projection_matrix);
     light_box_uniforms.set(view_matrix_uniform_id_, view_matrix);
     light_box_uniforms.set(model_matrix_uniform_id_, model_matrix);
-    light_pipeline_->draw(ca::DrawType::Triangles, 0, sizeof(FACES) / 3,
-                          light_box_vertex_buffer_id_, {}, light_box_uniforms);
+    light_pipeline_->draw(ca::DrawType::Points, 0, 1, light_box_vertex_buffer_id_, {},
+                          light_box_uniforms);
   }
 
 private:

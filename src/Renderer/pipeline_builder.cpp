@@ -36,7 +36,10 @@ nu::Optional<Pipeline> PipelineBuilder::build(Renderer* renderer) const {
   DCHECK(vertex_shader_.has_value());
   DCHECK(fragment_shader_.has_value());
 
-  auto program_id = renderer->createProgram(vertex_shader_.value(), fragment_shader_.value());
+  auto program_id = renderer->createProgram(
+      vertex_shader_.value(),
+      geometry_shader_.has_value() ? geometry_shader_.value() : ShaderSource{},
+      fragment_shader_.value());
   if (!program_id) {
     LOG(Error) << "Could not create pipeline program.";
     return {};
