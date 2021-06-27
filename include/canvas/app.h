@@ -48,7 +48,7 @@ static I32 run(Args&&... args) {
     I32 result = 0;                                                                                \
     {                                                                                              \
       nu::Profiling profiling;                                                                     \
-      result = run<DelegateType>();                                                                \
+      result = ca::run<DelegateType>();                                                            \
     }                                                                                              \
     MEMORY_DUMP                                                                                    \
     return result;                                                                                 \
