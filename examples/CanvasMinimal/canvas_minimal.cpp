@@ -2,8 +2,8 @@
 #include "canvas/App.h"
 #include "canvas/StaticData/All.h"
 #include "canvas/Utils/ShaderSource.h"
-#include "nucleus/FilePath.h"
-#include "nucleus/Streams/FileInputStream.h"
+#include "nucleus/Streams/file_input_stream.h"
+#include "nucleus/file_path.h"
 
 class Minimal : public ca::WindowDelegate {
 public:

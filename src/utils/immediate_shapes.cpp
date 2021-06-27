@@ -1,0 +1,45 @@
+#include "canvas/Utils/immediate_shapes.h"
+
+#include "floats/common.h"
+
+namespace ca {
+
+auto drawSquare(ImmediateRenderer* renderer, const fl::Vec3& center, F32 edgeLength,
+                const Color& color) -> void {
+  drawRectangle(renderer, center, edgeLength, edgeLength, color);
+}
+
+auto drawRectangle(ImmediateRenderer* renderer, const fl::Vec3& center, F32 width, F32 height,
+                   const Color& color) -> void {
+  const F32 halfWidth = width * 0.5f;
+  const F32 halfHeight = height * 0.5f;
+
+  renderer->create_mesh(DrawType::LineStrip)
+      .vertex(center + fl::Vec3{-halfWidth, -halfHeight, 0.0f}, color)
+      .vertex(center + fl::Vec3{-halfWidth, halfHeight, 0.0f}, color)
+      .vertex(center + fl::Vec3{halfWidth, halfHeight, 0.0f}, color)
+      .vertex(center + fl::Vec3{halfWidth, -halfHeight, 0.0f}, color)
+      .vertex(center + fl::Vec3{-halfWidth, -halfHeight, 0.0f}, color);
+}
+
+auto drawCircle(ImmediateRenderer* renderer, const fl::Vec3& center, F32 radius, I32 segments,
+                const Color& color) -> void {
+  drawOval(renderer, center, radius, radius, segments, color);
+}
+
+auto drawOval(ImmediateRenderer* renderer, const fl::Vec3& center, F32 verticalRadius,
+              F32 horizontalRadius, I32 segments, const Color& color) -> void {
+  segments = fl::maximum(segments, 3);
+
+  auto& mesh = renderer->create_mesh(DrawType::LineStrip);
+
+  for (auto i = 0; i < segments + 1; ++i) {
+    F32 d = static_cast<F32>(i) * 360.0f / static_cast<F32>(segments);
+    fl::Vec3 p{cosine(fl::degrees(d)) * horizontalRadius, sine(fl::degrees(d)) * verticalRadius,
+               0.0f};
+
+    mesh.vertex(center + p, color);
+  }
+}
+
+}  // namespace ca

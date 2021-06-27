@@ -1,7 +1,7 @@
 #pragma once
 
-#include "nucleus/Containers/DynamicArray.h"
-#include "nucleus/Macros.h"
+#include "nucleus/Containers/dynamic_array.h"
+#include "nucleus/macros.h"
 #include "nucleus/message_loop/message_pump.h"
 
 namespace ca {

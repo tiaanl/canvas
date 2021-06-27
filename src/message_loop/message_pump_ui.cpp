@@ -2,8 +2,8 @@
 
 #include <GLFW/glfw3.h>
 
-#include "canvas/Windows/Window.h"
-#include "nucleus/HighResolutionTimer.h"
+#include "canvas/Windows/window.h"
+#include "nucleus/high_resolution_timer.h"
 
 namespace ca {
 
