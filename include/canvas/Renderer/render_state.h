@@ -10,7 +10,7 @@ public:
     depth_test_ = enabled;
   }
 
-  bool depth_test() const {
+  NU_NO_DISCARD bool depth_test() const {
     return depth_test_;
   }
 
@@ -18,7 +18,7 @@ public:
     cull_face_ = enabled;
   }
 
-  bool cull_face() const {
+  NU_NO_DISCARD bool cull_face() const {
     return cull_face_;
   }
 

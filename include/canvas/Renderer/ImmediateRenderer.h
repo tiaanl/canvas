@@ -14,10 +14,12 @@ namespace ca {
 class Renderer;
 
 class ImmediateRenderer {
-  NU_DELETE_COPY_AND_MOVE(ImmediateRenderer);
+  NU_DELETE_COPY(ImmediateRenderer);
 
 public:
   explicit ImmediateRenderer(Renderer* renderer);
+
+  NU_DEFAULT_MOVE(ImmediateRenderer);
 
   NU_NO_DISCARD ImmediateMesh& create_mesh(DrawType draw_type,
                                            const fl::Mat4& transform = fl::Mat4::identity);

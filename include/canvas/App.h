@@ -1,26 +1,27 @@
 #pragma once
 
+#include <nucleus/Config.h>
+#include <nucleus/HighResolutionTimer.h>
+#include <nucleus/Macros.h>
+#include <nucleus/Memory/ScopedPtr.h>
+#include <nucleus/Profiling.h>
+#include <nucleus/message_loop/message_loop.h>
+
+#include <nucleus/main_header.hpp>
+
 #include "canvas/Windows/Window.h"
 #include "canvas/Windows/WindowDelegate.h"
 #include "canvas/message_loop/message_pump_ui.h"
-#include "nucleus/Config.h"
-#include "nucleus/HighResolutionTimer.h"
-#include "nucleus/Macros.h"
-#include "nucleus/Memory/ScopedPtr.h"
-#include "nucleus/Profiling.h"
-#include "nucleus/message_loop/message_loop.h"
 
-#if OS(WIN)
-#include "nucleus/Win/WindowsMixin.h"
-#endif
+namespace ca {
 
-template <typename DelegateType>
-static I32 run() {
+template <typename DelegateType, typename... Args>
+static I32 run(Args&&... args) {
   // The single window we are managing.
   ca::Window window;
 
   // The delegate that processes window state events.
-  DelegateType delegate;
+  DelegateType delegate{std::forward<Args>(args)...};
 
   if (!window.initialize(&delegate)) {
     LOG(Error) << "Could not set up window.";
@@ -34,11 +35,7 @@ static I32 run() {
   return 0;
 }
 
-#if OS(WIN)
-#define MAIN_HEADER int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
-#else
-#define MAIN_HEADER int main(int, char*[])
-#endif
+}  // namespace ca
 
 #if COMPILER(MSVC)
 #define MEMORY_DUMP _CrtDumpMemoryLeaks();
@@ -47,7 +44,7 @@ static I32 run() {
 #endif
 
 #define CANVAS_APP(DelegateType)                                                                   \
-  MAIN_HEADER {                                                                                    \
+  NU_MAIN_HEADER {                                                                                 \
     I32 result = 0;                                                                                \
     {                                                                                              \
       nu::Profiling profiling;                                                                     \

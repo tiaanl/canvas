@@ -14,7 +14,7 @@ add_subdirectory(../floats floats)
 find_package(glfw3 CONFIG REQUIRED)
 find_package(glad CONFIG REQUIRED)
 
-set(canvas_HEADER_FILES
+set(HEADER_FILES
     include/canvas/App.h
     include/canvas/Debug/DebugFont.h
     include/canvas/Debug/DebugInterface.h
@@ -47,7 +47,7 @@ set(canvas_HEADER_FILES
     include/canvas/message_loop/message_pump_ui.h
     )
 
-set(canvas_SOURCE_FILES
+set(SOURCE_FILES
     src/Debug/DebugFont.cpp
     src/Debug/DebugInterface.cpp
     src/Debug/ProfilePrinter.cpp
@@ -71,7 +71,7 @@ set(canvas_SOURCE_FILES
     src/message_loop/message_pump_ui.cpp
     )
 
-nucleus_add_library(canvas ${canvas_HEADER_FILES} ${canvas_SOURCE_FILES})
+nucleus_add_library(canvas ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(canvas PUBLIC nucleus floats glfw)
 target_link_libraries(canvas PRIVATE glad::glad)
 target_compile_definitions(canvas PUBLIC -DUNICODE -D_CRT_SECURE_NO_WARNINGS)
