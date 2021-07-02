@@ -1,11 +1,11 @@
 #pragma once
 
-#include "canvas/Renderer/immediate_mesh.h"
-#include "canvas/Renderer/types.h"
-#include "canvas/Utils/color.h"
+#include "canvas/renderer/immediate_mesh.h"
+#include "canvas/renderer/types.h"
+#include "canvas/utils/color.h"
 #include "floats/mat4.h"
 #include "floats/vec3.h"
-#include "nucleus/Containers/dynamic_array.h"
+#include "nucleus/containers/dynamic_array.h"
 #include "nucleus/macros.h"
 
 namespace ca {
@@ -26,7 +26,7 @@ public:
   void submit_to_renderer();
 
 private:
-  Renderer* m_renderer;
+  Renderer* renderer_;
   nu::DynamicArray<ImmediateMesh> meshes_;
 };
 

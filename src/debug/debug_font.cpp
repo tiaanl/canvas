@@ -111,7 +111,7 @@ void DebugFont::drawText(const fl::Mat4& transform, const fl::Pos& position, nu:
         static_cast<F32>(position.y),
     };
 
-    auto moved = transform * translationMatrix(fl::Vec3{offset, 0.0f});
+    auto moved = transform * translation_matrix(fl::Vec3{offset, 0.0f});
 
     UniformBuffer uniforms;
     uniforms.set(m_transformUniformId, moved);

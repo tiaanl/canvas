@@ -1,26 +1,24 @@
-
-#include "canvas/Utils/geometry.h"
-
-#include "nucleus/logging.h"
+#include "canvas/utils/geometry.h"
 
 namespace ca {
 
-Geometry createRectangle(Renderer* renderer, const fl::Vec2& topLeft, const fl::Vec2& bottomRight) {
+Geometry create_rectangle(Renderer* renderer, const fl::Vec2& top_left,
+                          const fl::Vec2& bottom_right) {
   static PositionTextureCoords vertices[] = {
       {
-          {topLeft.x, topLeft.y, 0.0f},
+          {top_left.x, top_left.y, 0.0f},
           {0.0f, 0.0f},
       },
       {
-          {bottomRight.x, topLeft.y, 0.0f},
+          {bottom_right.x, top_left.y, 0.0f},
           {1.0f, 0.0f},
       },
       {
-          {bottomRight.x, bottomRight.y, 0.0f},
+          {bottom_right.x, bottom_right.y, 0.0f},
           {1.0f, 1.0f},
       },
       {
-          {topLeft.x, bottomRight.y, 0.0f},
+          {top_left.x, bottom_right.y, 0.0f},
           {0.0f, 1.0f},
       },
   };
@@ -31,21 +29,21 @@ Geometry createRectangle(Renderer* renderer, const fl::Vec2& topLeft, const fl::
   def.addAttribute(ca::ComponentType::Float32, ca::ComponentCount::Three);
   def.addAttribute(ca::ComponentType::Float32, ca::ComponentCount::Two);
 
-  auto vertexBufferId = renderer->createVertexBuffer(def, vertices, sizeof(vertices));
-  if (!isValid(vertexBufferId)) {
+  auto vertex_buffer_id = renderer->createVertexBuffer(def, vertices, sizeof(vertices));
+  if (!isValid(vertex_buffer_id)) {
     LOG(Error) << "Could not create index buffer.";
     return {};
   }
 
-  auto indexBufferId =
+  auto index_buffer_id =
       renderer->createIndexBuffer(ca::ComponentType::Unsigned16, indices, sizeof(indices));
 
-  if (!isValid(indexBufferId)) {
+  if (!isValid(index_buffer_id)) {
     LOG(Error) << "Could not create index buffer.";
     return {};
   }
 
-  return {vertexBufferId, indexBufferId, 6};
+  return {vertex_buffer_id, index_buffer_id, 6};
 }
 
 }  // namespace ca

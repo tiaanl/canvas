@@ -21,8 +21,8 @@ auto DebugInterface::resize(fl::Size size) -> void {
 
 auto DebugInterface::render(F64 fps) -> void {
   // Set up an orthographic view projection.
-  auto projection = fl::orthographicProjection(0.0f, static_cast<F32>(m_size.width), 0.0f,
-                                               static_cast<F32>(m_size.height), -1.0f, 1.0f);
+  auto projection = fl::orthographic_projection(0.0f, static_cast<F32>(m_size.width), 0.0f,
+                                                static_cast<F32>(m_size.height), -1.0f, 1.0f);
 
   char buf[64];
 #if COMPILER(MSVC)

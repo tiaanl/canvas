@@ -1,6 +1,6 @@
-#include "canvas/Debug/profile_printer.h"
+#include "canvas/debug/profile_printer.h"
 
-#include "canvas/Debug/debug_font.h"
+#include "canvas/debug/debug_font.h"
 
 namespace ca {
 

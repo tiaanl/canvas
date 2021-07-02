@@ -1,6 +1,6 @@
 #pragma once
 
-#include "canvas/Renderer/renderer.h"
+#include "canvas/renderer/renderer.h"
 #include "floats/vec2.h"
 #include "floats/vec3.h"
 
@@ -8,19 +8,20 @@ namespace ca {
 
 struct PositionTextureCoords {
   fl::Vec3 position;
-  fl::Vec2 textureCoords;
+  fl::Vec2 texture_coords;
 };
 
 struct Geometry {
-  VertexBufferId vertexBufferId;
-  IndexBufferId indexBufferId;
-  U32 indexCount;
+  VertexBufferId vertex_buffer_id;
+  IndexBufferId index_buffer_id;
+  U32 index_count = 0;
 };
 
-inline bool isValid(const Geometry& geometry) {
-  return isValid(geometry.vertexBufferId) && isValid(geometry.indexBufferId);
+inline bool is_valid(const Geometry& geometry) {
+  return isValid(geometry.vertex_buffer_id) && isValid(geometry.index_buffer_id);
 }
 
-Geometry createRectangle(Renderer* renderer, const fl::Vec2& topLeft, const fl::Vec2& bottomRight);
+Geometry create_rectangle(Renderer* renderer, const fl::Vec2& top_left,
+                          const fl::Vec2& bottom_right);
 
 }  // namespace ca
