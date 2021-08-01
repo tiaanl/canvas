@@ -5,13 +5,13 @@ namespace ca {
 
 class Window;
 
-bool WindowDelegate::onWindowCreated(Window*) {
+bool WindowDelegate::on_window_created(Window* window) {
   return true;
 }
 
-void WindowDelegate::tick(F32 NU_UNUSED(delta)) {}
+void WindowDelegate::on_tick(F32 delta) {}
 
-void WindowDelegate::onWindowResized(const fl::Size&) {}
+void WindowDelegate::on_window_resized(const fl::Size& size) {}
 
 void WindowDelegate::on_mouse_moved(const MouseEvent& evt) {
   for (auto handler : mouse_input_handlers_) {
@@ -51,19 +51,19 @@ void WindowDelegate::on_key_released(const KeyEvent& evt) {
   }
 }
 
-void WindowDelegate::add_mouse_event_handler(MouseEventHandlerInterface* handler) {
+void WindowDelegate::add_mouse_event_receiver(MouseEventReceiver* handler) {
   mouse_input_handlers_.emplaceBack(handler);
 }
 
-void WindowDelegate::remove_mouse_event_handler(MouseEventHandlerInterface* handler) {
+void WindowDelegate::remove_mouse_event_receiver(MouseEventReceiver* handler) {
   mouse_input_handlers_.remove(handler);
 }
 
-void WindowDelegate::add_keyboard_event_handler(KeyboardEventHandlerInterface* handler) {
+void WindowDelegate::add_keyboard_event_receiver(KeyboardEventReceiver* handler) {
   keyboard_input_handlers_.emplaceBack(handler);
 }
 
-void WindowDelegate::remove_keyboard_event_handler(KeyboardEventHandlerInterface* handler) {
+void WindowDelegate::remove_keyboard_event_receiver(KeyboardEventReceiver* handler) {
   keyboard_input_handlers_.remove(handler);
 }
 

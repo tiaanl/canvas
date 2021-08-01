@@ -298,7 +298,7 @@ bool Window::initialize(WindowDelegate* delegate) {
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
   // Create the window.
-  auto title = nu::zeroTerminated(m_delegate->getTitle());
+  auto title = nu::zeroTerminated(m_delegate->title());
   m_window =
       glfwCreateWindow(m_clientSize.width, m_clientSize.height, title.data(), nullptr, nullptr);
   if (!m_window) {
@@ -349,7 +349,7 @@ bool Window::initialize(WindowDelegate* delegate) {
   m_debugInterface.initialize();
 
   // Let the delegate know we were just created.
-  bool success = delegate->onWindowCreated(this);
+  bool success = delegate->on_window_created(this);
   if (!success) {
     m_delegate = nullptr;
     return false;
@@ -357,7 +357,7 @@ bool Window::initialize(WindowDelegate* delegate) {
 
   // We send a window resized to the delegate as well so that it can do any
   // setup needed.
-  delegate->onWindowResized(m_clientSize);
+  delegate->on_window_resized(m_clientSize);
 
   return true;
 }
@@ -381,7 +381,7 @@ void Window::activateContext() {
 }
 
 void Window::tick(F32 delta) {
-  m_delegate->tick(delta);
+  m_delegate->on_tick(delta);
 }
 
 void Window::paint() {
@@ -393,7 +393,7 @@ void Window::paint() {
 
   {
     PROFILE("delegate paint")
-    m_delegate->onRender(&m_renderer);
+    m_delegate->on_render(&m_renderer);
   }
 
   {
@@ -423,7 +423,7 @@ void Window::frameBufferSizeCallback(GLFWwindow* window, int width, int height) 
   windowPtr->m_debugInterface.resize({width, height});
 
   fl::Size windowSize(static_cast<U32>(width), static_cast<U32>(height));
-  windowPtr->m_delegate->onWindowResized(windowPtr->m_clientSize);
+  windowPtr->m_delegate->on_window_resized(windowPtr->m_clientSize);
 }
 
 // static

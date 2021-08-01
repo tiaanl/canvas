@@ -4,7 +4,7 @@
 
 namespace ca {
 
-class KeyboardEventHandlerInterface {
+class KeyboardEventReceiver {
 public:
   virtual void on_key_pressed(const KeyEvent& evt) = 0;
   virtual void on_key_released(const KeyEvent& evt) = 0;

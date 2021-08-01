@@ -1,47 +1,45 @@
 
-#include "canvas/App.h"
-#include "canvas/StaticData/All.h"
-#include "canvas/Utils/ShaderSource.h"
-#include "nucleus/Streams/file_input_stream.h"
-#include "nucleus/file_path.h"
+#include <canvas/app.h>
+#include <canvas/static_data/all.h>
+#include <nucleus/file_path.h>
+#include <nucleus/streams/file_input_stream.h>
 
 class Minimal : public ca::WindowDelegate {
-public:
   NU_DELETE_COPY_AND_MOVE(Minimal);
 
+public:
   Minimal()
-    : ca::WindowDelegate("Canvas Minimal Example"), m_rootPath(nu::getExecutablePath().dirName()) {}
+    : ca::WindowDelegate("Canvas Minimal Example"), root_path_(nu::getExecutablePath().dirName()) {}
 
   ~Minimal() override = default;
 
-  // Override: ca::WindowDelegate
-  bool onWindowCreated(ca::Window* window) override {
-    LOG(Info) << "Root path: " << m_rootPath.getPath();
+  bool on_window_created(ca::Window* window) override {
+    LOG(Info) << "Root path: " << root_path_.getPath();
 
     ca::Renderer* renderer = window->getRenderer();
 
-    if (!loadProgram(renderer)) {
+    if (!load_program(renderer)) {
       LOG(Error) << "Could not create program";
       return false;
     }
 
-    if (!loadVertexBuffer(renderer)) {
+    if (!load_vertex_buffer(renderer)) {
       LOG(Error) << "Could not create vertex buffer and index buffer.";
       return false;
     }
 
-    if (!loadTexture(renderer)) {
+    if (!load_texture(renderer)) {
       LOG(Error) << "Could not create texture.";
       return false;
     }
 
-    m_scaleUniform = renderer->createUniform("uScale");
-    m_uniforms.set(m_scaleUniform, 0.5f);
+    scale_uniform_ = renderer->createUniform("uScale");
+    uniforms_.set(scale_uniform_, 0.5f);
 
     return true;
   }
 
-  void onRender(ca::Renderer* renderer) override {
+  void on_render(ca::Renderer* renderer) override {
     PROFILE("Minimal Frame")
 
     {
@@ -51,29 +49,29 @@ public:
 
     {
       PROFILE("draw")
-      renderer->draw(ca::DrawType::Triangles, 6, m_programId, m_vertexBufferId, m_indexBufferId,
-                     m_textureId, m_uniforms);
+      renderer->draw(ca::DrawType::Triangles, 6, program_id_, vertex_buffer_id_, index_buffer_id_,
+                     texture_id_, uniforms_);
     }
   }
 
 private:
-  bool loadProgram(ca::Renderer* renderer) {
-    nu::FileInputStream vs{m_rootPath / "default.vs"};
+  bool load_program(ca::Renderer* renderer) {
+    nu::FileInputStream vs{root_path_ / "default.vs"};
     if (!vs.openedOk()) {
       return false;
     }
 
-    nu::FileInputStream fs{m_rootPath / "default.fs"};
+    nu::FileInputStream fs{root_path_ / "default.fs"};
     if (!fs.openedOk()) {
       return false;
     }
 
-    m_programId = renderer->createProgram(ca::ShaderSource::from(&vs), ca::ShaderSource::from(&fs));
+    program_id_ = renderer->createProgram(ca::ShaderSource::from(&vs), ca::ShaderSource::from(&fs));
 
-    return isValid(m_programId);
+    return isValid(program_id_);
   }
 
-  bool loadVertexBuffer(ca::Renderer* renderer) {
+  bool load_vertex_buffer(ca::Renderer* renderer) {
     ca::VertexDefinition def;
     def.addAttribute(ca::ComponentType::Float32, ca::ComponentCount::Three);
     def.addAttribute(ca::ComponentType::Float32, ca::ComponentCount::Two);
@@ -116,8 +114,8 @@ private:
         {-1.0f, 1.0f, -1.0f, 1.0f, 1.0f},   //
     };
 
-    m_vertexBufferId = renderer->createVertexBuffer(def, vertices, sizeof(vertices));
-    if (!isValid(m_vertexBufferId)) {
+    vertex_buffer_id_ = renderer->createVertexBuffer(def, vertices, sizeof(vertices));
+    if (!isValid(vertex_buffer_id_)) {
       return false;
     }
 
@@ -138,37 +136,37 @@ private:
         21, 23, 22,  //
     };
 
-    m_indexBufferId =
+    index_buffer_id_ =
         renderer->createIndexBuffer(ca::ComponentType::Unsigned16, indices, sizeof(indices));
 
-    if (!isValid(m_indexBufferId)) {
+    if (!isValid(index_buffer_id_)) {
       return false;
     }
 
     return true;
   }
 
-  bool loadTexture(ca::Renderer* renderer) {
-    auto imagePath = m_rootPath / "default.png";
-    nu::FileInputStream imageStream{imagePath};
-    if (!imageStream.openedOk()) {
+  bool load_texture(ca::Renderer* renderer) {
+    auto image_path = root_path_ / "default.png";
+    nu::FileInputStream image_stream{image_path};
+    if (!image_stream.openedOk()) {
       return false;
     }
 
-    m_textureId = renderer->createTexture(ca::TextureFormat::Alpha, fl::Size{256, 128},
+    texture_id_ = renderer->createTexture(ca::TextureFormat::Alpha, fl::Size{256, 128},
                                           ca::monoFont, ca::monoFontSize);
 
-    return isValid(m_textureId);
+    return isValid(texture_id_);
   }
 
-  nu::FilePath m_rootPath;
+  nu::FilePath root_path_;
 
-  ca::ProgramId m_programId;
-  ca::VertexBufferId m_vertexBufferId;
-  ca::IndexBufferId m_indexBufferId;
-  ca::TextureId m_textureId;
-  ca::UniformId m_scaleUniform;
-  ca::UniformBuffer m_uniforms;
+  ca::ProgramId program_id_;
+  ca::VertexBufferId vertex_buffer_id_;
+  ca::IndexBufferId index_buffer_id_;
+  ca::TextureId texture_id_;
+  ca::UniformId scale_uniform_;
+  ca::UniformBuffer uniforms_;
 };
 
 CANVAS_APP(Minimal)

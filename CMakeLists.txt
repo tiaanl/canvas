@@ -42,8 +42,8 @@ set(HEADER_FILES
     include/canvas/windows/window.h
     include/canvas/windows/window_delegate.h
     include/canvas/windows/window_style.h
-    include/canvas/windows/keyboard_event_handler_interface.h
-    include/canvas/windows/mouse_event_handler_interface.h
+    include/canvas/windows/keyboard_event_receiver.h
+    include/canvas/windows/mouse_event_receiver.h
     include/canvas/message_loop/message_pump_ui.h
     )
 

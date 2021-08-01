@@ -1,10 +1,10 @@
 #pragma once
 
-#include "event.h"
+#include "canvas/windows/event.h"
 
 namespace ca {
 
-class MouseEventHandlerInterface {
+class MouseEventReceiver {
 public:
   virtual void on_mouse_moved(const MouseEvent& evt) = 0;
   virtual bool on_mouse_pressed(const MouseEvent& evt) = 0;

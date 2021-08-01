@@ -1,7 +1,6 @@
-#include <canvas/App.h>
-#include <canvas/Renderer/pipeline.h>
-#include <canvas/Renderer/pipeline_builder.h>
-#include <floats/Transform.h>
+#include <canvas/app.h>
+#include <canvas/renderer/pipeline_builder.h>
+#include <floats/transform.h>
 
 static const unsigned DIFFUSE_TEXTURE_WIDTH = 5;
 static const unsigned DIFFUSE_TEXTURE_HEIGHT = 5;
@@ -277,8 +276,8 @@ class Matrices : public ca::WindowDelegate {
 public:
   Matrices() : ca::WindowDelegate{"Canvas | Matrices"} {}
 
-  bool onWindowCreated(ca::Window* window) override {
-    if (!WindowDelegate::onWindowCreated(window)) {
+  bool on_window_created(ca::Window* window) override {
+    if (!WindowDelegate::on_window_created(window)) {
       return false;
     }
 
@@ -372,8 +371,8 @@ public:
     return true;
   }
 
-  void onWindowResized(const fl::Size& size) override {
-    WindowDelegate::onWindowResized(size);
+  void on_window_resized(const fl::Size& size) override {
+    WindowDelegate::on_window_resized(size);
 
     if (size.height) {
       aspect_ratio_ = static_cast<F32>(size.width) / static_cast<F32>(size.height);
@@ -436,9 +435,9 @@ public:
     }
   }
 
-  void onRender(ca::Renderer* renderer) override {
+  void on_render(ca::Renderer* renderer) override {
     auto projection_matrix =
-        fl::perspectiveProjection(fl::Angle::fromDegrees(60.0f), aspect_ratio_, 0.1f, 100.0f);
+        fl::perspective_projection(fl::Angle::fromDegrees(60.0f), aspect_ratio_, 0.1f, 100.0f);
 
     auto rotation_1 = fl::Quaternion::fromEulerAngles(fl::Angle::fromDegrees(vertical_),
                                                       fl::Angle::zero, fl::Angle::zero)
@@ -446,7 +445,7 @@ public:
     auto rotation_2 = fl::Quaternion::fromEulerAngles(
                           fl::Angle::zero, fl::Angle::fromDegrees(horizontal_), fl::Angle::zero)
                           .toRotationMatrix();
-    auto translation = fl::translationMatrix({0.0f, 0.0f, -5.0f});
+    auto translation = fl::translation_matrix({0.0f, 0.0f, -5.0f});
 
     auto view_matrix = translation * rotation_1 * rotation_2;
 
@@ -466,7 +465,7 @@ public:
     model_pipeline_->draw(ca::DrawType::Triangles, 0, sizeof(FACES) / 3, vertex_buffer_id_,
                           {diffuse_texture_id_, normals_texture_id_}, uniforms);
 
-    model_matrix = fl::translationMatrix(light_position_);
+    model_matrix = fl::translation_matrix(light_position_);
 
     ca::UniformBuffer light_box_uniforms;
     light_box_uniforms.set(projection_matrix_uniform_id_, projection_matrix);
