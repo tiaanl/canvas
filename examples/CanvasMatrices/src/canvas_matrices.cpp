@@ -284,13 +284,13 @@ public:
     auto* renderer = window->getRenderer();
 
     model_pipeline_ =
-        ca::PipelineBuilder()
+        renderer->create_pipeline_builder()
             .attribute("position", ca::ComponentType::Float32, ca::ComponentCount::Three)
             .attribute("tex_coord", ca::ComponentType::Float32, ca::ComponentCount::Two)
             .attribute("normal", ca::ComponentType::Float32, ca::ComponentCount::Three)
             .vertex_shader(ca::ShaderSource::from(MATERIAL_VERTEX_SHADER))
             .fragment_shader(ca::ShaderSource::from(MATERIAL_FRAGMENT_SHADER))
-            .build(renderer);
+            .build();
 
     auto vertices = build_mesh();
     vertex_buffer_id_ =
@@ -300,12 +300,12 @@ public:
     }
 
     light_pipeline_ =
-        ca::PipelineBuilder()
+        renderer->create_pipeline_builder()
             .attribute("position", ca::ComponentType::Float32, ca::ComponentCount::Three)
             .vertex_shader(ca::ShaderSource::from(LIGHT_VERTEX_SHADER))
             .geometry_shader(ca::ShaderSource::from(LIGHT_GEOMETRY_SHADER))
             .fragment_shader(ca::ShaderSource::from(LIGHT_FRAGMENT_SHADER))
-            .build(renderer);
+            .build();
     if (!light_pipeline_.has_value()) {
       return false;
     }
