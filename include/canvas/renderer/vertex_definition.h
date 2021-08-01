@@ -1,10 +1,10 @@
 #pragma once
 
-#include "canvas/Renderer/types.h"
-#include "nucleus/Containers/dynamic_array.h"
-#include "nucleus/Text/dynamic_string.h"
-#include "nucleus/Text/static_string.h"
+#include "canvas/renderer/types.h"
+#include "nucleus/containers/dynamic_array.h"
 #include "nucleus/logging.h"
+#include "nucleus/text/dynamic_string.h"
+#include "nucleus/text/static_string.h"
 #include "nucleus/types.h"
 
 namespace ca {

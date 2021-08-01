@@ -1,7 +1,7 @@
-#include "canvas/Renderer/immediate_renderer.h"
+#include "canvas/renderer/immediate_renderer.h"
 
-#include "canvas/Renderer/renderer.h"
-#include "canvas/Renderer/vertex_definition.h"
+#include "canvas/renderer/renderer.h"
+#include "canvas/renderer/vertex_definition.h"
 
 namespace ca {
 
@@ -50,7 +50,7 @@ void ImmediateRenderer::submit_to_renderer() {
   if (!g_program_id.isValid()) {
     LOG(Info) << "Creating program";
     g_program_id = renderer_->createProgram(ShaderSource::from(g_vertex_shader_source),
-                                             ShaderSource::from(g_fragment_shader_source));
+                                            ShaderSource::from(g_fragment_shader_source));
   }
 
   VertexDefinition def;
@@ -67,7 +67,7 @@ void ImmediateRenderer::submit_to_renderer() {
     uniforms.set(transform_uniform_id, mesh.transform_);
 
     renderer_->draw(mesh.draw_type_, 0, static_cast<U32>(mesh.vertices_.size()), g_program_id,
-                     vertex_buffer_id, {}, uniforms);
+                    vertex_buffer_id, {}, uniforms);
 
     renderer_->deleteVertexBuffer(vertex_buffer_id);
   }

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "canvas/Renderer/texture_slots.h"
-#include "canvas/Renderer/uniform_buffer.h"
-#include "canvas/Renderer/vertex_definition.h"
+#include "canvas/renderer/texture_slots.h"
+#include "canvas/renderer/uniform_buffer.h"
+#include "canvas/renderer/vertex_definition.h"
 
 namespace ca {
 

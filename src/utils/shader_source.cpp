@@ -1,5 +1,5 @@
 
-#include "canvas/Utils/shader_source.h"
+#include "canvas/utils/shader_source.h"
 
 namespace ca {
 

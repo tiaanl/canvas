@@ -1,14 +1,14 @@
 #pragma once
 
-#include "canvas/Renderer/command.h"
-#include "canvas/Renderer/render_state.h"
-#include "canvas/Renderer/texture_slots.h"
-#include "canvas/Renderer/types.h"
-#include "canvas/Renderer/uniform_buffer.h"
-#include "canvas/Renderer/vertex_definition.h"
-#include "canvas/Utils/shader_source.h"
+#include "canvas/renderer/command.h"
+#include "canvas/renderer/render_state.h"
+#include "canvas/renderer/texture_slots.h"
+#include "canvas/renderer/types.h"
+#include "canvas/renderer/uniform_buffer.h"
+#include "canvas/renderer/vertex_definition.h"
+#include "canvas/utils/shader_source.h"
 #include "floats/size.h"
-#include "nucleus/Containers/dynamic_array.h"
+#include "nucleus/containers/dynamic_array.h"
 
 namespace ca {
 

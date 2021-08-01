@@ -1,10 +1,10 @@
 
-#include "canvas/Renderer/renderer.h"
+#include "canvas/renderer/renderer.h"
 
-#include "canvas/Renderer/vertex_definition.h"
-#include "canvas/Utils/gl_check.h"
-#include "canvas/Utils/shader_source.h"
 #include "canvas/opengl.h"
+#include "canvas/renderer/vertex_definition.h"
+#include "canvas/utils/gl_check.h"
+#include "canvas/utils/shader_source.h"
 #include "nucleus/logging.h"
 
 namespace ca {

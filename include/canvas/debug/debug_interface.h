@@ -3,7 +3,7 @@
 #include <floats/size.h>
 #include <nucleus/profiling.h>
 
-#include "canvas/Debug/debug_font.h"
+#include "canvas/debug/debug_font.h"
 #include "nucleus/macros.h"
 
 namespace ca {

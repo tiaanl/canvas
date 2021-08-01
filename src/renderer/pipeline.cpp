@@ -1,6 +1,6 @@
-#include "canvas/Renderer/pipeline.h"
+#include "canvas/renderer/pipeline.h"
 
-#include "canvas/Renderer/renderer.h"
+#include "canvas/renderer/renderer.h"
 
 namespace ca {
 

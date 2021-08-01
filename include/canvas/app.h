@@ -1,17 +1,17 @@
 #pragma once
 
-#include <nucleus/Memory/scoped_ptr.h>
 #include <nucleus/config.h>
 #include <nucleus/high_resolution_timer.h>
 #include <nucleus/macros.h>
+#include <nucleus/memory/scoped_ptr.h>
 #include <nucleus/message_loop/message_loop.h>
 #include <nucleus/profiling.h>
 
 #include <nucleus/main_header.hpp>
 
-#include "canvas/Windows/window.h"
-#include "canvas/Windows/window_delegate.h"
 #include "canvas/message_loop/message_pump_ui.h"
+#include "canvas/windows/window.h"
+#include "canvas/windows/window_delegate.h"
 
 namespace ca {
 

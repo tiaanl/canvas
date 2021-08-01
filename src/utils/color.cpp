@@ -1,5 +1,5 @@
 
-#include "canvas/Utils/color.h"
+#include "canvas/utils/color.h"
 
 namespace ca {
 

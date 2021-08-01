@@ -1,6 +1,6 @@
-#include "canvas/Renderer/line_renderer.h"
+#include "canvas/renderer/line_renderer.h"
 
-#include "canvas/Renderer/renderer.h"
+#include "canvas/renderer/renderer.h"
 
 namespace ca {
 

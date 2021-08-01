@@ -2,7 +2,7 @@
 
 #include <limits>
 
-#include "nucleus/Streams/output_stream.h"
+#include "nucleus/streams/output_stream.h"
 #include "nucleus/types.h"
 
 namespace ca {

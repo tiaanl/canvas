@@ -1,11 +1,11 @@
 #pragma once
 
-#include "canvas/Renderer/types.h"
-#include "canvas/Renderer/uniform_buffer.h"
+#include "canvas/renderer/types.h"
+#include "canvas/renderer/uniform_buffer.h"
 #include "floats/mat4.h"
 #include "floats/pos.h"
-#include "nucleus/Text/string_view.h"
 #include "nucleus/macros.h"
+#include "nucleus/text/string_view.h"
 
 namespace ca {
 

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "canvas/Renderer/types.h"
-#include "canvas/Utils/color.h"
+#include "canvas/renderer/types.h"
+#include "canvas/utils/color.h"
 
 namespace ca {
 
@@ -40,7 +40,7 @@ struct Command {
     DrawData drawData;
   };
 
-  Command(CommandType type) : type{type} {}
+  explicit Command(CommandType type) : type{type} {}
 };
 
 }  // namespace ca

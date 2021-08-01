@@ -1,5 +1,5 @@
 
-#include "canvas/Renderer/uniform_buffer.h"
+#include "canvas/renderer/uniform_buffer.h"
 
 #include "nucleus/logging.h"
 

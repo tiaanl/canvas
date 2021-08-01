@@ -1,7 +1,7 @@
 #pragma once
 
-#include "nucleus/Streams/input_stream.h"
-#include "nucleus/Text/dynamic_string.h"
+#include "nucleus/streams/input_stream.h"
+#include "nucleus/text/dynamic_string.h"
 
 namespace ca {
 

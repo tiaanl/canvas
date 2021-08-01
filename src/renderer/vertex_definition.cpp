@@ -1,5 +1,5 @@
 
-#include "canvas/Renderer/vertex_definition.h"
+#include "canvas/renderer/vertex_definition.h"
 
 namespace ca {
 

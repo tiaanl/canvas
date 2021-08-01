@@ -1,11 +1,12 @@
 #pragma once
 
-#include <canvas/Renderer/types.h>
-#include <canvas/Utils/color.h>
 #include <floats/mat4.h>
 #include <floats/vec3.h>
-#include <nucleus/Containers/dynamic_array.h>
+#include <nucleus/containers/dynamic_array.h>
 #include <nucleus/macros.h>
+
+#include "canvas/renderer/types.h"
+#include "canvas/utils/color.h"
 
 namespace ca {
 

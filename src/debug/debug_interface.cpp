@@ -1,8 +1,8 @@
-#include "canvas/Debug/debug_interface.h"
+#include "canvas/debug/debug_interface.h"
 
 #include <cstdio>
 
-#include "canvas/Renderer/renderer.h"
+#include "canvas/renderer/renderer.h"
 #include "floats/transform.h"
 #include "nucleus/profiling.h"
 

@@ -1,5 +1,5 @@
 
-#include "canvas/Windows/window.h"
+#include "canvas/windows/window.h"
 
 #include <cmath>
 
@@ -7,8 +7,8 @@
 // -------------
 #include "GLFW/glfw3.h"
 #include "canvas/message_loop/message_pump_ui.h"
-#include "nucleus/Text/utils.h"
 #include "nucleus/high_resolution_timer.h"
+#include "nucleus/text/utils.h"
 
 namespace ca {
 
@@ -264,7 +264,7 @@ Key getKeyFromGLFWKey(int key) {
 
     default:
       return Key::Unknown;
-  };
+  }
 }
 
 void glfwErrorCallback(int error, const char* description) {

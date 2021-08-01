@@ -1,11 +1,11 @@
 #pragma once
 
-#include "canvas/Debug/debug_interface.h"
-#include "canvas/Renderer/renderer.h"
-#include "canvas/Windows/window_delegate.h"
-#include "nucleus/Memory/scoped_ptr.h"
-#include "nucleus/Text/string_view.h"
+#include "canvas/debug/debug_interface.h"
+#include "canvas/renderer/renderer.h"
+#include "canvas/windows/window_delegate.h"
 #include "nucleus/macros.h"
+#include "nucleus/memory/scoped_ptr.h"
+#include "nucleus/text/string_view.h"
 
 typedef struct GLFWwindow GLFWwindow;
 

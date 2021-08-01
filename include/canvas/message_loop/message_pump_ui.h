@@ -1,6 +1,6 @@
 #pragma once
 
-#include "nucleus/Containers/dynamic_array.h"
+#include "nucleus/containers/dynamic_array.h"
 #include "nucleus/macros.h"
 #include "nucleus/message_loop/message_pump.h"
 

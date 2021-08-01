@@ -1,7 +1,7 @@
 #pragma once
 
-#include "canvas/Renderer/types.h"
-#include "nucleus/Containers/static_array.h"
+#include "canvas/renderer/types.h"
+#include "nucleus/containers/static_array.h"
 #include "nucleus/function.h"
 
 namespace ca {

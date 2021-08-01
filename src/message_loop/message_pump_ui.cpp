@@ -2,7 +2,7 @@
 
 #include <GLFW/glfw3.h>
 
-#include "canvas/Windows/window.h"
+#include "canvas/windows/window.h"
 #include "nucleus/high_resolution_timer.h"
 
 namespace ca {

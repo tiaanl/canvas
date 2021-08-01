@@ -1,5 +1,5 @@
 
-#include "canvas/Windows/window_delegate.h"
+#include "canvas/windows/window_delegate.h"
 
 namespace ca {
 

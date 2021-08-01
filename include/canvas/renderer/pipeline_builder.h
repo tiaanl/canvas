@@ -2,9 +2,9 @@
 
 #include <nucleus/optional.h>
 
-#include "canvas/Renderer/pipeline.h"
-#include "canvas/Renderer/vertex_definition.h"
-#include "canvas/Utils/shader_source.h"
+#include "canvas/renderer/pipeline.h"
+#include "canvas/renderer/vertex_definition.h"
+#include "canvas/utils/shader_source.h"
 
 namespace ca {
 

@@ -1,4 +1,4 @@
-#include "canvas/Renderer/texture_slots.h"
+#include "canvas/renderer/texture_slots.h"
 
 #include <algorithm>
 
