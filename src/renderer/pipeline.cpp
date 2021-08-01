@@ -5,12 +5,7 @@
 namespace ca {
 
 VertexBufferId Pipeline::create_vertex_buffer(const void* data, MemSize data_size) const {
-  return renderer_->createVertexBuffer(vertex_definition_, data, data_size);
-}
-
-IndexBufferId Pipeline::create_index_buffer(ca::ComponentType component_type, const void* data,
-                                            MemSize data_size) const {
-  return renderer_->createIndexBuffer(component_type, data, data_size);
+  return renderer_->create_vertex_buffer(vertex_definition_, data, data_size);
 }
 
 void Pipeline::draw(DrawType draw_type, U32 vertex_offset, U32 vertex_count,

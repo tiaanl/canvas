@@ -85,21 +85,21 @@ bool DebugFont::initialize() {
     }
   }
 
-  m_vertexBufferId = m_renderer->createVertexBuffer(def, vertices, sizeof(vertices));
+  m_vertexBufferId = m_renderer->create_vertex_buffer(def, vertices, sizeof(vertices));
 
   // Create the texture.
 
   m_textureId =
-      m_renderer->createTexture(TextureFormat::Alpha, {256, 128}, monoFont, monoFontSize, false);
+      m_renderer->create_texture(TextureFormat::Alpha, {256, 128}, monoFont, monoFontSize, false);
 
   // Create the program.
 
-  m_programId = m_renderer->createProgram(ShaderSource::from(kVertexShaderSource),
-                                          ShaderSource::from(kFragmentShaderSource));
+  m_programId = m_renderer->create_program(ShaderSource::from(kVertexShaderSource),
+                                           ShaderSource::from(kFragmentShaderSource));
 
   // Create and set up some uniforms.
 
-  m_transformUniformId = m_renderer->createUniform("uTransform");
+  m_transformUniformId = m_renderer->create_uniform("uTransform");
 
   return true;
 }

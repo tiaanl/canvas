@@ -29,14 +29,14 @@ Geometry create_rectangle(Renderer* renderer, const fl::Vec2& top_left,
   def.addAttribute(ca::ComponentType::Float32, ca::ComponentCount::Three);
   def.addAttribute(ca::ComponentType::Float32, ca::ComponentCount::Two);
 
-  auto vertex_buffer_id = renderer->createVertexBuffer(def, vertices, sizeof(vertices));
+  auto vertex_buffer_id = renderer->create_vertex_buffer(def, vertices, sizeof(vertices));
   if (!isValid(vertex_buffer_id)) {
     LOG(Error) << "Could not create index buffer.";
     return {};
   }
 
   auto index_buffer_id =
-      renderer->createIndexBuffer(ca::ComponentType::Unsigned16, indices, sizeof(indices));
+      renderer->create_index_buffer(ca::ComponentType::Unsigned16, indices, sizeof(indices));
 
   if (!isValid(index_buffer_id)) {
     LOG(Error) << "Could not create index buffer.";

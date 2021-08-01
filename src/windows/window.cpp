@@ -387,7 +387,7 @@ void Window::tick(F32 delta) {
 void Window::paint() {
   nu::Timer timer;
 
-  m_renderer.beginFrame();
+  m_renderer.begin_frame();
 
   PROFILE("frame")
 
@@ -403,7 +403,7 @@ void Window::paint() {
 
   nu::detail::getCurrentProfileMetrics()->reset();
 
-  m_renderer.endFrame();
+  m_renderer.end_frame();
 
   // Swap buffers.
   glfwSwapBuffers(m_window);

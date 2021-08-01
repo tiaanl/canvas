@@ -49,8 +49,8 @@ ImmediateMesh& ImmediateRenderer::create_mesh(DrawType draw_type, const fl::Mat4
 void ImmediateRenderer::submit_to_renderer() {
   if (!g_program_id.isValid()) {
     LOG(Info) << "Creating program";
-    g_program_id = renderer_->createProgram(ShaderSource::from(g_vertex_shader_source),
-                                            ShaderSource::from(g_fragment_shader_source));
+    g_program_id = renderer_->create_program(ShaderSource::from(g_vertex_shader_source),
+                                             ShaderSource::from(g_fragment_shader_source));
   }
 
   VertexDefinition def;
@@ -58,10 +58,10 @@ void ImmediateRenderer::submit_to_renderer() {
   def.addAttribute(ComponentType::Float32, ComponentCount::Four);
 
   for (const auto& mesh : meshes_) {
-    auto vertex_buffer_id = renderer_->createVertexBuffer(
+    auto vertex_buffer_id = renderer_->create_vertex_buffer(
         def, mesh.vertices_.data(), mesh.vertices_.size() * sizeof(ImmediateMesh::Vertex));
 
-    auto transform_uniform_id = renderer_->createUniform("uTransform");
+    auto transform_uniform_id = renderer_->create_uniform("uTransform");
 
     UniformBuffer uniforms;
     uniforms.set(transform_uniform_id, mesh.transform_);
@@ -69,7 +69,7 @@ void ImmediateRenderer::submit_to_renderer() {
     renderer_->draw(mesh.draw_type_, 0, static_cast<U32>(mesh.vertices_.size()), g_program_id,
                     vertex_buffer_id, {}, uniforms);
 
-    renderer_->deleteVertexBuffer(vertex_buffer_id);
+    renderer_->delete_vertex_buffer(vertex_buffer_id);
   }
 
   meshes_.clear();

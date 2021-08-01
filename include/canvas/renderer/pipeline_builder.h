@@ -12,7 +12,7 @@ class Renderer;
 
 class PipelineBuilder {
 public:
-  PipelineBuilder();
+  explicit PipelineBuilder(Renderer* renderer);
 
   PipelineBuilder& attribute(nu::StringView name, ComponentType type,
                              ComponentCount component_count);
@@ -21,9 +21,11 @@ public:
   PipelineBuilder& geometry_shader(ShaderSource source);
   PipelineBuilder& fragment_shader(ShaderSource source);
 
-  nu::Optional<Pipeline> build(Renderer* renderer) const;
+  NU_NO_DISCARD nu::Optional<Pipeline> build() const;
 
 private:
+  Renderer* renderer_;
+
   VertexDefinition vertex_definition_;
   nu::Optional<ShaderSource> vertex_shader_;
   nu::Optional<ShaderSource> geometry_shader_;

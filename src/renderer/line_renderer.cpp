@@ -44,19 +44,19 @@ bool LineRenderer::initialize(Renderer* renderer) {
   VertexDefinition def;
   def.addAttribute(ComponentType::Float32, ComponentCount::Three);
   def.addAttribute(ComponentType::Float32, ComponentCount::Four);
-  m_vertexBufferId = m_renderer->createVertexBuffer(def, nullptr, 0);
+  m_vertexBufferId = m_renderer->create_vertex_buffer(def, nullptr, 0);
   if (!isValid(m_vertexBufferId)) {
     LOG(Error) << "Could not create vertex buffer for line renderer.";
     return false;
   }
 
-  m_indexBufferId = m_renderer->createIndexBuffer(ComponentType::Unsigned16, nullptr, 0);
+  m_indexBufferId = m_renderer->create_index_buffer(ComponentType::Unsigned16, nullptr, 0);
   if (!isValid(m_indexBufferId)) {
     LOG(Error) << "Could not create index buffer for line renderer.";
     return false;
   }
 
-  m_transformUniformId = m_renderer->createUniform("uTransform");
+  m_transformUniformId = m_renderer->create_uniform("uTransform");
   if (!isValid(m_transformUniformId)) {
     LOG(Error) << "Could not create uTransform uniform for line renderer.";
     return false;
@@ -64,7 +64,7 @@ bool LineRenderer::initialize(Renderer* renderer) {
 
   auto vertexShaderSource = ShaderSource::from(kVertexShaderSource);
   auto fragmentShaderSource = ShaderSource::from(kFragmentShaderSource);
-  m_programId = m_renderer->createProgram(vertexShaderSource, fragmentShaderSource);
+  m_programId = m_renderer->create_program(vertexShaderSource, fragmentShaderSource);
   if (!isValid(m_programId)) {
     LOG(Error) << "Could not create program for line renderer.";
     return false;
@@ -125,10 +125,10 @@ void LineRenderer::renderGrid(const fl::Plane& plane, const fl::Vec3& worldUp, c
 
 void LineRenderer::render(const fl::Mat4& transform) {
   // Upload the new scene.
-  m_renderer->vertexBufferData(m_vertexBufferId, m_lines.data(), m_lines.size() * sizeof(Line));
+  m_renderer->vertex_buffer_data(m_vertexBufferId, m_lines.data(), m_lines.size() * sizeof(Line));
 
-  m_renderer->indexBufferData(m_indexBufferId, m_lineIndices.data(),
-                              m_lineIndices.size() * 2 * sizeof(U16));
+  m_renderer->index_buffer_data(m_indexBufferId, m_lineIndices.data(),
+                                m_lineIndices.size() * 2 * sizeof(U16));
 
   UniformBuffer uniformBuffer;
   uniformBuffer.set(m_transformUniformId, transform);

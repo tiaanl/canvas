@@ -33,7 +33,7 @@ public:
       return false;
     }
 
-    scale_uniform_ = renderer->createUniform("uScale");
+    scale_uniform_ = renderer->create_uniform("uScale");
     uniforms_.set(scale_uniform_, 0.5f);
 
     return true;
@@ -66,7 +66,8 @@ private:
       return false;
     }
 
-    program_id_ = renderer->createProgram(ca::ShaderSource::from(&vs), ca::ShaderSource::from(&fs));
+    program_id_ =
+        renderer->create_program(ca::ShaderSource::from(&vs), ca::ShaderSource::from(&fs));
 
     return isValid(program_id_);
   }
@@ -114,7 +115,7 @@ private:
         {-1.0f, 1.0f, -1.0f, 1.0f, 1.0f},   //
     };
 
-    vertex_buffer_id_ = renderer->createVertexBuffer(def, vertices, sizeof(vertices));
+    vertex_buffer_id_ = renderer->create_vertex_buffer(def, vertices, sizeof(vertices));
     if (!isValid(vertex_buffer_id_)) {
       return false;
     }
@@ -137,7 +138,7 @@ private:
     };
 
     index_buffer_id_ =
-        renderer->createIndexBuffer(ca::ComponentType::Unsigned16, indices, sizeof(indices));
+        renderer->create_index_buffer(ca::ComponentType::Unsigned16, indices, sizeof(indices));
 
     if (!isValid(index_buffer_id_)) {
       return false;
@@ -153,8 +154,8 @@ private:
       return false;
     }
 
-    texture_id_ = renderer->createTexture(ca::TextureFormat::Alpha, fl::Size{256, 128},
-                                          ca::monoFont, ca::monoFontSize);
+    texture_id_ = renderer->create_texture(ca::TextureFormat::Alpha, fl::Size{256, 128},
+                                           ca::monoFont, ca::monoFontSize);
 
     return isValid(texture_id_);
   }

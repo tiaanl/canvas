@@ -318,7 +318,7 @@ public:
     }
 
     auto diffuse_texture = build_diffuse_texture();
-    diffuse_texture_id_ = renderer->createTexture(
+    diffuse_texture_id_ = renderer->create_texture(
         ca::TextureFormat::RGBA, {DIFFUSE_TEXTURE_WIDTH, DIFFUSE_TEXTURE_HEIGHT},
         diffuse_texture.data(), diffuse_texture.size() * sizeof(Color), false);
     if (!diffuse_texture_id_) {
@@ -326,44 +326,44 @@ public:
     }
 
     auto normals_texture = build_normals_texture();
-    normals_texture_id_ = renderer->createTexture(
+    normals_texture_id_ = renderer->create_texture(
         ca::TextureFormat::RGBA, {NORMALS_TEXTURE_WIDTH, NORMALS_TEXTURE_HEIGHT},
         normals_texture.data(), normals_texture.size() * sizeof(Color), false);
     if (!normals_texture_id_) {
       return false;
     }
 
-    projection_matrix_uniform_id_ = renderer->createUniform("u_projection");
+    projection_matrix_uniform_id_ = renderer->create_uniform("u_projection");
     if (!projection_matrix_uniform_id_) {
       return false;
     }
 
-    view_matrix_uniform_id_ = renderer->createUniform("u_view");
+    view_matrix_uniform_id_ = renderer->create_uniform("u_view");
     if (!view_matrix_uniform_id_) {
       return false;
     }
 
-    model_matrix_uniform_id_ = renderer->createUniform("u_model");
+    model_matrix_uniform_id_ = renderer->create_uniform("u_model");
     if (!model_matrix_uniform_id_) {
       return false;
     }
 
-    light_position_uniform_id_ = renderer->createUniform("u_light_position");
+    light_position_uniform_id_ = renderer->create_uniform("u_light_position");
     if (!light_position_uniform_id_) {
       return false;
     }
 
-    ambient_light_intensity_uniform_id_ = renderer->createUniform("u_ambient_light_intensity");
+    ambient_light_intensity_uniform_id_ = renderer->create_uniform("u_ambient_light_intensity");
     if (!ambient_light_intensity_uniform_id_) {
       return false;
     }
 
-    diffuse_texture_uniform_id_ = renderer->createUniform("u_diffuse_texture");
+    diffuse_texture_uniform_id_ = renderer->create_uniform("u_diffuse_texture");
     if (!diffuse_texture_uniform_id_) {
       return false;
     }
 
-    normals_texture_uniform_id_ = renderer->createUniform("u_normals_texture");
+    normals_texture_uniform_id_ = renderer->create_uniform("u_normals_texture");
     if (!normals_texture_uniform_id_) {
       return false;
     }

@@ -112,14 +112,14 @@ Renderer::Renderer() = default;
 
 Renderer::~Renderer() = default;
 
-ProgramId Renderer::createProgram(const ShaderSource& vertexShader,
-                                  const ShaderSource& fragmentShader) {
-  return createProgram(vertexShader, {}, fragmentShader);
+ProgramId Renderer::create_program(const ShaderSource& vertexShader,
+                                   const ShaderSource& fragmentShader) {
+  return create_program(vertexShader, {}, fragmentShader);
 }
 
-ProgramId Renderer::createProgram(const ShaderSource& vertexShader,
-                                  const ShaderSource& geometryShader,
-                                  const ShaderSource& fragmentShader) {
+ProgramId Renderer::create_program(const ShaderSource& vertexShader,
+                                   const ShaderSource& geometryShader,
+                                   const ShaderSource& fragmentShader) {
   bool has_geometry_shader_ = !geometryShader.getSource().empty();
 
   ProgramData result;
@@ -180,18 +180,18 @@ ProgramId Renderer::createProgram(const ShaderSource& vertexShader,
     }
   }
 
-  m_programs.pushBack(result);
+  programs_.pushBack(result);
 
-  return ProgramId{m_programs.size() - 1};
+  return ProgramId{programs_.size() - 1};
 }
 
-void Renderer::deleteProgram(ProgramId programId) {
-  auto programData = m_programs[programId.id];
+void Renderer::delete_program(ProgramId programId) {
+  auto programData = programs_[programId.id];
   glDeleteProgram(programData.id);
 }
 
-VertexBufferId Renderer::createVertexBuffer(const VertexDefinition& vertexDefinition,
-                                            const void* data, MemSize dataSize) {
+VertexBufferId Renderer::create_vertex_buffer(const VertexDefinition& bufferDefinition,
+                                              const void* data, MemSize dataSize) {
   VertexBufferData result;
 
   // Create a vertex array object and bind it.
@@ -208,9 +208,9 @@ VertexBufferId Renderer::createVertexBuffer(const VertexDefinition& vertexDefini
 
   U32 componentNumber = 0;
   U32 offset = 0;
-  for (auto& attr : vertexDefinition) {
+  for (auto& attr : bufferDefinition) {
     glVertexAttribPointer(componentNumber, U32(attr.getCount()), getOglType(attr.getType()),
-                          GL_FALSE, vertexDefinition.getStride(),
+                          GL_FALSE, bufferDefinition.getStride(),
                           (GLvoid*)(static_cast<MemSize>(offset)));
     glEnableVertexAttribArray(componentNumber);
 
@@ -228,27 +228,27 @@ VertexBufferId Renderer::createVertexBuffer(const VertexDefinition& vertexDefini
   auto pushBackResult =
       m_vertexBuffers.constructBack([&result](VertexBufferData* storage) { *storage = result; });
 #else
-  auto pushBackResult = m_vertexBuffers.emplaceBack(result);
+  auto pushBackResult = vertex_buffers_.emplaceBack(result);
 #endif
 
   return VertexBufferId{pushBackResult.index()};
 }
 
-void Renderer::vertexBufferData(VertexBufferId id, void* data, MemSize dataSize) {
-  auto vertexBufferData = m_vertexBuffers[id.id];
+void Renderer::vertex_buffer_data(VertexBufferId id, void* data, MemSize dataSize) {
+  auto vertexBufferData = vertex_buffers_[id.id];
 
   GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, vertexBufferData.id));
   GL_CHECK(glBufferData(GL_ARRAY_BUFFER, dataSize, data, GL_STATIC_DRAW));
 }
 
-void Renderer::deleteVertexBuffer(VertexBufferId id) {
-  auto data = m_vertexBuffers[id.id];
+void Renderer::delete_vertex_buffer(VertexBufferId id) {
+  auto data = vertex_buffers_[id.id];
 
   GL_CHECK(glDeleteVertexArrays(1, &data.id));
 }
 
-IndexBufferId Renderer::createIndexBuffer(ComponentType componentType, const void* data,
-                                          MemSize dataSize) {
+IndexBufferId Renderer::create_index_buffer(ComponentType componentType, const void* data,
+                                            MemSize dataSize) {
   GLuint bufferId;
   GL_CHECK(glGenBuffers(1, &bufferId));
   GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferId));
@@ -261,27 +261,27 @@ IndexBufferId Renderer::createIndexBuffer(ComponentType componentType, const voi
         storage->componentType = componentType;
       });
 #else
-  auto pushBackResult = m_indexBuffers.emplaceBack(bufferId, componentType);
+  auto pushBackResult = index_buffers_.emplaceBack(bufferId, componentType);
 #endif
 
   return IndexBufferId{pushBackResult.index()};
 }
 
-void Renderer::indexBufferData(IndexBufferId id, void* data, MemSize dataSize) {
-  auto indexBufferData = m_indexBuffers[id.id];
+void Renderer::index_buffer_data(IndexBufferId id, void* data, MemSize dataSize) {
+  auto indexBufferData = index_buffers_[id.id];
 
   GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferData.id));
   GL_CHECK(glBufferData(GL_ELEMENT_ARRAY_BUFFER, dataSize, data, GL_STATIC_DRAW));
 }
 
-void Renderer::deleteIndexBuffer(IndexBufferId id) {
-  auto indexBufferData = m_indexBuffers[id.id];
+void Renderer::delete_index_buffer(IndexBufferId id) {
+  auto indexBufferData = index_buffers_[id.id];
 
   GL_CHECK(glDeleteBuffers(1, &indexBufferData.id));
 }
 
-TextureId Renderer::createTexture(TextureFormat format, const fl::Size& size, const void* data,
-                                  MemSize dataSize, bool smooth) {
+TextureId Renderer::create_texture(TextureFormat format, const fl::Size& size, const void* data,
+                                   MemSize dataSize, bool smooth) {
   if (format == TextureFormat::Unknown) {
     LOG(Warning) << "Can not create texture from image with unknown format.";
     return {};
@@ -347,80 +347,84 @@ TextureId Renderer::createTexture(TextureFormat format, const fl::Size& size, co
     storage->size = result.size;
   });
 #else
-  auto r = m_textures.emplaceBack(result.id, result.size);
+  auto r = textures_.emplaceBack(result.id, result.size);
 #endif  // 0
 
   return TextureId{r.index()};
 }
 
-UniformId Renderer::createUniform(const nu::StringView& name) {
+UniformId Renderer::create_uniform(const nu::StringView& name) {
   UniformData uniformData = {name};
-  m_uniforms.pushBack(uniformData);
-  return UniformId{m_uniforms.size() - 1};
+  uniforms_.pushBack(uniformData);
+  return UniformId{uniforms_.size() - 1};
+}
+
+PipelineBuilder Renderer::create_pipeline_builder() const {
+  return PipelineBuilder{const_cast<Renderer*>(this)};
 }
 
 void Renderer::resize(const fl::Size& size) {
-  m_size = size;
+  size_ = size;
   GL_CHECK(glViewport(0, 0, size.width, size.height));
 }
 
-void Renderer::beginFrame() {
+void Renderer::begin_frame() {
   glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void Renderer::endFrame() {}
+void Renderer::end_frame() {}
 
 void Renderer::clear(const Color& color) {
   GL_CHECK(glClearColor(color.r, color.g, color.b, color.a));
   GL_CHECK(glClear(GL_COLOR_BUFFER_BIT));
 }
 
-void Renderer::draw(DrawType drawType, U32 vertexOffset, U32 vertexCount, ProgramId programId,
-                    VertexBufferId vertexBufferId, const TextureSlots& textures,
+void Renderer::draw(DrawType draw_type, U32 vertex_offset, U32 vertex_count, ProgramId program_id,
+                    VertexBufferId vertex_buffer_id, const TextureSlots& textures,
                     const UniformBuffer& uniforms) {
-  pre_draw(programId, textures, uniforms);
+  pre_draw(program_id, textures, uniforms);
 
-  if (!isValid(vertexBufferId)) {
+  if (!isValid(vertex_buffer_id)) {
     LOG(Error) << "Draw command without vertex buffer.";
     return;
   }
 
-  auto& vertexBufferData = m_vertexBuffers[vertexBufferId.id];
+  auto& vertexBufferData = vertex_buffers_[vertex_buffer_id.id];
   GL_CHECK(glBindVertexArray(vertexBufferData.id));
 
-  auto mode = mode_from_draw_type(drawType);
-  GL_CHECK(glDrawArrays(mode, vertexOffset, vertexCount));
+  auto mode = mode_from_draw_type(draw_type);
+  GL_CHECK(glDrawArrays(mode, vertex_offset, vertex_count));
 
   post_draw();
 }
 
-void Renderer::draw(DrawType drawType, U32 indexCount, ProgramId programId,
-                    VertexBufferId vertexBufferId, IndexBufferId indexBufferId,
+void Renderer::draw(DrawType draw_type, U32 index_count, ProgramId program_id,
+                    VertexBufferId vertex_buffer_id, IndexBufferId index_buffer_id,
                     const TextureSlots& textures, const UniformBuffer& uniforms) {
-  pre_draw(programId, textures, uniforms);
+  pre_draw(program_id, textures, uniforms);
 
-  if (!isValid(vertexBufferId)) {
+  if (!isValid(vertex_buffer_id)) {
     LOG(Error) << "Draw command without vertex buffer.";
     return;
   }
 
-  if (!isValid(indexBufferId)) {
+  if (!isValid(index_buffer_id)) {
     LOG(Error) << "Draw command without index buffer.";
     return;
   }
 
-  auto& vertexBufferData = m_vertexBuffers[vertexBufferId.id];
+  auto& vertexBufferData = vertex_buffers_[vertex_buffer_id.id];
   GL_CHECK(glBindVertexArray(vertexBufferData.id));
 
-  auto& indexBufferData = m_indexBuffers[indexBufferId.id];
+  auto& indexBufferData = index_buffers_[index_buffer_id.id];
   GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferData.id));
 
-  U32 oglType = getOglType(indexBufferData.componentType);
+  U32 oglType = getOglType(indexBufferData.component_type);
 
-  U32 mode = mode_from_draw_type(drawType);
+  U32 mode = mode_from_draw_type(draw_type);
 
-  GL_CHECK(glDrawElements(mode, indexCount, oglType, nullptr));
+  GL_CHECK(glDrawElements(mode, index_count, oglType, nullptr));
 
   post_draw();
 }
@@ -432,18 +436,18 @@ void Renderer::pre_draw(ProgramId program_id, const TextureSlots& textures,
     return;
   }
 
-  auto& programData = m_programs[program_id.id];
+  auto& programData = programs_[program_id.id];
   GL_CHECK(glUseProgram(programData.id));
 
   textures.for_each_valid_slot([&](U32 slot, TextureId texture_id) {
-    auto& textureData = m_textures[texture_id.id];
+    auto& textureData = textures_[texture_id.id];
     GL_CHECK(glActiveTexture(GL_TEXTURE0 + slot));
     GL_CHECK(glBindTexture(GL_TEXTURE_2D, textureData.id));
   });
 
   // Process uniforms.
   uniforms.apply([&](UniformId uniformId, ComponentType type, U32 count, const void* values) {
-    const auto& uniformData = m_uniforms[uniformId.id];
+    const auto& uniformData = uniforms_[uniformId.id];
     char buf[64];
     std::strncpy(buf, uniformData.name.data(), uniformData.name.length());
     buf[uniformData.name.length()] = '\0';

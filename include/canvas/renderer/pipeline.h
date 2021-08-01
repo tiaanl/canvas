@@ -12,8 +12,6 @@ class Renderer;
 class Pipeline {
 public:
   VertexBufferId create_vertex_buffer(const void* data, MemSize data_size) const;
-  IndexBufferId create_index_buffer(ca::ComponentType component_type, const void* data,
-                                    MemSize data_size) const;
 
   void draw(DrawType draw_type, U32 vertex_offset, U32 vertex_count,
             VertexBufferId vertex_buffer_id, const TextureSlots& textures = {},

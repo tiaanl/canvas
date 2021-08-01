@@ -1,6 +1,7 @@
 #pragma once
 
 #include "canvas/renderer/command.h"
+#include "canvas/renderer/pipeline_builder.h"
 #include "canvas/renderer/render_state.h"
 #include "canvas/renderer/texture_slots.h"
 #include "canvas/renderer/types.h"
@@ -19,65 +20,68 @@ public:
   Renderer();
   ~Renderer();
 
-  ProgramId createProgram(const ShaderSource& vertexShader, const ShaderSource& fragmentShader);
-  ProgramId createProgram(const ShaderSource& vertexShader, const ShaderSource& geometryShader,
-                          const ShaderSource& fragmentShader);
-  void deleteProgram(ProgramId programId);
+  ProgramId create_program(const ShaderSource& vertexShader, const ShaderSource& fragmentShader);
+  ProgramId create_program(const ShaderSource& vertexShader, const ShaderSource& geometryShader,
+                           const ShaderSource& fragmentShader);
+  void delete_program(ProgramId programId);
 
-  VertexBufferId createVertexBuffer(const VertexDefinition& bufferDefinition, const void* data,
+  VertexBufferId create_vertex_buffer(const VertexDefinition& bufferDefinition, const void* data,
+                                      MemSize dataSize);
+  void vertex_buffer_data(VertexBufferId id, void* data, MemSize dataSize);
+  void delete_vertex_buffer(VertexBufferId id);
+
+  IndexBufferId create_index_buffer(ComponentType componentType, const void* data,
                                     MemSize dataSize);
-  void vertexBufferData(VertexBufferId id, void* data, MemSize dataSize);
-  void deleteVertexBuffer(VertexBufferId id);
+  void index_buffer_data(IndexBufferId id, void* data, MemSize dataSize);
+  void delete_index_buffer(IndexBufferId id);
 
-  IndexBufferId createIndexBuffer(ComponentType componentType, const void* data, MemSize dataSize);
-  void indexBufferData(IndexBufferId id, void* data, MemSize dataSize);
-  void deleteIndexBuffer(IndexBufferId id);
+  TextureId create_texture(TextureFormat format, const fl::Size& size, const void* data,
+                           MemSize dataSize, bool smooth = false);
 
-  TextureId createTexture(TextureFormat format, const fl::Size& size, const void* data,
-                          MemSize dataSize, bool smooth = false);
+  UniformId create_uniform(const nu::StringView& name);
 
-  UniformId createUniform(const nu::StringView& name);
+  NU_NO_DISCARD PipelineBuilder create_pipeline_builder() const;
 
-  const fl::Size& getSize() const {
-    return m_size;
+  NU_NO_DISCARD const fl::Size& size() const {
+    return size_;
   }
 
-  // Resize the rendering area. Typically called when the window is resized.
+  // Resize the rendering area. Usually called when the window is resized.
   void resize(const fl::Size& size);
 
   NU_NO_DISCARD RenderState& state() {
     return render_state_;
   }
 
-  void beginFrame();
-  void endFrame();
+  void begin_frame();
+  void end_frame();
 
   void clear(const Color& color);
 
-  void draw(DrawType drawType, U32 vertexOffset, U32 vertexCount, ProgramId programId,
-            VertexBufferId vertexBufferId, const TextureSlots& textures,
-            const UniformBuffer& uniforms);
+  void draw(DrawType draw_type, U32 vertex_offset, U32 vertex_count, ProgramId program_id,
+            VertexBufferId vertex_buffer_id, const TextureSlots& textures = {},
+            const UniformBuffer& uniforms = {});
 
-  void draw(DrawType drawType, U32 indexCount, ProgramId programId, VertexBufferId vertexBufferId,
-            IndexBufferId indexBufferId, const TextureSlots& textures,
-            const UniformBuffer& uniforms);
+  void draw(DrawType draw_type, U32 index_count, ProgramId program_id,
+            VertexBufferId vertex_buffer_id, IndexBufferId index_buffer_id,
+            const TextureSlots& textures = {}, const UniformBuffer& uniforms = {});
 
 private:
   struct ProgramData {
-    U32 id;
+    U32 id = 0;
   };
 
   struct VertexBufferData {
-    U32 id;
+    U32 id = 0;
   };
 
   struct IndexBufferData {
-    U32 id;
-    ComponentType componentType;
+    U32 id = 0;
+    ComponentType component_type;
   };
 
   struct TextureData {
-    U32 id;
+    U32 id = 0;
     fl::Size size;
   };
 
@@ -88,13 +92,13 @@ private:
   void pre_draw(ProgramId program_id, const TextureSlots& textures, const UniformBuffer& uniforms);
   void post_draw();
 
-  fl::Size m_size;
+  fl::Size size_;
 
-  nu::DynamicArray<ProgramData> m_programs;
-  nu::DynamicArray<VertexBufferData> m_vertexBuffers;
-  nu::DynamicArray<IndexBufferData> m_indexBuffers;
-  nu::DynamicArray<TextureData> m_textures;
-  nu::DynamicArray<UniformData> m_uniforms;
+  nu::DynamicArray<ProgramData> programs_;
+  nu::DynamicArray<VertexBufferData> vertex_buffers_;
+  nu::DynamicArray<IndexBufferData> index_buffers_;
+  nu::DynamicArray<TextureData> textures_;
+  nu::DynamicArray<UniformData> uniforms_;
 
   RenderState render_state_;
 };

@@ -4,7 +4,7 @@
 
 namespace ca {
 
-PipelineBuilder::PipelineBuilder() = default;
+PipelineBuilder::PipelineBuilder(Renderer* renderer) : renderer_{renderer} {}
 
 PipelineBuilder& PipelineBuilder::attribute(nu::StringView name, ComponentType type,
                                             ComponentCount component_count) {
@@ -32,11 +32,11 @@ PipelineBuilder& PipelineBuilder::fragment_shader(ShaderSource source) {
   return *this;
 }
 
-nu::Optional<Pipeline> PipelineBuilder::build(Renderer* renderer) const {
+nu::Optional<Pipeline> PipelineBuilder::build() const {
   DCHECK(vertex_shader_.has_value());
   DCHECK(fragment_shader_.has_value());
 
-  auto program_id = renderer->createProgram(
+  auto program_id = renderer_->create_program(
       vertex_shader_.value(),
       geometry_shader_.has_value() ? geometry_shader_.value() : ShaderSource{},
       fragment_shader_.value());
@@ -45,7 +45,7 @@ nu::Optional<Pipeline> PipelineBuilder::build(Renderer* renderer) const {
     return {};
   }
 
-  return Pipeline{renderer, vertex_definition_, program_id};
+  return Pipeline{renderer_, vertex_definition_, program_id};
 }
 
 }  // namespace ca
