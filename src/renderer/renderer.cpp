@@ -320,8 +320,8 @@ TextureId Renderer::create_texture(TextureFormat format, const fl::Size& size, c
   }
 
   if (components * size.width * size.height > dataSize) {
-    LOG(Info) << "The provided data is not enough to fill the texture rectangle. (size = " << size
-              << ", dataSize = " << dataSize << ")";
+    LOG(Warning) << "The provided data is not enough to fill the texture rectangle. (size = "
+                 << size << ", dataSize = " << dataSize << ")";
     return {};
   }
 
