@@ -1,6 +1,6 @@
 #pragma once
 
-#include <nucleus/optional.h>
+#include <nucleus/optional.hpp>
 
 #include "canvas/renderer/pipeline.h"
 #include "canvas/renderer/vertex_definition.h"
