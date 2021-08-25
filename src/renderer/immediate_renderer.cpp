@@ -41,6 +41,12 @@ ProgramId g_program_id{kInvalidResourceId};
 
 ImmediateRenderer::ImmediateRenderer(Renderer* renderer) : renderer_{renderer} {}
 
+ImmediateRenderer::~ImmediateRenderer() {
+  if (!meshes_.empty()) {
+    LOG(Warning) << "ImmediateRenderer contains meshes. Call flush_to_renderer().";
+  }
+}
+
 ImmediateMesh& ImmediateRenderer::create_mesh(DrawType draw_type, const fl::Mat4& transform) {
   auto result = meshes_.emplaceBack(this, draw_type, transform);
   return result.element();

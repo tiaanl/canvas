@@ -17,6 +17,7 @@ class ImmediateRenderer {
 
 public:
   explicit ImmediateRenderer(Renderer* renderer);
+  ~ImmediateRenderer();
 
   NU_DEFAULT_MOVE(ImmediateRenderer);
 
