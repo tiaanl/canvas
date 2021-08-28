@@ -5,23 +5,22 @@
 #include "nucleus/streams/output_stream.h"
 #include "nucleus/types.h"
 
-namespace ca {
+constexpr MemSize INVALID_RESOURCE_ID = std::numeric_limits<MemSize>::max();
 
-constexpr MemSize kInvalidResourceId = std::numeric_limits<MemSize>::max();
+namespace ca {
 
 #define DECLARE_RESOURCE_ID(Name)                                                                  \
   struct Name##Id {                                                                                \
-    MemSize id = kInvalidResourceId;                                                               \
-    bool isValid() const {                                                                         \
-      return id != kInvalidResourceId;                                                             \
-    }                                                                                              \
-    operator bool() const {                                                                        \
-      return isValid();                                                                            \
+    MemSize id = ::INVALID_RESOURCE_ID;                                                            \
+    bool is_valid() const {                                                                        \
+      return id != ::INVALID_RESOURCE_ID;                                                          \
     }                                                                                              \
   };                                                                                               \
-                                                                                                   \
-  inline bool isValid(const Name##Id& resource) {                                                  \
-    return resource.isValid();                                                                     \
+  inline bool operator==(Name##Id left, Name##Id right) {                                          \
+    return left.id == right.id;                                                                    \
+  }                                                                                                \
+  inline bool operator!=(Name##Id left, Name##Id right) {                                          \
+    return left.id != right.id;                                                                    \
   }
 
 DECLARE_RESOURCE_ID(Program)

@@ -18,7 +18,7 @@ struct Geometry {
 };
 
 inline bool is_valid(const Geometry& geometry) {
-  return isValid(geometry.vertex_buffer_id) && isValid(geometry.index_buffer_id);
+  return geometry.vertex_buffer_id.is_valid() && geometry.index_buffer_id.is_valid();
 }
 
 Geometry create_rectangle(Renderer* renderer, const fl::Vec2& top_left,

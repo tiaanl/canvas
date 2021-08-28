@@ -385,7 +385,7 @@ void Renderer::draw(DrawType draw_type, U32 vertex_offset, U32 vertex_count, Pro
                     const UniformBuffer& uniforms) {
   pre_draw(program_id, textures, uniforms);
 
-  if (!isValid(vertex_buffer_id)) {
+  if (!vertex_buffer_id.is_valid()) {
     LOG(Error) << "Draw command without vertex buffer.";
     return;
   }
@@ -404,12 +404,12 @@ void Renderer::draw(DrawType draw_type, U32 index_count, ProgramId program_id,
                     const TextureSlots& textures, const UniformBuffer& uniforms) {
   pre_draw(program_id, textures, uniforms);
 
-  if (!isValid(vertex_buffer_id)) {
+  if (!vertex_buffer_id.is_valid()) {
     LOG(Error) << "Draw command without vertex buffer.";
     return;
   }
 
-  if (!isValid(index_buffer_id)) {
+  if (!index_buffer_id.is_valid()) {
     LOG(Error) << "Draw command without index buffer.";
     return;
   }
@@ -431,7 +431,7 @@ void Renderer::draw(DrawType draw_type, U32 index_count, ProgramId program_id,
 
 void Renderer::pre_draw(ProgramId program_id, const TextureSlots& textures,
                         const UniformBuffer& uniforms) {
-  if (!isValid(program_id)) {
+  if (!program_id.is_valid()) {
     LOG(Error) << "Draw command without program.";
     return;
   }

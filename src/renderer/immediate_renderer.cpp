@@ -35,7 +35,7 @@ void main() {
 }
 )source";
 
-ProgramId g_program_id{kInvalidResourceId};
+ProgramId g_program_id{INVALID_RESOURCE_ID};
 
 }  // namespace
 
@@ -53,8 +53,7 @@ ImmediateMesh& ImmediateRenderer::create_mesh(DrawType draw_type, const fl::Mat4
 }
 
 void ImmediateRenderer::submit_to_renderer() {
-  if (!g_program_id.isValid()) {
-    LOG(Info) << "Creating program";
+  if (!g_program_id.is_valid()) {
     g_program_id = renderer_->create_program(ShaderSource::from(g_vertex_shader_source),
                                              ShaderSource::from(g_fragment_shader_source));
   }

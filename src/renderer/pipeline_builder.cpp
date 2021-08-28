@@ -40,7 +40,7 @@ nu::Optional<Pipeline> PipelineBuilder::build() const {
       vertex_shader_.value(),
       geometry_shader_.has_value() ? geometry_shader_.value() : ShaderSource{},
       fragment_shader_.value());
-  if (!program_id) {
+  if (!program_id.is_valid()) {
     LOG(Error) << "Could not create pipeline program.";
     return {};
   }

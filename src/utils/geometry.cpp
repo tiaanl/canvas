@@ -30,7 +30,7 @@ Geometry create_rectangle(Renderer* renderer, const fl::Vec2& top_left,
   def.addAttribute(ca::ComponentType::Float32, ca::ComponentCount::Two);
 
   auto vertex_buffer_id = renderer->create_vertex_buffer(def, vertices, sizeof(vertices));
-  if (!isValid(vertex_buffer_id)) {
+  if (!vertex_buffer_id.is_valid()) {
     LOG(Error) << "Could not create index buffer.";
     return {};
   }
@@ -38,7 +38,7 @@ Geometry create_rectangle(Renderer* renderer, const fl::Vec2& top_left,
   auto index_buffer_id =
       renderer->create_index_buffer(ca::ComponentType::Unsigned16, indices, sizeof(indices));
 
-  if (!isValid(index_buffer_id)) {
+  if (!index_buffer_id.is_valid()) {
     LOG(Error) << "Could not create index buffer.";
     return {};
   }

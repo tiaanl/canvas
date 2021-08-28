@@ -45,19 +45,19 @@ bool LineRenderer::initialize(Renderer* renderer) {
   def.addAttribute(ComponentType::Float32, ComponentCount::Three);
   def.addAttribute(ComponentType::Float32, ComponentCount::Four);
   m_vertexBufferId = m_renderer->create_vertex_buffer(def, nullptr, 0);
-  if (!isValid(m_vertexBufferId)) {
+  if (!m_vertexBufferId.is_valid()) {
     LOG(Error) << "Could not create vertex buffer for line renderer.";
     return false;
   }
 
   m_indexBufferId = m_renderer->create_index_buffer(ComponentType::Unsigned16, nullptr, 0);
-  if (!isValid(m_indexBufferId)) {
+  if (!m_indexBufferId.is_valid()) {
     LOG(Error) << "Could not create index buffer for line renderer.";
     return false;
   }
 
   m_transformUniformId = m_renderer->create_uniform("uTransform");
-  if (!isValid(m_transformUniformId)) {
+  if (!m_transformUniformId.is_valid()) {
     LOG(Error) << "Could not create uTransform uniform for line renderer.";
     return false;
   }
@@ -65,7 +65,7 @@ bool LineRenderer::initialize(Renderer* renderer) {
   auto vertexShaderSource = ShaderSource::from(kVertexShaderSource);
   auto fragmentShaderSource = ShaderSource::from(kFragmentShaderSource);
   m_programId = m_renderer->create_program(vertexShaderSource, fragmentShaderSource);
-  if (!isValid(m_programId)) {
+  if (!m_programId.is_valid()) {
     LOG(Error) << "Could not create program for line renderer.";
     return false;
   }

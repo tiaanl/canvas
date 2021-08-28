@@ -35,7 +35,7 @@ void TextureSlots::clear(U32 slot) {
 
 void TextureSlots::for_each_valid_slot(nu::Function<void(U32, TextureId)> func) const {
   for (U32 index = 0; index < textures_.size(); ++index) {
-    if (textures_[index].isValid()) {
+    if (textures_[index].is_valid()) {
       func(index, textures_[index]);
     }
   }
